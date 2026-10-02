@@ -427,7 +427,7 @@ function renderWriting(t, p, sp) {
       <div class="textbox"><h3>Question ${it.n}</h3>${paras(it.task)}</div>
       <textarea class="wt-area" id="wt-text-${i}" placeholder="Write your text here…"></textarea>
       <div class="wt-meta"><span id="wt-count-${i}">Parole: 0</span><span>Target: ${WT_INFO[it.kind].target}</span></div>
-      <div class="wt-ver">versione tutor: 2 ott 17:30</div>
+      <div class="wt-ver">versione tutor: (caricamento…)</div>
       <button class="btn btn-red wt-go" data-i="${i}">✔ Valuta il mio Writing</button>
       <div class="wt-err" id="wt-err-${i}"></div><div class="wt-res" id="wt-res-${i}"></div>
     </div>`;
@@ -435,6 +435,11 @@ function renderWriting(t, p, sp) {
   return h;
 }
 function initWriting(p) {
+  if (!window.WT && !document.getElementById('wt-js')) {
+    const s = document.createElement('script'); s.id = 'wt-js'; s.src = 'tutor-b1.js?v=' + Date.now();
+    s.onload = () => document.querySelectorAll('.wt-ver').forEach(v => v.textContent = 'versione tutor: ' + WT.version);
+    document.head.appendChild(s);
+  } else if (window.WT) document.querySelectorAll('.wt-ver').forEach(v => v.textContent = 'versione tutor: ' + WT.version);
   document.querySelectorAll('input[name="wtpick"]').forEach(r => r.onchange = () =>
     document.querySelectorAll('.wt-item').forEach(d => d.style.display = d.dataset.i === r.value ? '' : 'none'));
   p.items.forEach((it, i) => {
@@ -449,6 +454,7 @@ async function runWT(it, i, btn) {
   err.style.display = 'none'; res.style.display = 'none';
   if (!text) { err.textContent = 'Scrivi il tuo testo prima di chiedere la valutazione.'; err.style.display = 'block'; return; }
   btn.disabled = true; btn.textContent = 'Analisi in corso…';
+  const prompt = (window.WT && WT.prompt) ? WT.prompt(info, it, text, pts) : (() => {
   const prompt = `Sei un esaminatore ufficiale Cambridge B1 Preliminary (PET for Schools). Lo studente è un adolescente italiano di livello B1.
 Rispondi in italiano, citando tra virgolette le frasi originali in inglese quando correggi.
 
@@ -471,6 +477,7 @@ Testo dello studente:
 """
 ${text}
 """`;
+  return prompt; })();
   try {
     const data = await wtCall(prompt, n => { btn.textContent = 'Server occupato, riprovo…'; });
     res.innerHTML = data.result; res.style.display = 'block';
