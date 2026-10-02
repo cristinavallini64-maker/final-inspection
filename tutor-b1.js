@@ -55,14 +55,7 @@ Riferimenti reali Cambridge: una lettera sicura con frasi complesse varie, conne
     if (corr) res.insertBefore(div, corr); else res.appendChild(div);
   };
 
-  /* Part 3: tre valutazioni in parallelo, si tiene quella con la banda mediana (voto più stabile) */
-  function bandOf(text) {
-    const mi = text.search(/MARK/i), t = mi >= 0 ? text.slice(mi) : text;
-    const g = k => { const m = t.match(new RegExp(k + '\\s*:?\\s*(\\d)')); return m ? +m[1] : null; };
-    const c = g('Chiarezza') ?? g('Effetto'), l = g('Lingua'), o = g('Organizzazione'), k = g('Correttezza');
-    if ([c, l, o, k].some(x => x === null)) return null;
-    return Math.max(0, Math.min(5, Math.ceil((c + 3 * l + o + k) / 6 - 0.5), l + 1, k + 1));
-  }
+  /* Part 3 (lettera / storia): niente voto, solo commento e correzioni */
   const origRun = window.runWT;
   window.runWT = async function (it, i, btn) {
     const info = WT_INFO[it.kind];
@@ -71,27 +64,20 @@ Riferimenti reali Cambridge: una lettera sicura con frasi complesse varie, conne
     err.style.display = 'none'; res.style.display = 'none';
     if (!text) { err.textContent = 'Scrivi il tuo testo prima di chiedere la valutazione.'; err.style.display = 'block'; return; }
     btn.disabled = true; btn.textContent = 'Analisi in corso…';
-    const prompt = WT.prompt(info, it, text, null);
+    const prompt = WT.prompt(info, it, text, null)
+      .replace(/^MARK:[^\n]*\n/m, '')
+      .replace('Rispondi SOLO con queste tre parti', 'Rispondi SOLO con queste due parti')
+      + '\nIMPORTANTE: NON scrivere voti, bande, punteggi o numeri di valutazione, né nel commento né altrove. Solo il commento e le correzioni.';
     try {
-      const runs = (await Promise.allSettled([0, 1, 2].map(() => wtCall(prompt, () => { btn.textContent = 'Server occupato, riprovo…'; }))))
-        .filter(r => r.status === 'fulfilled').map(r => r.value.result);
-      if (!runs.length) throw new Error('high demand');
-      const tmp = document.createElement('div');
-      const scored = runs.map(html => { tmp.innerHTML = html; return { html, band: bandOf(tmp.textContent) }; }).filter(x => x.band !== null);
-      if (!scored.length) { res.innerHTML = runs[0]; res.style.display = 'block'; return; }
-      scored.sort((a, b) => a.band - b.band);
-      const pick = scored[Math.floor((scored.length - 1) / 2)];
-      res.innerHTML = pick.html; res.style.display = 'block';
-      const div = document.createElement('div');
-      div.className = 'wt-band';
-      div.innerHTML = 'BANDA STIMATA: <b>' + pick.band + '/5</b> <span style="font-size:0.8rem;color:#999">(stima del tutor; il voto ufficiale lo dà l\'esaminatore)</span>';
-      const corr = [...res.querySelectorAll('h3')].find(x => /CORREZION/i.test(x.textContent));
-      if (corr) res.insertBefore(div, corr); else res.appendChild(div);
+      const data = await wtCall(prompt, () => { btn.textContent = 'Server occupato, riprovo…'; });
+      res.innerHTML = data.result;
+      res.querySelectorAll('div').forEach(d => { if (/^\s*(MARK|BAND|BANDA|VOTO)\b/i.test(d.textContent)) d.remove(); });
+      res.style.display = 'block';
     } catch (e) { err.textContent = wtMsg(e.message); err.style.display = 'block'; }
     finally { btn.disabled = false; btn.textContent = '✔ Valuta il mio Writing'; }
   };
   window.WT = {
-    version: '2 ott 17:55',
+    version: '2 ott 18:00',
     SCALES,
     prompt(info, it, text, pts) {
       const WT_SCALES = SCALES;
