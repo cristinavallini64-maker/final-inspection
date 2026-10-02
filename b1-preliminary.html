@@ -371,7 +371,8 @@ Sii rigoroso come un vero esaminatore Cambridge: per ogni punto richiesto contro
 2 = fatica a ottenere l'effetto; lingua semplicistica, limitata o ripetitiva; testo poco coerente; molti errori che a volte impediscono la comprensione.
 1 = effetto negativo sul lettore; lingua molto limitata; testo seriamente incoerente.
 0 = troppo poco testo da valutare, illeggibile o non pertinente.
-Testi sotto le 80 parole ricevono punteggi più bassi.`
+Testi sotto le 80 parole ricevono punteggi più bassi.
+ATTENZIONE: in questa parte NON si contano i "punti" della consegna e NON si toglie banda perché manca un dettaglio: basta che il testo risponda alla consegna in modo pertinente. Si valutano l'effetto sul lettore, la varietà e l'ambizione di strutture e lessico, l'organizzazione e i connettivi. Gli errori minori, soprattutto se nascono da tentativi ambiziosi, NON abbassano la banda: un testo sicuro, ricco e ben collegato con pochi errori minori è banda 5.`
 };
 /* chiamata al Worker con nuovi tentativi automatici se il servizio è sovraccarico */
 async function wtCall(prompt, onRetry) {
@@ -431,7 +432,7 @@ ${WT_SCALES[info.scale]}
 
 Rispondi SOLO con queste tre parti, come nei commenti d'esame Cambridge, in tutto al massimo 70 parole:
 EXAMINER COMMENTS
-Una o due frasi in italiano: quali punti della consegna sono stati trattati bene e quale manca o è trattato solo in parte, e se il messaggio arriva al lettore.
+${info.scale === 'p2' ? 'Una o due frasi in italiano: quali punti della consegna sono stati trattati bene e quale manca o è trattato solo in parte, e se il messaggio arriva al lettore.' : 'Una o due frasi in italiano sul testo nel suo insieme: effetto sul lettore, varietà e ambizione della lingua (con un esempio citato), connettivi e organizzazione, gravità degli errori.'}
 MARK: X/5
 CORREZIONI
 Al massimo 4 errori di grammatica o di lessico, una riga ciascuno nel formato: "frase sbagliata" → forma corretta.
