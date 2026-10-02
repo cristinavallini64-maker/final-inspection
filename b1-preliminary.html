@@ -379,7 +379,8 @@ CALIBRAZIONE (esempi reali Cambridge, usali come riferimento):
 - BANDA 4: storia abbastanza ambiziosa (discorso diretto, frasi come "a pretty girl with big green eyes"), organizzata in ordine cronologico con when/since/until, alcuni errori che non impediscono la comprensione ("I was arriving to my new school").
 - BANDA 3: lingua poco ambiziosa ma adeguata, lessico ripetitivo ("I really like eating at home" ripetuto), poca varietà, diversi errori non gravi ("allot", "depending in"); oppure storia semplice con frasi brevi in sequenza e diversi errori ("we start playing whit her").
 - BANDA 2: lingua limitata e ripetitiva, frasi brevi non collegate, punteggiatura irregolare, errori numerosi che a volte rendono difficile capire ("tell me how was did you do").
-Confronta il testo con questi esempi e scegli la banda più vicina: non essere né più severo né più generoso.`
+Confronta il testo con questi esempi e scegli la banda più vicina: non essere né più severo né più generoso.
+DISTINZIONE TRA 3 E 4: la banda 4 richiede una lingua "abbastanza ambiziosa" (varietà di tempi verbali e strutture, lessico non ripetuto). Se il testo usa quasi solo strutture semplici e ripete le stesse parole o frasi (es. "I really like… I really prefer… I like…"), è banda 3 anche se si capisce bene e contiene un connettivo come "although".`
 };
 /* chiamata al Worker con nuovi tentativi automatici se il servizio è sovraccarico */
 async function wtCall(prompt, onRetry) {
@@ -406,7 +407,7 @@ function renderWriting(t, p, sp) {
       <div class="textbox"><h3>Question ${it.n}</h3>${paras(it.task)}</div>
       <textarea class="wt-area" id="wt-text-${i}" placeholder="Write your text here…"></textarea>
       <div class="wt-meta"><span id="wt-count-${i}">Parole: 0</span><span>Target: ${WT_INFO[it.kind].target}</span></div>
-      <div class="wt-ver">versione tutor: 2 ott 16:50</div>
+      <div class="wt-ver">versione tutor: 2 ott 16:55</div>
       <button class="btn btn-red wt-go" data-i="${i}">✔ Valuta il mio Writing</button>
       <div class="wt-err" id="wt-err-${i}"></div><div class="wt-res" id="wt-res-${i}"></div>
     </div>`;
