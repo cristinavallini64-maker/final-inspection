@@ -33,8 +33,24 @@ CORRETTEZZA:
 Riferimenti reali Cambridge: una lettera sicura con frasi complesse varie, connettivi semplici e 2-3 errori minori = Lingua 5. Una lettera chiara ma con frasi semplici, strutture ripetute ("I love X so I love Y") e diversi errori di ortografia = Lingua 3, Correttezza 3. Una storia di frasi brevi in fila con errori di base frequenti = Lingua 2, Organizzazione 2, Correttezza 2.`
 };
   function wtWords(s) { return s.trim() ? s.trim().split(/\s+/).length : 0; }
+
+  /* banda della Part 3: la Lingua conta tre volte (è il criterio che decide nella griglia Cambridge),
+     a metà strada si arrotonda per difetto, e la banda non può superare di più di 1 né Lingua né Correttezza */
+  window.wtBand = function (res) {
+    const all = res.textContent, mi = all.search(/MARK/i), t = mi >= 0 ? all.slice(mi) : all;
+    const g = k => { const m = t.match(new RegExp(k + '\\s*:?\\s*(\\d)')); return m ? +m[1] : null; };
+    const c = g('Chiarezza') ?? g('Effetto'), l = g('Lingua'), o = g('Organizzazione'), k = g('Correttezza');
+    if ([c, l, o, k].some(x => x === null)) return;
+    let band = Math.ceil((c + 3 * l + o + k) / 6 - 0.5);
+    band = Math.max(0, Math.min(5, band, l + 1, k + 1));
+    const div = document.createElement('div');
+    div.className = 'wt-band';
+    div.innerHTML = 'BANDA: <b>' + band + '/5</b>';
+    const corr = [...res.querySelectorAll('h3')].find(x => /CORREZION/i.test(x.textContent));
+    if (corr) res.insertBefore(div, corr); else res.appendChild(div);
+  };
   window.WT = {
-    version: '2 ott 17:35',
+    version: '2 ott 17:40',
     SCALES,
     prompt(info, it, text, pts) {
       const WT_SCALES = SCALES;
