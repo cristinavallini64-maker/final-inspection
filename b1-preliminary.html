@@ -105,6 +105,8 @@
   .pill input { display: none; }
   .pill span { display: inline-block; padding: 6px 14px; border-radius: 16px; background: #2a2a2a; color: #eee; font-weight: 900; cursor: pointer; }
   .pill input:checked + span { background: #FF0000; color: #000; }
+  .wt-band { margin: 8px 0 4px; font-size: 1.15rem; color: #fff; }
+  .wt-band b { color: #FF0000; }
   .wt-ver { color: #555; font-size: 0.75rem; margin: -6px 0 10px; }
   .wt-choice { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
   .wt-area { width: 100%; min-height: 220px; background: #000; color: #fff; border: 1px solid #333; border-radius: 10px; padding: 14px; font-family: 'Nunito', sans-serif; font-size: 1rem; line-height: 1.5; resize: vertical; }
@@ -365,24 +367,26 @@ const WT_SCALES = {
 0 = contenuto del tutto non pertinente o incomprensibile, oppure meno di 10 parole.
 Gli errori piccoli non tolgono punti se il messaggio è chiaro.
 Sii rigoroso come un vero esaminatore Cambridge: per ogni punto richiesto controlla che risponda ESATTAMENTE alla consegna (informazione precisa, tempo verbale e funzione richiesti, per esempio un'intenzione futura se la consegna chiede cosa farà). Se un punto è vago, impreciso o risponde a una domanda diversa, è trattato solo in parte. Il 5 si dà solo se tutti i punti sono pienamente appropriati e il messaggio è chiarissimo; con un punto trattato solo in parte il massimo è 4. Un punto conta come presente SOLO se lo studente fa esplicitamente quello che la consegna chiede (es. "proporre un altro giorno" = deve proporre di vedersi e indicare quando). Non "salvare" un punto interpretando una frase che non lo esprime: in quel caso il punto MANCA e il voto massimo è 3. Superare un po' il numero di parole non toglie punti.`,
-  p3: `Scala Cambridge per la lettera / storia (banda da 0 a 5):
-5 = il testo ottiene pienamente l'effetto voluto sul lettore; lingua sicura e ambiziosa per il livello, ampia varietà di strutture e lessico; collegamenti semplici efficaci e testo ben organizzato; errori solo minori; nessuno sforzo per il lettore.
-4 = ottiene l'effetto voluto; lingua abbastanza ambiziosa, una certa varietà; qualche collegamento e una certa organizzazione; errori che non impediscono la comprensione; poco sforzo per il lettore.
-3 = a tratti fatica a ottenere l'effetto; lingua poco ambiziosa oppure ambiziosa ma imprecisa; un tentativo di organizzazione ma collegamenti non sempre tenuti; errori per lo più non gravi; un certo sforzo per il lettore.
-2 = fatica a ottenere l'effetto; lingua semplicistica, limitata o ripetitiva; testo poco coerente; molti errori che a volte impediscono la comprensione.
-1 = effetto negativo sul lettore; lingua molto limitata; testo seriamente incoerente.
-0 = troppo poco testo da valutare, illeggibile o non pertinente.
-Testi sotto le 80 parole ricevono punteggi più bassi.
-ATTENZIONE: in questa parte NON si contano i "punti" della consegna e NON si toglie banda perché manca un dettaglio: basta che il testo risponda alla consegna in modo pertinente. Si valutano l'effetto sul lettore, la varietà e l'ambizione di strutture e lessico, l'organizzazione e i connettivi. Gli errori minori, soprattutto se nascono da tentativi ambiziosi, NON abbassano la banda: un testo sicuro, ricco e ben collegato con pochi errori minori è banda 5.
-CALIBRAZIONE (esempi reali Cambridge, usali come riferimento):
-- BANDA 5: lettera di circa 100 parole, sicura e ambiziosa, con frasi complesse ("I want to tell you that…", "things that you don't want to talk about…"), connettivi semplici ben usati (first of all, because, also, but), solo 2-3 errori minori di ortografia. Banda 5 anche se non risponde a una delle domande dell'amico.
-- BANDA 4: storia abbastanza ambiziosa (discorso diretto, frasi come "a pretty girl with big green eyes"), organizzata in ordine cronologico con when/since/until, alcuni errori che non impediscono la comprensione ("I was arriving to my new school").
-- BANDA 3: lingua poco ambiziosa ma adeguata, lessico ripetitivo ("I really like eating at home" ripetuto), poca varietà, diversi errori non gravi ("allot", "depending in"); oppure storia semplice con frasi brevi in sequenza e diversi errori ("we start playing whit her").
-- BANDA 2: lingua limitata e ripetitiva, frasi brevi non collegate, punteggiatura irregolare, errori numerosi che a volte rendono difficile capire ("tell me how was did you do").
-Confronta il testo con questi esempi e scegli la banda più vicina: non essere né più severo né più generoso.
-DISTINZIONE TRA 3 E 4: la banda 4 richiede una lingua "abbastanza ambiziosa" (varietà di tempi verbali e strutture, lessico non ripetuto). Se il testo usa quasi solo strutture semplici e ripete le stesse parole o frasi (es. "I really like… I really prefer… I like…"), è banda 3 anche se si capisce bene e contiene un connettivo come "although".
-DISTINZIONE TRA 2 E 3: se il testo è fatto soprattutto di frasi brevi e semplici messe una dopo l'altra (soggetto + verbo + complemento, quasi senza subordinate), con pochi connettivi e con errori frequenti di base (articoli mancanti, soggetto mancante, verbo sbagliato) che costringono il lettore a rileggere, è banda 2, anche se la storia ha un senso e un finale. Una trama interessante non alza la banda: conta la lingua.
-CONTROLLO FINALE (i valutatori automatici tendono a dare un punto in più): la banda 4 o 5 si dà solo se gli errori sono OCCASIONALI. Se ci sono errori di base in diverse frasi (tempi verbali sbagliati, articoli usati male o mancanti, soggetto mancante, verbi irregolari sbagliati), la banda massima è 3, anche se il testo ha un inizio o qualche frase ambiziosa. Prima di rispondere conta gli errori di base: con 4 o più errori di base la banda non può superare 3.`
+  p3: `Valuta la lettera / storia con QUATTRO punteggi separati, ciascuno da 1 a 5. Leggi le descrizioni con attenzione e non dare 4 o 5 se il testo non corrisponde davvero alla descrizione.
+
+EFFETTO (il testo risponde alla consegna e arriva al lettore):
+5 = nessuno sforzo per il lettore · 4 = poco sforzo · 3 = qualche sforzo · 2 = sforzo notevole · 1 = difficile da capire.
+Non si toglie punteggio se manca un dettaglio della consegna, basta che il testo sia pertinente.
+
+LINGUA (varietà e ambizione di strutture e lessico — è il criterio più importante):
+5 = sicura e ambiziosa: molte strutture diverse (subordinate, tempi verbali vari, frasi complesse), lessico ricco e non ripetuto.
+4 = abbastanza ambiziosa: una buona varietà di strutture e lessico, qualche frase complessa.
+3 = adeguata ma poco ambiziosa: soprattutto frasi semplici, alcune strutture ripetute ("I love… so I love…"), lessico quotidiano. Una o due frasi più complesse NON bastano per il 4.
+2 = semplicistica e ripetitiva: quasi solo frasi brevi soggetto-verbo-complemento.
+1 = molto limitata.
+
+ORGANIZZAZIONE (ordine e collegamenti):
+5 = ben organizzato, connettivi vari usati bene · 4 = organizzato con diversi collegamenti · 3 = qualche connettivo semplice (and, so, but, because, then) · 2 = frasi messe una dopo l'altra, quasi senza collegamenti · 1 = incoerente.
+
+CORRETTEZZA:
+5 = solo errori minori o nati da tentativi ambiziosi · 4 = alcuni errori che non ostacolano · 3 = diversi errori non gravi (ortografia, preposizioni, maiuscole) · 2 = molti errori di base (tempi, articoli, soggetto mancante) che a volte costringono a rileggere · 1 = errori continui.
+
+Riferimenti reali Cambridge: una lettera sicura con frasi complesse varie, connettivi semplici e 2-3 errori minori = Lingua 5. Una lettera chiara ma con frasi semplici, strutture ripetute ("I love X so I love Y") e diversi errori di ortografia = Lingua 3, Correttezza 3. Una storia di frasi brevi in fila con errori di base frequenti = Lingua 2, Organizzazione 2, Correttezza 2.`
 };
 /* chiamata al Worker con nuovi tentativi automatici se il servizio è sovraccarico */
 async function wtCall(prompt, onRetry) {
@@ -398,6 +402,20 @@ async function wtCall(prompt, onRetry) {
   }
 }
 function wtMsg(m) { return /high demand|overloaded|unavailable|try again|rate|quota|429|503/i.test(m) ? 'Il servizio di correzione in questo momento è molto occupato. Il tuo testo non è perso: riprova tra qualche minuto.' : 'Errore durante la richiesta: ' + m; }
+/* banda della Part 3 calcolata dai quattro punteggi (la Lingua conta doppio, come nei criteri Cambridge) */
+function wtBand(res) {
+  const all = res.textContent, mi = all.search(/MARK/i), t = mi >= 0 ? all.slice(mi) : all;
+  const g = k => { const m = t.match(new RegExp(k + '\\s*:?\\s*(\\d)')); return m ? +m[1] : null; };
+  const e = g('Effetto'), l = g('Lingua'), o = g('Organizzazione'), c = g('Correttezza');
+  if ([e, l, o, c].some(x => x === null)) return;
+  const band = Math.max(0, Math.min(5, Math.round((e + 2 * l + o + c) / 5)));
+  const div = document.createElement('div');
+  div.className = 'wt-band';
+  div.innerHTML = `BANDA: <b>${band}/5</b>`;
+  const heads = res.querySelectorAll('h3');
+  const corr = [...heads].find(x => /CORREZION/i.test(x.textContent));
+  if (corr) res.insertBefore(div, corr); else res.appendChild(div);
+}
 function wtWords(s) { return s.trim() ? s.trim().split(/\s+/).length : 0; }
 function renderWriting(t, p, sp) {
   let h = '';
@@ -409,7 +427,7 @@ function renderWriting(t, p, sp) {
       <div class="textbox"><h3>Question ${it.n}</h3>${paras(it.task)}</div>
       <textarea class="wt-area" id="wt-text-${i}" placeholder="Write your text here…"></textarea>
       <div class="wt-meta"><span id="wt-count-${i}">Parole: 0</span><span>Target: ${WT_INFO[it.kind].target}</span></div>
-      <div class="wt-ver">versione tutor: 2 ott 17:15</div>
+      <div class="wt-ver">versione tutor: 2 ott 17:25</div>
       <button class="btn btn-red wt-go" data-i="${i}">✔ Valuta il mio Writing</button>
       <div class="wt-err" id="wt-err-${i}"></div><div class="wt-res" id="wt-res-${i}"></div>
     </div>`;
@@ -444,7 +462,7 @@ ${WT_SCALES[info.scale]}
 Rispondi SOLO con queste tre parti, come nei commenti d'esame Cambridge, in tutto al massimo 70 parole:
 EXAMINER COMMENTS
 ${info.scale === 'p2' ? 'Una o due frasi in italiano: quali punti della consegna sono stati trattati bene e quale manca o è trattato solo in parte, e se il messaggio arriva al lettore.' : 'Una o due frasi in italiano sul testo nel suo insieme: effetto sul lettore, varietà e ambizione della lingua (con un esempio citato), connettivi e organizzazione, gravità degli errori.'}
-MARK: X/5
+${info.scale === 'p3' ? 'MARK: Effetto X · Lingua X · Organizzazione X · Correttezza X   (scrivi solo i quattro numeri, NON scrivere la banda finale: la calcola il programma)' : 'MARK: X/5'}
 CORREZIONI
 Al massimo 4 errori di grammatica o di lessico, una riga ciascuno nel formato: "frase sbagliata" → forma corretta.
 Nient'altro: niente consigli, niente introduzioni, niente saluti. Non riscrivere il testo.
@@ -456,6 +474,7 @@ ${text}
   try {
     const data = await wtCall(prompt, n => { btn.textContent = 'Server occupato, riprovo…'; });
     res.innerHTML = data.result; res.style.display = 'block';
+    if (info.scale === 'p3') wtBand(res);
   } catch (e) { err.textContent = wtMsg(e.message); err.style.display = 'block'; }
   finally { btn.disabled = false; btn.textContent = '✔ Valuta il mio Writing'; }
 }
