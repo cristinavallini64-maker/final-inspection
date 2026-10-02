@@ -30,6 +30,11 @@ ORGANIZZAZIONE (ordine e collegamenti):
 CORRETTEZZA:
 5 = solo errori minori o nati da tentativi ambiziosi · 4 = alcuni errori che non ostacolano · 3 = diversi errori non gravi (ortografia, preposizioni, maiuscole) · 2 = molti errori di base (tempi, articoli, soggetto mancante) che a volte costringono a rileggere · 1 = errori continui.
 
+REGOLE DI CONTEGGIO (applicale prima di dare i punteggi):
+- LINGUA: conta le frasi. Se più della metà sono frasi brevi e semplici (soggetto + verbo + complemento, es. "It was an old paper. There was a clue. I went to other place."), LINGUA = 2. Qualche frase più lunga non cambia questo punteggio.
+- CORRETTEZZA: conta gli errori di base (soggetto mancante, articolo mancante o sbagliato, tempo verbale sbagliato, verbo irregolare sbagliato, accordo soggetto-verbo). Se compaiono in 4 o più punti del testo, CORRETTEZZA = 2. Se nel commento scrivi che ci sono "omissioni di soggetti e articoli" o "errori di base", la Correttezza non può essere più di 2.
+- ORGANIZZAZIONE: se il testo usa quasi solo "then", "and", "but" tra frasi brevi messe in fila, ORGANIZZAZIONE = 2 o 3, mai 4.
+
 Riferimenti reali Cambridge: una lettera sicura con frasi complesse varie, connettivi semplici e 2-3 errori minori = Lingua 5. Una lettera chiara ma con frasi semplici, strutture ripetute ("I love X so I love Y") e diversi errori di ortografia = Lingua 3, Correttezza 3. Una storia di frasi brevi in fila con errori di base frequenti = Lingua 2, Organizzazione 2, Correttezza 2.`
 };
   function wtWords(s) { return s.trim() ? s.trim().split(/\s+/).length : 0; }
@@ -50,7 +55,7 @@ Riferimenti reali Cambridge: una lettera sicura con frasi complesse varie, conne
     if (corr) res.insertBefore(div, corr); else res.appendChild(div);
   };
   window.WT = {
-    version: '2 ott 17:40',
+    version: '2 ott 17:45',
     SCALES,
     prompt(info, it, text, pts) {
       const WT_SCALES = SCALES;
