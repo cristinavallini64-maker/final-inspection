@@ -105,6 +105,7 @@
   .pill input { display: none; }
   .pill span { display: inline-block; padding: 6px 14px; border-radius: 16px; background: #2a2a2a; color: #eee; font-weight: 900; cursor: pointer; }
   .pill input:checked + span { background: #FF0000; color: #000; }
+  .wt-ver { color: #555; font-size: 0.75rem; margin: -6px 0 10px; }
   .wt-choice { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
   .wt-area { width: 100%; min-height: 220px; background: #000; color: #fff; border: 1px solid #333; border-radius: 10px; padding: 14px; font-family: 'Nunito', sans-serif; font-size: 1rem; line-height: 1.5; resize: vertical; }
   .wt-area:focus { outline: none; border-color: #FF0000; }
@@ -400,6 +401,7 @@ function renderWriting(t, p, sp) {
       <div class="textbox"><h3>Question ${it.n}</h3>${paras(it.task)}</div>
       <textarea class="wt-area" id="wt-text-${i}" placeholder="Write your text here…"></textarea>
       <div class="wt-meta"><span id="wt-count-${i}">Parole: 0</span><span>Target: ${WT_INFO[it.kind].target}</span></div>
+      <div class="wt-ver">versione tutor: 2 ott 16:45</div>
       <button class="btn btn-red wt-go" data-i="${i}">✔ Valuta il mio Writing</button>
       <div class="wt-err" id="wt-err-${i}"></div><div class="wt-res" id="wt-res-${i}"></div>
     </div>`;
