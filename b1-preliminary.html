@@ -364,7 +364,7 @@ const WT_SCALES = {
 1 = poco contenuto pertinente, il lettore fa molta fatica, OPPURE testo molto corto (10–19 parole).
 0 = contenuto del tutto non pertinente o incomprensibile, oppure meno di 10 parole.
 Gli errori piccoli non tolgono punti se il messaggio è chiaro.
-Sii rigoroso come un vero esaminatore Cambridge: per ogni punto richiesto controlla che risponda ESATTAMENTE alla consegna (informazione precisa, tempo verbale e funzione richiesti, per esempio un'intenzione futura se la consegna chiede cosa farà). Se un punto è vago, impreciso o risponde a una domanda diversa, è trattato solo in parte. Il 5 si dà solo se tutti i punti sono pienamente appropriati e il messaggio è chiarissimo; con un punto trattato solo in parte il massimo è 4.`,
+Sii rigoroso come un vero esaminatore Cambridge: per ogni punto richiesto controlla che risponda ESATTAMENTE alla consegna (informazione precisa, tempo verbale e funzione richiesti, per esempio un'intenzione futura se la consegna chiede cosa farà). Se un punto è vago, impreciso o risponde a una domanda diversa, è trattato solo in parte. Il 5 si dà solo se tutti i punti sono pienamente appropriati e il messaggio è chiarissimo; con un punto trattato solo in parte il massimo è 4. Un punto conta come presente SOLO se lo studente fa esplicitamente quello che la consegna chiede (es. "proporre un altro giorno" = deve proporre di vedersi e indicare quando). Non "salvare" un punto interpretando una frase che non lo esprime: in quel caso il punto MANCA e il voto massimo è 3. Superare un po' il numero di parole non toglie punti.`,
   p3: `Scala Cambridge per la lettera / storia (banda da 0 a 5):
 5 = il testo ottiene pienamente l'effetto voluto sul lettore; lingua sicura e ambiziosa per il livello, ampia varietà di strutture e lessico; collegamenti semplici efficaci e testo ben organizzato; errori solo minori; nessuno sforzo per il lettore.
 4 = ottiene l'effetto voluto; lingua abbastanza ambiziosa, una certa varietà; qualche collegamento e una certa organizzazione; errori che non impediscono la comprensione; poco sforzo per il lettore.
@@ -407,7 +407,7 @@ function renderWriting(t, p, sp) {
       <div class="textbox"><h3>Question ${it.n}</h3>${paras(it.task)}</div>
       <textarea class="wt-area" id="wt-text-${i}" placeholder="Write your text here…"></textarea>
       <div class="wt-meta"><span id="wt-count-${i}">Parole: 0</span><span>Target: ${WT_INFO[it.kind].target}</span></div>
-      <div class="wt-ver">versione tutor: 2 ott 16:55</div>
+      <div class="wt-ver">versione tutor: 2 ott 17:00</div>
       <button class="btn btn-red wt-go" data-i="${i}">✔ Valuta il mio Writing</button>
       <div class="wt-err" id="wt-err-${i}"></div><div class="wt-res" id="wt-res-${i}"></div>
     </div>`;
