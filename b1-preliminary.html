@@ -14,7 +14,8 @@
   .hero-text h1 { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; letter-spacing: 3px; color: #000; }
   .hero-text p { font-size: 1rem; color: #111; margin-top: 4px; font-weight: 700; }
 
-  .main { max-width: 980px; margin: 0 auto; padding: 32px 16px 60px; }
+  .main { max-width: 1200px; margin: 0 auto; padding: 32px 16px 60px; }
+  #app { font-size: 1.08rem; }
   .btn { display: inline-block; border: none; cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 900; border-radius: 20px; padding: 8px 20px; font-size: 0.95rem; text-decoration: none; transition: all 0.2s; }
   .btn-red { background: #FF0000; color: #000; }
   .btn-cyan { background: #00CFCF; color: #000; }
@@ -60,7 +61,9 @@
   .opt:hover { background: #242424; }
   .opt input { margin-top: 4px; accent-color: #FF0000; }
   .opt b { min-width: 18px; }
-  .opt img { max-width: 160px; border-radius: 6px; background: #fff; }
+  .opt img { max-width: 260px; border-radius: 6px; background: #fff; }
+  .qimg { display: block; max-width: 100%; width: 720px; background: #fff; border-radius: 8px; margin: 6px 0 10px; }
+  .notice img { width: 520px; max-width: 100%; }
   .fb { margin-top: 6px; font-weight: 900; font-size: 0.92rem; }
   .fb.ok { color: #00CC44; } .fb.ko { color: #ff5555; }
 
@@ -310,9 +313,9 @@ function showTest(ti) {
 
 /* ---------- elementi di risposta ---------- */
 let cur = null, keys = [];
-function mcQuestion(n, q, options, answer, extra, labelsOnly) {
+function mcQuestion(n, q, options, answer, extra, afterHead) {
   keys.push({ n, kind: 'radio', type: 'letter', v: answer, box: true });
-  let h = `<div class="q" id="q-${n}">${extra || ''}<div class="q-head"><span class="q-num">${n}</span>${esc(q || '')}</div>`;
+  let h = `<div class="q" id="q-${n}">${extra || ''}<div class="q-head"><span class="q-num">${n}</span>${esc(q || '')}</div>${afterHead || ''}`;
   options.forEach((o, i) => {
     h += `<label class="opt"><input type="radio" name="r-${n}" value="${L[i]}"><b>${L[i]}</b><span>${optLabel(o)}</span></label>`;
   });
@@ -381,7 +384,7 @@ function renderPart(t, sec, p) {
   } else if (type === 'mcaudio') {
     p.items.forEach(it => {
       const extra = (it.context ? `<div class="q-context">${esc(it.context)}</div>` : '') + audioHTML('a' + it.n, it.audio);
-      h += mcQuestion(it.n, it.q, it.options, it.answer, extra);
+      h += mcQuestion(it.n, it.q, it.options, it.answer, extra, it.img ? `<img class="qimg" src="${esc(it.img)}" alt="">` : '');
     });
   } else if (type === 'notes') {
     h += titleBox(p, paras(p.notes, n => textGap(n, p.answers[n])));
