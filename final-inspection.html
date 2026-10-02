@@ -173,16 +173,6 @@
   .card-train .tag:hover { background: #fff; color: #000; }
   .card-train:hover { box-shadow: 0 0 25px rgba(0, 229, 255, 0.35); }
 
-  /* Writing tutor B1: stessa scheda, colore rosso */
-  .writing-tutor-container.wt-b1 { border-color: #FF0000; box-shadow: 0 0 30px rgba(255, 0, 0, 0.15); }
-  .wt-b1 .writing-tutor-title, .wt-b1 .wt-form-group label { color: #FF0000; }
-  .wt-b1 .wt-btn { background: #FF0000; }
-  .wt-b1 .wt-btn:hover { background: #fff; box-shadow: 0 0 20px #FF0000; }
-  .wt-b1 .wt-btn:disabled { background: #444; color: #888; box-shadow: none; }
-  .wt-b1 .wt-result { border-left-color: #FF0000; }
-  .wt-b1 .wt-select:focus, .wt-b1 .wt-textarea:focus, .wt-b1 .wt-textarea-prompt:focus { border-color: #FF0000 !important; box-shadow: 0 0 10px rgba(255, 0, 0, 0.3) !important; }
-  .sub-title.st-b1 { color: #FF0000; }
-  .wt-points { color: #ccc; font-size: 0.88rem; margin-top: 6px; line-height: 1.5; }
 </style>
 </head>
 <body>
@@ -217,55 +207,6 @@
 
     </div>
 
-    <div class="sub-title st-b1 sub-gap">🛠️ Allenamento mirato · Writing</div>
-    <div class="sub-note">Scrivi il tuo testo e ricevi la valutazione con i criteri Cambridge B1.</div>
-
-    <div class="writing-tutor-container wt-b1">
-      <div class="writing-tutor-title">✍️ CAMBRIDGE B1 PRELIMINARY — WRITING TUTOR IA</div>
-      <p class="writing-tutor-desc">Scegli la tipologia di testo, incolla la traccia e il tuo testo: ricevi un feedback secondo i criteri Cambridge B1.</p>
-
-      <div class="wt-form-group">
-        <label for="b1Type">Tipologia di testo (Task Type)</label>
-        <select id="b1Type" class="wt-select">
-          <option value="p2">Short message — messaggio breve (35–45 parole) · PET for Schools Part 2</option>
-          <option value="p3letter">Informal letter — lettera informale (circa 100 parole) · PET for Schools Part 3</option>
-          <option value="p3story">Story — storia (circa 100 parole) · PET for Schools Part 3</option>
-          <option value="email">Email (circa 100 parole) · B1 Preliminary Part 1</option>
-          <option value="article">Article — articolo (circa 100 parole) · B1 Preliminary Part 2</option>
-          <option value="story">Story — storia (circa 100 parole) · B1 Preliminary Part 2</option>
-        </select>
-      </div>
-
-      <div class="wt-form-group" id="b1BookWrap">
-        <label for="b1Book">Traccia del libro (facoltativo)</label>
-        <select id="b1Book" class="wt-select">
-          <option value="">— nessuna / altra traccia —</option>
-          <option value="pet1-t1">Cambridge PET 1 · Test 1 · Question 6</option>
-          <option value="pet1-t2">Cambridge PET 1 · Test 2 · Question 6</option>
-          <option value="pet1-t3">Cambridge PET 1 · Test 3 · Question 6</option>
-          <option value="pet1-t4">Cambridge PET 1 · Test 4 · Question 6</option>
-        </select>
-        <div class="wt-points" id="b1Points"></div>
-      </div>
-
-      <div class="wt-form-group">
-        <label for="b1Prompt">Traccia / consegna (Task Prompt)</label>
-        <textarea id="b1Prompt" class="wt-textarea-prompt" placeholder="Incolla o scrivi qui la traccia del docente o del libro (consigliato)..."></textarea>
-      </div>
-
-      <div class="wt-form-group">
-        <label for="b1Text">Il tuo testo</label>
-        <textarea id="b1Text" class="wt-textarea" placeholder="Write your text here..."></textarea>
-        <div class="wt-meta">
-          <span id="b1Count">Parole: 0</span>
-          <span id="b1Target">Target: 35 - 45 parole</span>
-        </div>
-      </div>
-
-      <button id="b1Btn" class="wt-btn" onclick="runWritingTutorB1()">Valuta il mio Writing</button>
-      <div id="b1Error" class="wt-error"></div>
-      <div id="b1Result" class="wt-result"></div>
-    </div>
 
   </div>
 
@@ -464,124 +405,5 @@ ${text}
 </script>
 
 
-<script>
-  // --- WRITING TUTOR B1 (stesso Worker del B2) ---
-  (function () {
-    const TYPES = {
-      p2: { name: 'short message (PET for Schools, Writing Part 2)', min: 35, max: 45, target: '35 - 45 parole', scale: 'p2' },
-      p3letter: { name: 'informal letter (PET for Schools, Writing Part 3)', min: 80, max: 130, target: 'circa 100 parole', scale: 'p3' },
-      p3story: { name: 'story (PET for Schools, Writing Part 3)', min: 80, max: 130, target: 'circa 100 parole', scale: 'p3' },
-      email: { name: 'email (B1 Preliminary, Writing Part 1)', min: 90, max: 130, target: 'circa 100 parole', scale: 'new' },
-      article: { name: 'article (B1 Preliminary, Writing Part 2)', min: 90, max: 130, target: 'circa 100 parole', scale: 'new' },
-      story: { name: 'story (B1 Preliminary, Writing Part 2)', min: 90, max: 130, target: 'circa 100 parole', scale: 'new' }
-    };
-    /* punti di contenuto delle tracce Question 6 di Cambridge PET 1 (dalle chiavi del libro) */
-    const BOOK = {
-      'pet1-t1': ['ringraziare l\'amica/o per il regalo (i soldi per il compleanno)', 'dire quale CD di musica intende comprare', 'spiegare perché ha scelto proprio quel CD'],
-      'pet1-t2': ['scusarsi perché non può andare alla festa di Alex', 'spiegare perché non può andare', 'proporre di vedersi un altro giorno (indicando quale)'],
-      'pet1-t3': ['indicare il titolo del libro che vuole prendere in prestito', 'spiegare perché vuole quel libro', 'dire quando lo restituirà / per quanto tempo gli serve'],
-      'pet1-t4': ['invitare Daryl al cinema', 'dire quale film vuole vedere', 'indicare l\'orario dell\'appuntamento']
-    };
-    const SCALES = {
-      p2: `Scala Cambridge per il messaggio breve (punteggio da 0 a 5):
-5 = tutti e tre i punti richiesti sono trattati in modo appropriato; il messaggio è chiaro per il lettore.
-4 = tutti e tre i punti sono trattati in modo adeguato; nel complesso il messaggio arriva.
-3 = tutti i punti sono tentati ma il lettore deve fare qualche sforzo, OPPURE manca un punto ma gli altri sono chiari.
-2 = due punti mancano o non sono riusciti; il messaggio arriva solo in parte; OPPURE testo un po' corto (20–25 parole).
-1 = poco contenuto pertinente, il lettore fa molta fatica, OPPURE testo molto corto (10–19 parole).
-0 = contenuto del tutto non pertinente o incomprensibile, oppure meno di 10 parole.
-Gli errori piccoli non tolgono punti se il messaggio è chiaro.
-Sii rigoroso come un vero esaminatore Cambridge: per ogni punto richiesto controlla che risponda ESATTAMENTE alla consegna (informazione precisa, tempo verbale e funzione richiesti, per esempio un'intenzione futura se la consegna chiede cosa farà). Se un punto è vago, impreciso o risponde a una domanda diversa, è trattato solo in parte. Il 5 si dà solo se tutti i punti sono pienamente appropriati e il messaggio è chiarissimo; con un punto trattato solo in parte il massimo è 4. Un punto conta come presente SOLO se lo studente fa esplicitamente quello che la consegna chiede (es. "proporre un altro giorno" = deve proporre di vedersi e indicare quando). Non "salvare" un punto interpretando una frase che non lo esprime: in quel caso il punto MANCA e il voto massimo è 3. Superare un po' il numero di parole non toglie punti.`,
-      p3: `Scala Cambridge per la lettera / storia (banda da 0 a 5):
-5 = il testo ottiene pienamente l'effetto voluto sul lettore; lingua sicura e ambiziosa per il livello, ampia varietà di strutture e lessico; collegamenti semplici efficaci e testo ben organizzato; errori solo minori, dovuti a tentativi ambiziosi; nessuno sforzo per il lettore.
-4 = ottiene l'effetto voluto; lingua abbastanza ambiziosa, una certa varietà di strutture e lessico; qualche collegamento tra le frasi e una certa organizzazione; alcuni errori che non impediscono la comprensione; poco sforzo per il lettore.
-3 = a tratti fatica a ottenere l'effetto voluto; lingua poco ambiziosa oppure ambiziosa ma imprecisa; un tentativo di organizzazione ma i collegamenti non sempre tenuti; errori per lo più non gravi; il lettore fa un certo sforzo.
-2 = fatica a ottenere l'effetto; lingua semplicistica, limitata o ripetitiva; testo poco coerente, punteggiatura irregolare; molti errori che a volte impediscono la comprensione; sforzo notevole per il lettore.
-1 = effetto negativo sul lettore; lingua molto limitata, nessuna varietà; testo seriamente incoerente; difficile da capire.
-0 = troppo poco testo da valutare, illeggibile o non pertinente.
-Testi sotto le 80 parole ricevono punteggi più bassi.
-ATTENZIONE: in questa parte NON si contano i "punti" della consegna e NON si toglie banda perché manca un dettaglio: basta che il testo risponda alla consegna in modo pertinente. Si valutano l'effetto sul lettore, la varietà e l'ambizione di strutture e lessico, l'organizzazione e i connettivi. Gli errori minori, soprattutto se nascono da tentativi ambiziosi, NON abbassano la banda: un testo sicuro, ricco e ben collegato con pochi errori minori è banda 5.
-CALIBRAZIONE (esempi reali Cambridge, usali come riferimento):
-- BANDA 5: lettera di circa 100 parole, sicura e ambiziosa, con frasi complesse ("I want to tell you that…", "things that you don't want to talk about…"), connettivi semplici ben usati (first of all, because, also, but), solo 2-3 errori minori di ortografia. Banda 5 anche se non risponde a una delle domande dell'amico.
-- BANDA 4: storia abbastanza ambiziosa (discorso diretto, frasi come "a pretty girl with big green eyes"), organizzata in ordine cronologico con when/since/until, alcuni errori che non impediscono la comprensione ("I was arriving to my new school").
-- BANDA 3: lingua poco ambiziosa ma adeguata, lessico ripetitivo ("I really like eating at home" ripetuto), poca varietà, diversi errori non gravi ("allot", "depending in"); oppure storia semplice con frasi brevi in sequenza e diversi errori ("we start playing whit her").
-- BANDA 2: lingua limitata e ripetitiva, frasi brevi non collegate, punteggiatura irregolare, errori numerosi che a volte rendono difficile capire ("tell me how was did you do").
-Confronta il testo con questi esempi e scegli la banda più vicina: non essere né più severo né più generoso.
-DISTINZIONE TRA 3 E 4: la banda 4 richiede una lingua "abbastanza ambiziosa" (varietà di tempi verbali e strutture, lessico non ripetuto). Se il testo usa quasi solo strutture semplici e ripete le stesse parole o frasi (es. "I really like… I really prefer… I like…"), è banda 3 anche se si capisce bene e contiene un connettivo come "although".
-DISTINZIONE TRA 2 E 3: se il testo è fatto soprattutto di frasi brevi e semplici messe una dopo l'altra (soggetto + verbo + complemento, quasi senza subordinate), con pochi connettivi e con errori frequenti di base (articoli mancanti, soggetto mancante, verbo sbagliato) che costringono il lettore a rileggere, è banda 2, anche se la storia ha un senso e un finale. Una trama interessante non alza la banda: conta la lingua.
-CONTROLLO FINALE (i valutatori automatici tendono a dare un punto in più): la banda 4 o 5 si dà solo se gli errori sono OCCASIONALI. Se ci sono errori di base in diverse frasi (tempi verbali sbagliati, articoli usati male o mancanti, soggetto mancante, verbi irregolari sbagliati), la banda massima è 3, anche se il testo ha un inizio o qualche frase ambiziosa. Prima di rispondere conta gli errori di base: con 4 o più errori di base la banda non può superare 3.`,
-      new: `Scale Cambridge B1 Preliminary: quattro criteri, ciascuno da 0 a 5 (totale /20):
-- Content: tutto il contenuto è pertinente e il lettore è pienamente informato (5) … contenuto non pertinente (0).
-- Communicative Achievement: usa le convenzioni del tipo di testo per tenere l'attenzione del lettore e comunicare idee semplici (5) … non comunica (0).
-- Organisation: testo generalmente ben organizzato e coerente, con varietà di connettivi e mezzi di coesione (5) … nessuna organizzazione (0).
-- Language: varietà di lessico quotidiano usato in modo appropriato, strutture semplici e alcune complesse con buon controllo; gli errori non impediscono la comprensione (5) … lingua inadeguata (0).`
-    };
-    const $ = id => document.getElementById(id);
-    const words = t => (t.trim() ? t.trim().split(/\s+/).length : 0);
-    function refresh() {
-      const ty = TYPES[$('b1Type').value];
-      $('b1Target').textContent = 'Target: ' + ty.target;
-      $('b1BookWrap').style.display = $('b1Type').value === 'p2' ? '' : 'none';
-      const pts = $('b1Type').value === 'p2' ? BOOK[$('b1Book').value] : null;
-      $('b1Points').innerHTML = pts ? 'Nel tuo messaggio devi: <br>• ' + pts.join('<br>• ') : '';
-      const n = words($('b1Text').value);
-      $('b1Count').textContent = 'Parole: ' + n;
-      $('b1Count').style.color = n && (n < ty.min || n > ty.max) ? '#ff6666' : '';
-    }
-    ['b1Type', 'b1Book'].forEach(id => $(id).addEventListener('change', refresh));
-    $('b1Text').addEventListener('input', refresh);
-    refresh();
-
-    window.runWritingTutorB1 = async function () {
-      const text = $('b1Text').value.trim(), taskPrompt = $('b1Prompt').value.trim();
-      const key = $('b1Type').value, ty = TYPES[key];
-      const pts = key === 'p2' ? BOOK[$('b1Book').value] : null;
-      const btn = $('b1Btn'), err = $('b1Error'), res = $('b1Result');
-      err.style.display = 'none'; res.style.display = 'none';
-      if (!text) { err.textContent = 'Per favore, inserisci un testo prima di richiedere la valutazione.'; err.style.display = 'block'; return; }
-      btn.disabled = true; btn.textContent = 'ANALISI IN CORSO…';
-      const prompt = `Sei un esaminatore ufficiale Cambridge B1 Preliminary (PET for Schools). Lo studente è un adolescente italiano di livello B1.
-Rispondi in italiano, citando tra virgolette le frasi originali in inglese quando correggi.
-
-Tipologia di task: ${ty.name}
-Lunghezza richiesta: ${ty.target}. Il testo dello studente ha ${words(text)} parole.
-Traccia: ${taskPrompt || 'Nessuna traccia fornita: valuta in base alla tipologia.'}
-${pts ? 'Punti di contenuto obbligatori:\n- ' + pts.join('\n- ') : ''}
-
-${SCALES[ty.scale]}
-
-Rispondi SOLO con queste tre parti, come nei commenti d'esame Cambridge, in tutto al massimo 70 parole:
-EXAMINER COMMENTS
-${ty.scale === 'p2' ? 'Una o due frasi in italiano: quali punti della consegna sono stati trattati bene e quale manca o è trattato solo in parte, e se il messaggio arriva al lettore.' : 'Una o due frasi in italiano sul testo nel suo insieme: effetto sul lettore, varietà e ambizione della lingua (con un esempio citato), connettivi e organizzazione, gravità degli errori.'}
-MARK: ${ty.scale === 'new' ? 'Content X · Communicative Achievement X · Organisation X · Language X = X/20' : 'X/5'}
-CORREZIONI
-Al massimo 4 errori di grammatica o di lessico, una riga ciascuno nel formato: "frase sbagliata" → forma corretta.
-Nient'altro: niente consigli, niente introduzioni, niente saluti. Non riscrivere il testo.
-
-Testo dello studente:
-"""
-${text}
-"""`;
-      const BUSY = /high demand|overloaded|unavailable|try again|rate|quota|429|503/i;
-      try {
-        let data = null;
-        for (let i = 0; i < 2 && !data; i++) {
-          const r = await fetch('https://writingtutor-b1.cristinavallini64.workers.dev/', {
-            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt })
-          });
-          const d = await r.json().catch(() => ({}));
-          if (r.ok && !d.error && d.result) { data = d; break; }
-          const msg = d.error || ('Errore del server (' + r.status + ')');
-          if (i < 1 && (BUSY.test(msg) || r.status >= 500)) { btn.textContent = 'Server occupato, riprovo…'; await new Promise(z => setTimeout(z, 3000)); continue; }
-          throw new Error(msg);
-        }
-        res.innerHTML = data.result; res.style.display = 'block';
-      } catch (e) {
-        err.textContent = BUSY.test(e.message) ? 'Il servizio di correzione in questo momento è molto occupato. Il tuo testo non è perso: riprova tra qualche minuto.' : 'Si è verificato un errore durante la richiesta: ' + e.message;
-        err.style.display = 'block';
-      } finally { btn.disabled = false; btn.textContent = 'VALUTA IL MIO WRITING'; }
-    };
-  })();
-</script>
 </body>
 </html>

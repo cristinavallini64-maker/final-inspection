@@ -284,7 +284,7 @@ function showHome() {
     const on = hasContent(t) || (t.src && !t.loaded);
     let done = 0, tot = 0;
     SECTIONS.forEach(([sec]) => readyParts(t, sec).forEach(p => { tot++; if (save[`${t.id}|${sec}|${p.part}`]) done++; }));
-    h += `<div class="card c-red ${on ? '' : 'off'}" ${on ? `onclick="showTest(${i})"` : ''}>
+    h += `<div class="card c-red ${on ? '' : 'off'}" ${on ? `onclick="go('${t.id}')"` : ''}>
       <div class="card-name">${esc(t.title)}</div>
       ${on ? (tot ? `<span class="badge">${done}/${tot} parti svolte</span>` : '<span class="badge">Apri</span>') : '<span class="badge">in preparazione</span>'}</div>`;
   });
@@ -304,7 +304,7 @@ function showTest(ti) {
   if (t0.src && !t0.loaded) { app.innerHTML = '<div class="empty-note">Caricamento…</div>'; return loadTest(t0, () => showTest(ti)); }
   stopAudio(); window.scrollTo(0, 0);
   const t = TESTS[ti], save = loadSave();
-  let h = `<div class="topbar"><button class="btn btn-ghost" onclick="showHome()">← Tutti i test</button></div>
+  let h = `<div class="topbar"><button class="btn btn-ghost" onclick="go('')">← Tutti i test</button></div>
     <h2 class="score" style="margin-bottom:10px">${esc(t.title)}</h2>`;
   if (!hasContent(t)) h += '<div class="empty-note">⏳ Questo test è in preparazione.</div>';
   let first = true;
@@ -316,7 +316,7 @@ function showTest(ti) {
     h += `<div class="block-title bt-${col}">${lab}</div><div class="grid">`;
     parts.forEach(p => {
       const pi = t[sec].indexOf(p), b = save[`${t.id}|${sec}|${p.part}`];
-      h += `<div class="card c-${col}" onclick="showPart(${ti},'${sec}',${pi})">
+      h += `<div class="card c-${col}" onclick="go('${t.id}/${sec}/${p.part}')">
         <div class="card-name">Part ${p.part}</div><div class="card-sub">${spec(t, sec, p).info}${spec(t, sec, p).type === 'writetask' ? ' · valutazione IA' : ' · ' + countQ(p) + ' domande'}</div>
         <span class="badge">${b ? `Migliore: ${b.score}/${b.total}` : 'Da fare'}</span></div>`;
     });
@@ -409,7 +409,7 @@ function renderWriting(t, p, sp) {
       <div class="textbox"><h3>Question ${it.n}</h3>${paras(it.task)}</div>
       <textarea class="wt-area" id="wt-text-${i}" placeholder="Write your text here…"></textarea>
       <div class="wt-meta"><span id="wt-count-${i}">Parole: 0</span><span>Target: ${WT_INFO[it.kind].target}</span></div>
-      <div class="wt-ver">versione tutor: 2 ott 17:10</div>
+      <div class="wt-ver">versione tutor: 2 ott 17:15</div>
       <button class="btn btn-red wt-go" data-i="${i}">✔ Valuta il mio Writing</button>
       <div class="wt-err" id="wt-err-${i}"></div><div class="wt-res" id="wt-res-${i}"></div>
     </div>`;
@@ -527,14 +527,17 @@ function showPart(ti, sec, pi) {
   const t = TESTS[ti], p = t[sec][pi], sp = spec(t, sec, p);
   cur = { ti, sec, pi, t, p };
   const col = sec === 'reading' ? 'cyan' : sec === 'writing' ? 'red' : 'green';
-  let h = `<div class="sec-${sec}"><div class="topbar"><button class="btn btn-ghost" onclick="showTest(${ti})">← ${esc(t.title)}</button></div>
+  let h = `<div class="sec-${sec}"><div class="topbar"><button class="btn btn-ghost" onclick="go('${t.id}')">← ${esc(t.title)}</button></div>
     <div class="block-title bt-${col}">${SEC_NAME[sec]} · Part ${p.part}</div>
     <div class="rubric"><div class="en">${esc(p.rubric || sp.en)}</div><div class="it">💡 ${esc(sp.it)}</div></div>`;
   h += renderPart(t, sec, p);
-  if (sp.type === 'writetask') { app.innerHTML = h + '</div>'; initWriting(p); return; }
+  const nx = nextPart(t, sec, pi);
+  const nextBtn = nx ? `<button class="btn btn-green" onclick="go('${t.id}/${nx[0]}/${nx[1]}')">Parte successiva →</button>` : `<button class="btn btn-ghost" onclick="go('${t.id}')">Torna al test</button>`;
+  if (sp.type === 'writetask') { app.innerHTML = h + `<div class="resultbar">${nextBtn}</div></div>`; initWriting(p); return; }
   h += `<div class="resultbar"><button class="btn btn-red" id="checkBtn" onclick="checkPart()">✔ Correggi</button>
     <span class="score" id="scoreOut"></span>
-    <button class="btn btn-ghost" id="retryBtn" style="display:none" onclick="showPart(${ti},'${sec}',${pi})">↻ Riprova</button></div></div>`;
+    <button class="btn btn-ghost" id="retryBtn" style="display:none" onclick="showPart(${ti},'${sec}',${pi})">↻ Riprova</button>
+    <span id="nextWrap" style="display:none">${nextBtn}</span></div></div>`;
   app.innerHTML = h;
 }
 
@@ -565,15 +568,39 @@ function checkPart() {
   document.getElementById('scoreOut').textContent = `${score}/${tot}`;
   document.getElementById('checkBtn').style.display = 'none';
   document.getElementById('retryBtn').style.display = 'inline-block';
+  const nw = document.getElementById('nextWrap'); if (nw) nw.style.display = 'inline';
   storeBest(`${cur.t.id}|${cur.sec}|${cur.p.part}`, score, tot);
 }
 
-/* apertura diretta di un test: b1-preliminary.html?test=pet1-t1 */
-(function () {
-  const id = new URLSearchParams(location.search).get('test');
-  const i = TESTS.findIndex(t => t.id === id);
-  if (i >= 0) showTest(i); else showHome();
-})();
+/* ---------- navigazione con indirizzo: indietro del browser e ricarica tornano allo stesso punto ----------
+   #pet1-t1                  = pagina del test
+   #pet1-t1/reading/3        = una parte del test
+   b1-preliminary.html?test=pet1-t1 = link diretto dalla pagina I */
+function nextPart(t, sec, pi) {
+  const list = [];
+  SECTIONS.forEach(([s]) => readyParts(t, s).forEach(p => list.push([s, p.part])));
+  const i = list.findIndex(([s, n]) => s === sec && n === t[sec][pi].part);
+  return i >= 0 && i < list.length - 1 ? list[i + 1] : null;
+}
+function go(hash) {
+  if (('#' + hash) === location.hash || (!hash && !location.hash)) route();
+  else location.hash = hash;
+}
+function route() {
+  const hash = decodeURIComponent(location.hash.replace(/^#/, ''));
+  const [id, sec, part] = hash ? hash.split('/') : [new URLSearchParams(location.search).get('test')];
+  const ti = TESTS.findIndex(t => t.id === id);
+  if (ti < 0) return showHome();
+  const t = TESTS[ti];
+  if (t.src && !t.loaded) { app.innerHTML = '<div class="empty-note">Caricamento…</div>'; return loadTest(t, route); }
+  if (sec && t[sec]) {
+    const pi = t[sec].findIndex(p => String(p.part) === String(part));
+    if (pi >= 0) return showPart(ti, sec, pi);
+  }
+  showTest(ti);
+}
+window.addEventListener('hashchange', route);
+route();
 </script>
 </body>
 </html>
