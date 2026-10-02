@@ -381,7 +381,8 @@ CALIBRAZIONE (esempi reali Cambridge, usali come riferimento):
 - BANDA 2: lingua limitata e ripetitiva, frasi brevi non collegate, punteggiatura irregolare, errori numerosi che a volte rendono difficile capire ("tell me how was did you do").
 Confronta il testo con questi esempi e scegli la banda più vicina: non essere né più severo né più generoso.
 DISTINZIONE TRA 3 E 4: la banda 4 richiede una lingua "abbastanza ambiziosa" (varietà di tempi verbali e strutture, lessico non ripetuto). Se il testo usa quasi solo strutture semplici e ripete le stesse parole o frasi (es. "I really like… I really prefer… I like…"), è banda 3 anche se si capisce bene e contiene un connettivo come "although".
-DISTINZIONE TRA 2 E 3: se il testo è fatto soprattutto di frasi brevi e semplici messe una dopo l'altra (soggetto + verbo + complemento, quasi senza subordinate), con pochi connettivi e con errori frequenti di base (articoli mancanti, soggetto mancante, verbo sbagliato) che costringono il lettore a rileggere, è banda 2, anche se la storia ha un senso e un finale. Una trama interessante non alza la banda: conta la lingua.`
+DISTINZIONE TRA 2 E 3: se il testo è fatto soprattutto di frasi brevi e semplici messe una dopo l'altra (soggetto + verbo + complemento, quasi senza subordinate), con pochi connettivi e con errori frequenti di base (articoli mancanti, soggetto mancante, verbo sbagliato) che costringono il lettore a rileggere, è banda 2, anche se la storia ha un senso e un finale. Una trama interessante non alza la banda: conta la lingua.
+CONTROLLO FINALE (i valutatori automatici tendono a dare un punto in più): la banda 4 o 5 si dà solo se gli errori sono OCCASIONALI. Se ci sono errori di base in diverse frasi (tempi verbali sbagliati, articoli usati male o mancanti, soggetto mancante, verbi irregolari sbagliati), la banda massima è 3, anche se il testo ha un inizio o qualche frase ambiziosa. Prima di rispondere conta gli errori di base: con 4 o più errori di base la banda non può superare 3.`
 };
 /* chiamata al Worker con nuovi tentativi automatici se il servizio è sovraccarico */
 async function wtCall(prompt, onRetry) {
@@ -408,7 +409,7 @@ function renderWriting(t, p, sp) {
       <div class="textbox"><h3>Question ${it.n}</h3>${paras(it.task)}</div>
       <textarea class="wt-area" id="wt-text-${i}" placeholder="Write your text here…"></textarea>
       <div class="wt-meta"><span id="wt-count-${i}">Parole: 0</span><span>Target: ${WT_INFO[it.kind].target}</span></div>
-      <div class="wt-ver">versione tutor: 2 ott 17:05</div>
+      <div class="wt-ver">versione tutor: 2 ott 17:10</div>
       <button class="btn btn-red wt-go" data-i="${i}">✔ Valuta il mio Writing</button>
       <div class="wt-err" id="wt-err-${i}"></div><div class="wt-res" id="wt-res-${i}"></div>
     </div>`;
