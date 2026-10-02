@@ -161,6 +161,17 @@
     font-size: 0.9rem;
     font-weight: 700;
   }
+
+  /* Sotto-sezioni del blocco B2: past papers vs allenamento */
+  .sub-title { color: #00E5FF; font-weight: 900; font-size: 1rem; text-transform: uppercase; letter-spacing: 1.5px; margin: 6px 0 6px; }
+  .sub-note { color: #999; font-size: 0.88rem; font-weight: 700; margin-bottom: 16px; }
+  .sub-gap { margin-top: 34px; }
+  .card-train { background: #111; border: 2.5px dashed #00E5FF; }
+  .card-train .topic-name { color: #00E5FF; }
+  .card-train .topic-args span { background: rgba(0, 229, 255, 0.12); color: #bff8ff; }
+  .card-train .tag { background: #00E5FF; color: #000; }
+  .card-train .tag:hover { background: #fff; color: #000; }
+  .card-train:hover { box-shadow: 0 0 25px rgba(0, 229, 255, 0.35); }
 </style>
 </head>
 <body>
@@ -200,6 +211,9 @@
 
   <div class="year-block">
     <div class="year-title t-b2">🎓 B2 First (FCE)</div>
+
+    <div class="sub-title">📄 Past Papers · Test d'esame</div>
+    <div class="sub-note">Test completi in formato Cambridge, con punteggio.</div>
     <div class="topics">
 
       <div class="topic-card card-b2">
@@ -215,7 +229,13 @@
         </div>
       </div>
 
-      <div class="topic-card card-b2">
+    </div>
+
+    <div class="sub-title sub-gap">🛠️ Allenamento mirato · Use of English & Writing</div>
+    <div class="sub-note">Non sono test: sono palestre per esercitarsi sulle parti più difficili dell'esame.</div>
+    <div class="topics">
+
+      <div class="topic-card card-train">
         <div class="topic-name">Use of English · Word Formation</div>
         <div class="topic-args">
           <span>Prefissi negativi (un-, in-, im-, il-, ir-)</span><span>self- · re- · de-</span><span>Suffissi (→ nome / aggettivo / avverbio / verbo)</span><span>Regole ortografiche</span><span>Famiglie di parole irregolari</span>
@@ -228,7 +248,7 @@
         </div>
       </div>
 
-      <div class="topic-card card-b2">
+      <div class="topic-card card-train">
         <div class="topic-name">Use of English · Sentence Transformation</div>
         <div class="topic-args">
           <span>Passivo · Far fare (have / get something done)</span><span>Discorso indiretto e verbi di riporto</span><span>Condizionali · wish / if only</span><span>Comparativi · so / such · too / enough</span><span>Schemi verbali · Modali di deduzione</span><span>used to · Tempo e denaro · Connettivi</span>
