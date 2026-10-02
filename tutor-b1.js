@@ -32,7 +32,7 @@ CORRETTEZZA:
 
 REGOLE DI CONTEGGIO (applicale prima di dare i punteggi):
 - LINGUA: conta le frasi. Se più della metà sono frasi brevi e semplici (soggetto + verbo + complemento, es. "It was an old paper. There was a clue. I went to other place."), LINGUA = 2. Qualche frase più lunga non cambia questo punteggio.
-- CORRETTEZZA: conta gli errori di base (soggetto mancante, articolo mancante o sbagliato, tempo verbale sbagliato, verbo irregolare sbagliato, accordo soggetto-verbo). Se compaiono in 4 o più punti del testo, CORRETTEZZA = 2. Se nel commento scrivi che ci sono "omissioni di soggetti e articoli" o "errori di base", la Correttezza non può essere più di 2.
+- CORRETTEZZA: conta SOLO gli errori di base veri, cioè errori che un B1 non dovrebbe fare su strutture semplici: soggetto mancante ("because was different"), tempo verbale sbagliato in una frase semplice ("I run" per il passato), verbo irregolare sbagliato ("I had forgot"), articolo mancante davanti a un nome singolare ("I went to old house"). NON sono errori di base: ortografia ("succesful", "litterature"), maiuscole, preposizioni, errori dentro frasi complesse o ambiziose, parole straniere. Se gli errori di base sono 4 o più e ricorrono in tutto il testo, CORRETTEZZA = 2; se il testo è ambizioso e gli errori sono soprattutto minori, CORRETTEZZA = 4 o 5 anche se gli errori sono parecchi.
 - ORGANIZZAZIONE: se il testo usa quasi solo "then", "and", "but" tra frasi brevi messe in fila, ORGANIZZAZIONE = 2 o 3, mai 4.
 
 Riferimenti reali Cambridge: una lettera sicura con frasi complesse varie, connettivi semplici e 2-3 errori minori = Lingua 5. Una lettera chiara ma con frasi semplici, strutture ripetute ("I love X so I love Y") e diversi errori di ortografia = Lingua 3, Correttezza 3. Una storia di frasi brevi in fila con errori di base frequenti = Lingua 2, Organizzazione 2, Correttezza 2.`
@@ -55,7 +55,7 @@ Riferimenti reali Cambridge: una lettera sicura con frasi complesse varie, conne
     if (corr) res.insertBefore(div, corr); else res.appendChild(div);
   };
   window.WT = {
-    version: '2 ott 17:45',
+    version: '2 ott 17:50',
     SCALES,
     prompt(info, it, text, pts) {
       const WT_SCALES = SCALES;
