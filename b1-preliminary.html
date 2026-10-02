@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B1 Preliminary</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0d0d0d; font-family: 'Nunito', sans-serif; color: #eee; }
+
+  .hero { background: #FF0000; padding: 40px 40px 32px; display: flex; align-items: center; gap: 26px; }
+  .hero-letter { font-family: 'Bebas Neue', sans-serif; font-size: 7rem; color: #000; line-height: 1; flex-shrink: 0; }
+  .hero-text h1 { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; letter-spacing: 3px; color: #000; }
+  .hero-text p { font-size: 1rem; color: #111; margin-top: 4px; font-weight: 700; }
+
+  .main { max-width: 980px; margin: 0 auto; padding: 32px 16px 60px; }
+  .btn { display: inline-block; border: none; cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 900; border-radius: 20px; padding: 8px 20px; font-size: 0.95rem; text-decoration: none; transition: all 0.2s; }
+  .btn-red { background: #FF0000; color: #000; }
+  .btn-cyan { background: #00CFCF; color: #000; }
+  .btn-green { background: #00CC44; color: #000; }
+  .btn-ghost { background: #222; color: #eee; }
+  .btn:hover { filter: brightness(1.15); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .topbar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
+
+  .block-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.7rem; letter-spacing: 4px; padding: 10px 22px; border-radius: 8px; margin: 10px 0 16px; display: inline-block; color: #000; }
+  .bt-red { background: #FF0000; } .bt-cyan { background: #00CFCF; } .bt-green { background: #00CC44; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; margin-bottom: 30px; }
+  .card { border-radius: 14px; padding: 18px 20px; color: #000; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.5); transition: transform 0.2s; display: flex; flex-direction: column; gap: 8px; }
+  .card:hover { transform: translateY(-4px); }
+  .card.off { opacity: 0.45; cursor: not-allowed; }
+  .card.off:hover { transform: none; }
+  .c-red { background: #FF0000; } .c-cyan { background: #00CFCF; } .c-green { background: #00CC44; }
+  .card-name { font-weight: 900; font-size: 1.1rem; }
+  .card-sub { font-size: 0.85rem; font-weight: 700; }
+  .badge { align-self: flex-start; background: rgba(0,0,0,0.25); border-radius: 10px; padding: 3px 10px; font-size: 0.78rem; font-weight: 900; }
+
+  .divider { height: 4px; border-radius: 4px; margin: 8px 0 30px; background: linear-gradient(90deg, #00CFCF, #FF0000, #00CC44); }
+
+  .rubric { background: #1a1a1a; border-left: 6px solid #FF0000; border-radius: 8px; padding: 14px 18px; margin-bottom: 22px; }
+  .rubric .en { font-weight: 700; font-size: 1.02rem; }
+  .rubric .it { font-size: 0.9rem; color: #bbb; margin-top: 6px; }
+  .sec-reading .rubric { border-left-color: #00CFCF; }
+  .sec-listening .rubric { border-left-color: #00CC44; }
+
+  .textbox { background: #f4f1e8; color: #111; border-radius: 10px; padding: 18px 22px; margin-bottom: 18px; line-height: 1.65; font-size: 1.02rem; }
+  .textbox h3 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px; font-size: 1.5rem; margin-bottom: 8px; }
+  .textbox p { margin-bottom: 10px; }
+  .notice { background: #fffbe0; color: #111; border: 2px solid #333; border-radius: 8px; padding: 12px 16px; margin: 8px 0 12px; line-height: 1.5; white-space: pre-line; }
+
+  .q { background: #181818; border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; border: 2px solid transparent; }
+  .q.ok { border-color: #00CC44; } .q.ko { border-color: #FF0000; }
+  .q-head { font-weight: 900; margin-bottom: 8px; }
+  .q-num { display: inline-block; background: #FF0000; color: #000; border-radius: 6px; padding: 0 8px; margin-right: 8px; }
+  .sec-reading .q-num { background: #00CFCF; } .sec-listening .q-num { background: #00CC44; }
+  .q-context { font-size: 0.9rem; color: #aaa; margin-bottom: 6px; font-style: italic; }
+  .opt { display: flex; align-items: flex-start; gap: 10px; padding: 7px 10px; border-radius: 8px; cursor: pointer; }
+  .opt:hover { background: #242424; }
+  .opt input { margin-top: 4px; accent-color: #FF0000; }
+  .opt b { min-width: 18px; }
+  .opt img { max-width: 160px; border-radius: 6px; background: #fff; }
+  .fb { margin-top: 6px; font-weight: 900; font-size: 0.92rem; }
+  .fb.ok { color: #00CC44; } .fb.ko { color: #ff5555; }
+
+  select, input.gap { font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 700; border: 2px solid #333; border-radius: 6px; padding: 2px 6px; background: #fff; color: #000; }
+  input.gap { width: 140px; }
+  .gapwrap { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+  .gapnum { font-weight: 900; font-size: 0.8rem; background: #111; color: #fff; border-radius: 4px; padding: 0 5px; }
+  .gapwrap.ok select, .gapwrap.ok input { border-color: #00CC44; background: #e6ffed; }
+  .gapwrap.ko select, .gapwrap.ko input { border-color: #FF0000; background: #ffe6e6; }
+  .gapfix { font-weight: 900; color: #c00; font-size: 0.85rem; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 760px) { .two-col { grid-template-columns: 1fr; } .hero { padding: 28px 16px; } .hero-letter { font-size: 4.5rem; } .hero-text h1 { font-size: 2.2rem; } }
+  .mtext { background: #f4f1e8; color: #111; border-radius: 8px; padding: 10px 14px; margin-bottom: 10px; line-height: 1.5; font-size: 0.95rem; }
+  .mtext b { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 1px; margin-right: 6px; }
+  .optlist { background: #1c1c1c; border-radius: 10px; padding: 14px 18px; margin-bottom: 18px; line-height: 1.6; }
+  .optlist div { margin-bottom: 4px; }
+
+  .audiobox { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 6px 0 10px; }
+  .plays { font-size: 0.85rem; font-weight: 700; color: #aaa; }
+  .transcript { display: none; background: #222; border-radius: 8px; padding: 10px 14px; margin-top: 8px; white-space: pre-line; font-size: 0.9rem; line-height: 1.5; color: #ddd; }
+  .transcript.show { display: block; }
+  .tbtn { background: none; border: 1px solid #555; color: #ccc; border-radius: 14px; padding: 3px 12px; font-size: 0.8rem; cursor: pointer; margin-top: 6px; }
+
+  .resultbar { position: sticky; bottom: 0; background: #0d0d0d; padding: 14px 0; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; border-top: 2px solid #222; margin-top: 10px; }
+  .score { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 2px; }
+  .empty-note { background: #1a1a1a; border-radius: 10px; padding: 18px; color: #bbb; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-letter">B1</div>
+  <div class="hero-text">
+    <h1>B1 Preliminary</h1>
+    <p>Reading · Listening — Certificazioni</p>
+  </div>
+</div>
+
+<div class="main" id="app"></div>
+
+<script>
+/* =====================================================================
+   DATI DEI TEST — è l'unica parte da modificare.
+   ---------------------------------------------------------------------
+   Ogni test è un oggetto { id, title, reading:[...], listening:[...] }.
+   Un test con reading e listening vuoti compare come "in preparazione".
+   I testi vanno tra `backtick`: si possono incollare su più righe.
+   Una riga vuota = nuovo paragrafo. I buchi si scrivono [16], [21]...
+
+   READING
+   Part 1: { part:1, items:[ { n:1, text:`avviso`, options:['A','B','C'], answer:'B' } ] }
+   Part 2: { part:2, people:[ { n:6, name:'Elena', text:`...`, answer:'D' } ],
+             texts:[ { letter:'A', title:'...', text:`...` } ] }       (8 testi A–H)
+   Part 3: { part:3, title:'...', text:`...`, items:[ { n:11, q:'...', options:[4], answer:'B' } ] }
+   Part 4: { part:4, title:'...', text:`... [16] ...`,
+             options:[ { letter:'A', text:'...' } ], answers:{ 16:'A', ... } }  (8 frasi A–H)
+   Part 5: { part:5, title:'...', text:`... [21] ...`,
+             gaps:{ 21:{ options:['a','b','c','d'], answer:'C' }, ... } }
+   Part 6: { part:6, title:'...', text:`... [27] ...`, answers:{ 27:['for'], ... } }
+
+   LISTENING  (audio: percorso del file mp3, es. 'audio/t1-l1-1.mp3';
+               se audio è vuoto e c'è script, la pagina legge lo script con la
+               sintesi vocale: righe "M: ..." / "F: ..." = voci diverse)
+   Part 1: { part:1, items:[ { n:1, q:'...', audio:'', script:``, options:[3], answer:'B' } ] }
+           (opzioni con immagine: { img:'img/t1-q1a.png' } al posto del testo)
+   Part 2: { part:2, items:[ { n:8, context:'You will hear...', q:'...', audio:'', script:``, options:[3], answer:'A' } ] }
+   Part 3: { part:3, intro:'...', audio:'', script:``, notes:`... [14] ...`, answers:{ 14:['...'], ... } }
+   Part 4: { part:4, intro:'...', audio:'', script:``, items:[ { n:20, q:'...', options:[3], answer:'B' } ] }
+
+   Risposte aperte (Part 6, Listening Part 3): elencare tutte le forme valide,
+   es. ['8:30','half past eight']. Maiuscole e punteggiatura non contano.
+   ===================================================================== */
+
+const TESTS = [
+
+{
+  id: 'demo',
+  title: 'Practice Test',
+  subtitle: 'Test originale completo',
+  reading: [
+
+    { part: 1, items: [
+      { n: 1, text: `SWIMMING POOL\nSwimming lessons for children aged 6–10 now on Saturday mornings.\nBook at reception – places are limited.`,
+        options: ['Children\'s lessons have moved from Saturday to another day.',
+                  'Parents should reserve a place for their child at the desk.',
+                  'There are lessons every morning for children under ten.'], answer: 'B' },
+      { n: 2, text: `Luca – the match is off because the pitch is flooded. Coach says we'll train in the gym on Thursday instead. Bring trainers, not boots!\nSam`,
+        options: ['Luca needs different shoes for Thursday.',
+                  'The match will now be played on Thursday.',
+                  'The gym is closed because of the weather.'], answer: 'A' },
+      { n: 3, text: `SCHOOL LIBRARY\nLaptops may be borrowed for one day only.\nPlease return them to the desk before 4 pm, fully charged.`,
+        options: ['Students can keep a laptop for several days.',
+                  'Students must charge laptops before giving them back.',
+                  'Laptops can only be used inside the library.'], answer: 'B' },
+      { n: 4, text: `Hi Martina,\nI can't make the cinema tonight – I've got a test tomorrow. Could we go on Saturday afternoon instead? Let me know if that suits you.\nGiulia`,
+        options: ['Giulia wants to change the day they go to the cinema.',
+                  'Giulia is asking Martina to help her study.',
+                  'Giulia has already bought tickets for Saturday.'], answer: 'A' },
+      { n: 5, text: `MUSEUM CAFÉ\nOpen to everyone – no museum ticket needed.\nUse the side entrance on Park Street.`,
+        options: ['You need a museum ticket to use the café.',
+                  'The entrance to the café is inside the museum.',
+                  'You can go to the café without visiting the museum.'], answer: 'C' }
+    ]},
+
+    { part: 2,
+      rubric: 'The young people below all want to do a summer course. Read the descriptions of eight courses. Decide which course would be the most suitable for each person.',
+      people: [
+        { n: 6, name: 'Elena', text: `Elena loves cooking and wants to learn to make bread and cakes. She has a summer job every morning, so she can only do a course in the afternoon. She'd like to take home what she makes to share with her family.`, answer: 'D' },
+        { n: 7, name: 'Marco', text: `Marco would like to create his own video game, but he has never written any code. He hasn't got a computer at home, so he needs to use one at the course. He is free for most of the summer.`, answer: 'E' },
+        { n: 8, name: 'Sofia', text: `Sofia wants to try a sport she has never done before. She can't swim very well, so she wants to stay away from water. She'd also like to get a certificate to show what she has learned.`, answer: 'G' },
+        { n: 9, name: 'Davide', text: `Davide wants to get better at taking photos, but he only has his phone and can't afford a camera. He works in his parents' shop in the afternoons, so he needs a course that finishes by lunchtime.`, answer: 'A' },
+        { n: 10, name: 'Chiara', text: `Chiara is free for the first two weeks of July. She enjoys working in a team on creative projects, and she'd love her family to see what she has made at the end of the course.`, answer: 'B' }
+      ],
+      texts: [
+        { letter: 'A', title: 'City Snaps', text: `Spend a week discovering the city through your phone camera. Each morning a professional photographer takes the group to a different neighbourhood and shows you how to take better pictures with the phone you already have. Sessions run from 9 to 12, leaving your afternoons free.` },
+        { letter: 'B', title: 'Lights, Camera, Action!', text: `Join a team of young film-makers for two weeks from 1 July. Together you'll write, film and edit a short film using our professional cameras. Sessions take place every afternoon, and on the last day there's a screening for friends and family.` },
+        { letter: 'C', title: 'Young Chefs', text: `Three morning sessions in a real restaurant kitchen. Learn to prepare pasta, salads and simple main courses, then sit down together and enjoy your meal at lunchtime. No experience necessary.` },
+        { letter: 'D', title: 'Bake It Home', text: `A five-day course for anyone who wants to bake bread, biscuits and cakes. Classes run from 3 pm to 6 pm, and at the end of every class you'll pack what you've made in a box to take home.` },
+        { letter: 'E', title: 'Game On', text: `In this two-week course, complete beginners learn the basics of coding and design a simple game of their own. All equipment, including laptops, is provided, so you don't need to bring anything.` },
+        { letter: 'F', title: 'Robot Weekend', text: `Build and program your own small robot in just two days, then take it home! This course is for young people who already have some programming experience. Bring your own laptop.` },
+        { letter: 'G', title: 'Up the Wall', text: `A week of climbing at our indoor centre, with expert instructors. The course is designed for beginners, and everyone who completes it receives an official climbing certificate.` },
+        { letter: 'H', title: 'Lake Adventures', text: `Spend five days sailing and kayaking on Lake Garda with experienced guides. Lunch is provided every day. Participants must be confident swimmers.` }
+      ]
+    },
+
+    { part: 3, title: 'Fixing things, not throwing them away',
+      text: `When Tommaso Ferri's bike broke last year, the shop told him it would cost more to repair than to buy a new one. "I didn't believe it," he says. "The problem was just one small part." He watched a few online videos, borrowed some tools from his grandfather and fixed it himself in an afternoon.
+
+That afternoon gave him an idea. Tommaso, who is sixteen and studies electronics at a technical school, noticed that many of his classmates threw away things that only needed a simple repair: headphones with a broken wire, a phone with a loose charging port, a jacket with a broken zip. He asked his teachers if he could use the school workshop one Friday a month to help people fix their things for free.
+
+At first, only five students came. "I was a bit disappointed," Tommaso admits, "but the people who came told their friends." Now around forty people come to each session, including some parents and grandparents. A science teacher stays to make sure everything is safe, and older students teach younger ones how to use the tools.
+
+Not everything can be saved. "About one thing in four is impossible to repair," says Tommaso, "usually because we can't find the right part." But he thinks the sessions are useful even when a repair fails. "People understand how things work inside. Next time they buy something, they ask if it can be repaired."
+
+The local council has now offered to pay for new tools, and two other schools in the town want to start their own repair sessions. Tommaso is pleased, but he doesn't want to be in charge of everything. "The best thing would be if every school did it without me," he laughs. "Then I'd have more time to fix my own bike."`,
+      items: [
+        { n: 11, q: 'Why did Tommaso repair his bike himself?',
+          options: ['He couldn\'t find a bike shop near his home.', 'He thought the shop\'s opinion about the repair was wrong.', 'His grandfather was too busy to help him.', 'He wanted to learn how to use some new tools.'], answer: 'B' },
+        { n: 12, q: 'What did Tommaso notice about his classmates?',
+          options: ['They often got rid of things that weren\'t badly damaged.', 'They didn\'t know how to buy good-quality products.', 'They wanted to study electronics at school.', 'They spent too much money on new phones.'], answer: 'A' },
+        { n: 13, q: 'How did Tommaso feel about the first session?',
+          options: ['surprised that so many people came', 'worried that the workshop wasn\'t safe', 'sorry that not many students were interested', 'pleased that his teachers had helped him'], answer: 'C' },
+        { n: 14, q: 'What does Tommaso say about the repairs that fail?',
+          options: ['They show that some products are badly made.', 'They happen because people bring very old things.', 'They still help people learn something.', 'They make some students stop coming.'], answer: 'C' },
+        { n: 15, q: 'What would Tommaso most like to happen in the future?',
+          options: ['The council should give him money for his own workshop.', 'He should visit other schools to teach them.', 'Schools should organise repair sessions on their own.', 'He should find a job repairing bikes.'], answer: 'C' }
+      ]
+    },
+
+    { part: 4, title: 'My first job at the market',
+      text: `Last summer I got my first job, at a fruit and vegetable stall in the Saturday market in my town. I needed money for a school trip, and my aunt knew the owner, a friendly man called Bruno. [16]
+
+My first morning was a shock. The market opens at seven, so I had to be there at six to help put up the stall and carry the boxes from Bruno's van. [17] By nine o'clock my arms hurt and I was already looking at the clock.
+
+Then the customers started arriving. I was nervous about giving the right change, because I'm not very good at maths. [18] After a few weeks I could add up prices in my head faster than the old lady at the bread stall next to us.
+
+The thing I enjoyed most was talking to people. Some customers came every week and started asking me about school and my plans. [19] One of them, a retired chef, even gave me a recipe for a tomato sauce that my family now makes every Sunday.
+
+At the end of the summer I had enough money for the trip, but I'd also learned much more than I expected. I'm more confident now when I speak to adults I don't know. [20] He said I can come back next year, and I've already told him yes.`,
+      options: [
+        { letter: 'A', text: 'He agreed to give me a try, and I started the following Saturday.' },
+        { letter: 'B', text: 'Some of them were really heavy, full of potatoes and melons.' },
+        { letter: 'C', text: 'Bruno showed me a simple trick, and soon I stopped making mistakes.' },
+        { letter: 'D', text: 'The market was so quiet that I had nothing to do all morning.' },
+        { letter: 'E', text: 'I soon knew their names and what they liked to buy.' },
+        { letter: 'F', text: 'Bruno noticed the difference too, and thanked me on my last day.' },
+        { letter: 'G', text: 'Luckily, the van was already empty when I arrived.' },
+        { letter: 'H', text: 'In the end I decided to spend the money on a new phone instead.' }
+      ],
+      answers: { 16: 'A', 17: 'B', 18: 'C', 19: 'E', 20: 'F' }
+    },
+
+    { part: 5, title: 'Night trains',
+      text: `Night trains are becoming popular again in Europe. Many travellers now [21] them to flying because they are better for the environment. You get on in the evening, sleep in a comfortable bed and [22] in a new city the next morning. And you don't have to [23] money on a hotel for the night.
+
+Of course, the journey takes much longer than a flight, but many passengers say this is [24] of the fun. You can read, look out of the window or [25] friends with other travellers in the restaurant car. Tickets can be expensive in summer, so it's a good idea to book well in [26].`,
+      gaps: {
+        21: { options: ['like', 'want', 'prefer', 'choose'], answer: 'C' },
+        22: { options: ['arrive', 'reach', 'get', 'come'], answer: 'A' },
+        23: { options: ['pay', 'use', 'cost', 'spend'], answer: 'D' },
+        24: { options: ['piece', 'part', 'side', 'point'], answer: 'B' },
+        25: { options: ['make', 'do', 'have', 'get'], answer: 'A' },
+        26: { options: ['front', 'before', 'early', 'advance'], answer: 'D' }
+      }
+    },
+
+    { part: 6, title: 'An email from Andrea',
+      text: `Hi Paolo,
+
+Thanks [27] your message. I'm really glad you're coming to stay with us next month! My parents say you can stay [28] long as you like.
+
+The weather here is usually warm in June, [29] bring a jacket because it can get cold in the evenings. We live near the sea, so don't forget your swimming things.
+
+I've planned a few things for us to do. There's a music festival in town [30] Saturday, and my cousin has got four tickets. He's [31] funniest person I know, so you'll like him.
+
+Let me know what time your train arrives. I can't wait [32] see you!
+
+Andrea`,
+      answers: { 27: ['for'], 28: ['as'], 29: ['but'], 30: ['on', 'this', 'next'], 31: ['the'], 32: ['to'] }
+    }
+  ],
+
+  listening: [
+
+    { part: 1, items: [
+      { n: 1, q: 'Where will they meet?', audio: '',
+        script: `F: Shall we meet outside the cinema at eight?\nM: It's going to rain tonight. Let's meet in the café opposite instead – we can have a drink first.\nF: Good idea. Not the bookshop next door, though. It closes at seven.`,
+        options: ['outside the cinema', 'in a café', 'in a bookshop'], answer: 'B' },
+      { n: 2, q: 'What did the boy buy at the shopping centre?', audio: '',
+        script: `M: I went to get new trainers, but they didn't have my size.\nF: So you came home with nothing?\nM: Not exactly. I saw a great jacket in the sale, so I got that. I still need a T-shirt for the party, though.`,
+        options: ['trainers', 'a jacket', 'a T-shirt'], answer: 'B' },
+      { n: 3, q: 'What time does the train leave?', audio: '',
+        script: `F: Excuse me, when's the next train to Verona?\nM: It's usually at ten fifteen, but today it's twenty minutes late.\nF: So, ten thirty-five?\nM: That's right. The one after that is at eleven.`,
+        options: ['10:15', '10:35', '11:00'], answer: 'B' },
+      { n: 4, q: 'What will the weather be like at the weekend?', audio: '',
+        script: `M: It's been a cold, windy week, but things are changing. On Saturday and Sunday we'll see lots of sunshine, although it won't be very warm. The rain will come back on Monday.`,
+        options: ['sunny', 'windy', 'rainy'], answer: 'A' },
+      { n: 5, q: 'Which sport does the girl do now?', audio: '',
+        script: `M: Do you still play volleyball?\nF: No, I stopped last year. I tried tennis for a few months, but I didn't like it. Now I go swimming three times a week. I love it.`,
+        options: ['volleyball', 'tennis', 'swimming'], answer: 'C' },
+      { n: 6, q: 'What will the woman eat?', audio: '',
+        script: `M: Are you ready to order?\nF: I'd like the pizza, please. Oh, actually, I had pizza yesterday. I'll have the fish.\nM: With chips or salad?\nF: Salad, please.`,
+        options: ['pizza', 'fish and chips', 'fish and salad'], answer: 'C' },
+      { n: 7, q: 'How much did the boy pay for his ticket?', audio: '',
+        script: `F: How much was the concert ticket?\nM: Normally it's forty euros, but I've got a student card, so I paid thirty.\nF: That's good. My sister paid fifty because she bought hers at the door.`,
+        options: ['€30', '€40', '€50'], answer: 'A' }
+    ]},
+
+    { part: 2, items: [
+      { n: 8, context: 'You will hear two friends talking about a film.', q: 'What does the girl think of it?', audio: '',
+        script: `M: What did you think of the film?\nF: Well, the actors were great, and the music too. But it was far too long. I nearly fell asleep in the second half.\nM: Really? I loved every minute.`,
+        options: ['The actors were disappointing.', 'It should have been shorter.', 'The music was too loud.'], answer: 'B' },
+      { n: 9, context: 'You will hear a boy talking to his mother about a school trip.', q: 'Why is he worried?', audio: '',
+        script: `M: Mum, the trip to Rome is next week.\nF: You're excited, aren't you?\nM: Yes, but we have to share rooms, and I don't know who I'll be with. What if it's someone I don't get on with?\nF: I'm sure it'll be fine.`,
+        options: ['He doesn\'t know who he\'ll share a room with.', 'He thinks the trip is too expensive.', 'He has never been to Rome before.'], answer: 'A' },
+      { n: 10, context: 'You will hear two friends talking about a new café.', q: 'What do they agree about?', audio: '',
+        script: `F: Have you been to the new café on the corner?\nM: Yes, the cakes are amazing.\nF: I know! They're expensive, though.\nM: Hmm, I thought the prices were OK.`,
+        options: ['The food is excellent.', 'The prices are reasonable.', 'The café is very big.'], answer: 'A' },
+      { n: 11, context: 'You will hear a girl phoning a sports centre.', q: 'Why is she calling?', audio: '',
+        script: `F: Hello, I booked a tennis court for four o'clock today, but I'm going to be late. Could I change it to five?\nM: Let me check... Yes, that's fine.\nF: Great, thanks.`,
+        options: ['to book a court for the first time', 'to change the time of her booking', 'to cancel her lesson'], answer: 'B' },
+      { n: 12, context: 'You will hear a teacher talking to her class.', q: 'What is she doing?', audio: '',
+        script: `F: Right, everyone. Before you go, remember the project is due on Friday, not Monday as I said before. Sorry about that. And please send it by email, not on paper.`,
+        options: ['giving the class a new project', 'correcting some information', 'explaining how to write a project'], answer: 'B' },
+      { n: 13, context: 'You will hear two friends talking about a holiday.', q: 'How did the boy feel at the end of the holiday?', audio: '',
+        script: `F: How was the camping holiday?\nM: The first few days were awful. It rained non-stop and our tent was wet. But then the sun came out and we went kayaking every day. In the end I didn't want to come home!`,
+        options: ['glad he had gone', 'happy to be home', 'bored with camping'], answer: 'A' }
+    ]},
+
+    { part: 3,
+      intro: 'You will hear a teacher talking to students about a science camp.',
+      audio: '',
+      script: `F: Hello everyone, and welcome to Science Week. I'm Laura, and I'm going to tell you about the programme. The camp starts on Monday the fourteenth of July and lasts five days. Every morning we meet at the main entrance at half past eight. Please don't be late, because the bus leaves at a quarter to nine. On Tuesday we're visiting the observatory, where you'll look at the sun through a special telescope. On Wednesday you'll build a small boat that uses energy from the sun, and on Thursday there's a competition to see whose boat is the fastest. Lunch is included every day, but you need to bring your own water bottle. The camp costs a hundred and twenty euros, and you can pay online or at the school office. See you on Monday!`,
+      notes: `SCIENCE WEEK
+
+Start date: Monday [14] July
+
+Meeting time every morning: [15]
+
+Tuesday: visit to the [16]
+
+Wednesday: build a [17]
+
+Bring your own [18]
+
+Cost: € [19]`,
+      answers: {
+        14: ['14', '14th', 'fourteenth', 'the fourteenth', '14th of', 'the 14th', 'the 14th of', 'the fourteenth of'],
+        15: ['8:30', '8.30', 'half past eight', 'eight thirty', '830'],
+        16: ['observatory'],
+        17: ['boat', 'small boat'],
+        18: ['water bottle', 'bottle', 'bottle of water'],
+        19: ['120', 'a hundred and twenty', 'one hundred and twenty', 'hundred and twenty']
+      }
+    },
+
+    { part: 4,
+      intro: 'You will hear an interview with a young woman called Giada, who cycled from Italy to Norway.',
+      audio: '',
+      script: `M: Today I'm talking to Giada Russo, who cycled all the way from Turin to the north of Norway last summer. Giada, why did you decide to do it?
+F: Well, people think I wanted to raise money or be famous, but really I just wanted to see if I could do it. I'd done short trips before, and I wanted a bigger challenge.
+M: How long did it take?
+F: I planned eight weeks, but in the end it took ten. I had problems with my bike in Germany and had to wait a week for a new part. And I lost a few days because of storms in Denmark.
+M: Where did you sleep?
+F: Mostly in a small tent. Hotels were too expensive, especially in Norway. Sometimes families invited me to stay with them, which was lovely. I'm still in contact with some of them.
+M: What was the hardest part?
+F: Everyone expects me to say the mountains, but actually going uphill was fine. The worst thing was being alone in the evenings. During the day I was busy, but at night I really missed my friends.
+M: Did you do any special training?
+F: Not really. I cycled to school every day, and in the spring I did some longer rides at weekends. The most useful thing I did was a course on how to repair a bike, although it didn't help in Germany!
+M: What's next?
+F: I'm starting university in October, so no big trips for a while. But one day I'd like to cycle across Canada, with a friend this time!`,
+      items: [
+        { n: 20, q: 'Why did Giada decide to make the journey?', options: ['to raise money for charity', 'to test what she was able to do', 'to become well known'], answer: 'B' },
+        { n: 21, q: 'What happened in Germany?', options: ['She stopped to visit friends.', 'Her bike needed repairing.', 'The weather was very bad.'], answer: 'B' },
+        { n: 22, q: 'Where did Giada usually sleep?', options: ['in hotels', 'with local families', 'in a tent'], answer: 'C' },
+        { n: 23, q: 'What did Giada find most difficult?', options: ['cycling up mountains', 'feeling lonely', 'finding food'], answer: 'B' },
+        { n: 24, q: 'What does Giada say about her preparation?', options: ['She went to the gym regularly.', 'The bike repair course was useful.', 'She didn\'t prepare at all.'], answer: 'B' },
+        { n: 25, q: 'What does Giada say about her next trip?', options: ['She wants to cycle across Canada alone.', 'She wants to travel with someone else.', 'She wants to go during her university course.'], answer: 'B' }
+      ]
+    }
+  ]
+},
+
+/* ---- Test da compilare: incollare qui le parti seguendo lo schema in alto ---- */
+{ id: 't1', title: 'Test 1', subtitle: 'In preparazione', reading: [], listening: [] }
+
+];
+
+/* =====================================================================
+   MOTORE — non serve modificarlo
+   ===================================================================== */
+const MAX_PLAYS = 2;            // ascolti consentiti prima della correzione
+const SAVE_KEY = 'b1prelim_v1';
+const L = 'ABCDEFGH';
+
+const RUBRICS = {
+  reading: {
+    1: { en: 'For each question, choose the correct answer.', it: 'Leggi il breve testo e scegli la frase che ne riporta il significato.' },
+    2: { en: 'For each question, choose the correct answer. The people below all want to find something. Read the eight texts and decide which one would be the most suitable for each person.', it: 'Ogni persona ha più richieste: il testo giusto le soddisfa tutte, non solo una.' },
+    3: { en: 'For each question, choose the correct answer.', it: 'Leggi tutto il testo una volta, poi rispondi: le domande seguono l\'ordine del testo.' },
+    4: { en: 'Five sentences have been removed from the text below. For each question, choose the correct answer. There are three extra sentences which you do not need to use.', it: 'Guarda cosa c\'è prima e dopo il buco: pronomi e collegamenti ti dicono quale frase va lì.' },
+    5: { en: 'For each question, choose the correct answer.', it: 'Una sola parola funziona con le parole intorno (preposizioni, collocazioni).' },
+    6: { en: 'For each question, write the correct answer. Write ONE word for each gap.', it: 'Di solito manca una parola grammaticale: preposizione, articolo, congiunzione, ausiliare.' }
+  },
+  listening: {
+    1: { en: 'For each question, choose the correct answer. You will hear each recording twice.', it: 'Leggi la domanda prima di ascoltare: spesso sentirai nominare tutte e tre le opzioni.' },
+    2: { en: 'For each question, choose the correct answer. You will hear each conversation twice.', it: 'Ascolta come si sentono o cosa pensano i parlanti, non solo i fatti.' },
+    3: { en: 'For each question, write the correct answer in the gap. Write one or two words or a number or a date or a time.', it: 'Prima di ascoltare, prova a indovinare che tipo di informazione manca (numero, orario, nome…).' },
+    4: { en: 'For each question, choose the correct answer. You will hear the interview twice.', it: 'Le domande seguono l\'ordine dell\'intervista.' }
+  }
+};
+const PART_INFO = {
+  reading: { 1: 'Short texts', 2: 'Matching', 3: 'Long text', 4: 'Gapped text', 5: 'Multiple-choice cloze', 6: 'Open cloze' },
+  listening: { 1: 'Short recordings', 2: 'Short conversations', 3: 'Gap fill', 4: 'Interview' }
+};
+
+/* ---------- salvataggio ---------- */
+function loadSave() { try { return JSON.parse(localStorage.getItem(SAVE_KEY)) || {}; } catch (e) { return {}; } }
+function storeBest(key, score, total) {
+  try {
+    const s = loadSave();
+    if (!s[key] || score > s[key].score) s[key] = { score, total };
+    localStorage.setItem(SAVE_KEY, JSON.stringify(s));
+  } catch (e) {}
+}
+
+/* ---------- utilità ---------- */
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function norm(s) {
+  return String(s).toLowerCase().replace(/[’‘`]/g, "'")
+    .replace(/\bcan't\b/g, 'cannot').replace(/\bwon't\b/g, 'will not').replace(/n't\b/g, ' not')
+    .replace(/'re\b/g, ' are').replace(/'ve\b/g, ' have').replace(/'ll\b/g, ' will').replace(/'m\b/g, ' am').replace(/'d\b/g, ' would')
+    .replace(/[^a-z0-9'€ ]/g, ' ').replace(/€/g, ' ').replace(/\s+/g, ' ').trim();
+}
+function paras(text, gapFn) {
+  return String(text).trim().split(/\n\s*\n/).map(p => {
+    let h = esc(p).replace(/\n/g, '<br>');
+    if (gapFn) h = h.replace(/\[(\d+)\]/g, (m, n) => gapFn(+n));
+    return '<p>' + h + '</p>';
+  }).join('');
+}
+function optLabel(o) { return (o && typeof o === 'object' && o.img) ? `<img src="${esc(o.img)}" alt="">` : esc(o); }
+
+/* ---------- audio ---------- */
+let plays = {}, checked = false, player = new Audio(), audioReg = {};
+function stopAudio() { try { player.pause(); } catch (e) {} try { speechSynthesis.cancel(); } catch (e) {} }
+function audioHTML(id, src, script) {
+  if (!src && !script) return '';
+  audioReg[id] = { src, script };
+  plays[id] = plays[id] || 0;
+  return `<div class="audiobox"><button class="btn btn-green" id="ab-${id}" onclick="playAudio('${id}')">▶ Ascolta</button>
+    <span class="plays" id="pl-${id}">Ascolti: ${plays[id]}/${MAX_PLAYS}</span></div>` +
+    (script ? `<button class="tbtn" style="display:none" id="tb-${id}" onclick="document.getElementById('tr-${id}').classList.toggle('show')">Trascrizione</button>
+    <div class="transcript" id="tr-${id}">${esc(script)}</div>` : '');
+}
+function refreshAudio(id) {
+  const b = document.getElementById('ab-' + id), p = document.getElementById('pl-' + id), t = document.getElementById('tb-' + id);
+  if (p) p.textContent = checked ? 'Ascolto libero' : `Ascolti: ${plays[id]}/${MAX_PLAYS}`;
+  if (b) b.disabled = !checked && plays[id] >= MAX_PLAYS;
+  if (t) t.style.display = checked ? 'inline-block' : 'none';
+}
+function playAudio(id) {
+  const a = audioReg[id]; if (!a) return;
+  if (!checked && plays[id] >= MAX_PLAYS) return;
+  stopAudio();
+  if (!checked) plays[id]++;
+  refreshAudio(id);
+  if (a.src) { player.src = a.src; player.play().catch(() => alert('File audio non trovato: ' + a.src)); }
+  else speak(a.script);
+}
+function speak(script) {
+  if (!('speechSynthesis' in window)) { alert('Il browser non supporta la lettura vocale.'); return; }
+  const all = speechSynthesis.getVoices().filter(v => /^en/i.test(v.lang));
+  const pref = all.filter(v => /en-GB/i.test(v.lang)).concat(all.filter(v => !/en-GB/i.test(v.lang)));
+  const map = {}; let k = 0;
+  String(script).split('\n').forEach(line => {
+    const m = line.match(/^\s*([A-Z][A-Za-z]{0,10}):\s*(.*)$/);
+    const who = m ? m[1] : '_', txt = (m ? m[2] : line).trim();
+    if (!txt) return;
+    if (!(who in map)) map[who] = k++;
+    const u = new SpeechSynthesisUtterance(txt);
+    u.lang = 'en-GB'; u.rate = 0.92;
+    if (pref.length) u.voice = pref[map[who] % pref.length];
+    u.pitch = who === 'F' ? 1.2 : who === 'M' ? 0.8 : 1;
+    speechSynthesis.speak(u);
+  });
+}
+if ('speechSynthesis' in window) speechSynthesis.onvoiceschanged = () => {};
+
+/* ---------- navigazione ---------- */
+const app = document.getElementById('app');
+function hasContent(t) { return (t.reading && t.reading.length) || (t.listening && t.listening.length); }
+function countQ(sec, p) {
+  if (p.items) return p.items.length;
+  if (p.people) return p.people.length;
+  if (p.answers) return Object.keys(p.answers).length;
+  if (p.gaps) return Object.keys(p.gaps).length;
+  return 0;
+}
+
+function showHome() {
+  stopAudio(); window.scrollTo(0, 0);
+  const save = loadSave();
+  let h = `<div class="topbar"><a href="javascript:window.close()" class="btn btn-red">✕ Chiudi questa scheda</a></div>
+    <div class="block-title bt-red">📚 Scegli il test</div><div class="grid">`;
+  TESTS.forEach((t, i) => {
+    const on = hasContent(t);
+    let done = 0, tot = 0;
+    ['reading', 'listening'].forEach(sec => (t[sec] || []).forEach(p => { tot++; if (save[`${t.id}|${sec}|${p.part}`]) done++; }));
+    h += `<div class="card c-red ${on ? '' : 'off'}" ${on ? `onclick="showTest(${i})"` : ''}>
+      <div class="card-name">${esc(t.title)}</div><div class="card-sub">${esc(t.subtitle || '')}</div>
+      ${on ? `<span class="badge">${done}/${tot} parti svolte</span>` : '<span class="badge">in preparazione</span>'}</div>`;
+  });
+  app.innerHTML = h + '</div>';
+}
+
+function showTest(ti) {
+  stopAudio(); window.scrollTo(0, 0);
+  const t = TESTS[ti], save = loadSave();
+  let h = `<div class="topbar"><button class="btn btn-ghost" onclick="showHome()">← Tutti i test</button></div>
+    <h2 class="score" style="margin-bottom:10px">${esc(t.title)}</h2>`;
+  [['reading', '📖 Reading', 'cyan'], ['listening', '🎧 Listening', 'green']].forEach(([sec, lab, col], si) => {
+    if (!t[sec] || !t[sec].length) return;
+    if (si === 1 && t.reading && t.reading.length) h += '<div class="divider"></div>';
+    h += `<div class="block-title bt-${col}">${lab}</div><div class="grid">`;
+    t[sec].forEach((p, pi) => {
+      const b = save[`${t.id}|${sec}|${p.part}`];
+      h += `<div class="card c-${col}" onclick="showPart(${ti},'${sec}',${pi})">
+        <div class="card-name">Part ${p.part}</div><div class="card-sub">${PART_INFO[sec][p.part] || ''} · ${countQ(sec, p)} domande</div>
+        <span class="badge">${b ? `Migliore: ${b.score}/${b.total}` : 'Da fare'}</span></div>`;
+    });
+    h += '</div>';
+  });
+  app.innerHTML = h;
+}
+
+/* ---------- rendering delle parti ---------- */
+let cur = null, keys = [];
+
+function mcQuestion(n, q, options, extra) {
+  keys.push({ n, kind: 'radio' });
+  let h = `<div class="q" id="q-${n}">${extra || ''}<div class="q-head"><span class="q-num">${n}</span>${esc(q || '')}</div>`;
+  options.forEach((o, i) => {
+    h += `<label class="opt"><input type="radio" name="r-${n}" value="${L[i]}"><b>${L[i]}</b><span>${optLabel(o)}</span></label>`;
+  });
+  return h + `<div class="fb" id="fb-${n}"></div></div>`;
+}
+function selectGap(n, letters, labels) {
+  keys.push({ n, kind: 'select' });
+  let o = '<option value="">—</option>';
+  letters.forEach((l, i) => { o += `<option value="${l}">${labels ? l + ' ' + esc(labels[i]) : l}</option>`; });
+  return `<span class="gapwrap" id="g-${n}"><span class="gapnum">${n}</span><select id="in-${n}">${o}</select><span class="gapfix" id="fb-${n}"></span></span>`;
+}
+function textGap(n) {
+  keys.push({ n, kind: 'text' });
+  return `<span class="gapwrap" id="g-${n}"><span class="gapnum">${n}</span><input class="gap" id="in-${n}" autocomplete="off" spellcheck="false"><span class="gapfix" id="fb-${n}"></span></span>`;
+}
+
+function showPart(ti, sec, pi) {
+  stopAudio(); window.scrollTo(0, 0);
+  checked = false; plays = {}; audioReg = {}; keys = [];
+  const t = TESTS[ti], p = t[sec][pi];
+  cur = { ti, sec, pi, t, p };
+  const r = RUBRICS[sec][p.part] || { en: '', it: '' };
+  let h = `<div class="sec-${sec}"><div class="topbar"><button class="btn btn-ghost" onclick="showTest(${ti})">← ${esc(t.title)}</button></div>
+    <div class="block-title bt-${sec === 'reading' ? 'cyan' : 'green'}">${sec === 'reading' ? 'Reading' : 'Listening'} · Part ${p.part}</div>
+    <div class="rubric"><div class="en">${esc(p.rubric || r.en)}</div><div class="it">💡 ${esc(r.it)}</div></div>`;
+
+  if (sec === 'reading') {
+    if (p.part === 1) {
+      p.items.forEach(it => { h += mcQuestion(it.n, '', it.options, `<div class="notice">${esc(it.text)}</div>`); });
+    } else if (p.part === 2) {
+      h += '<div class="two-col"><div>';
+      p.people.forEach(pp => {
+        keys.push({ n: pp.n, kind: 'select' });
+        let o = '<option value="">—</option>'; p.texts.forEach(tx => o += `<option value="${tx.letter}">${tx.letter}</option>`);
+        h += `<div class="q" id="q-${pp.n}"><div class="q-head"><span class="q-num">${pp.n}</span>${esc(pp.name)}</div>
+          <div style="line-height:1.5;margin-bottom:8px">${esc(pp.text)}</div>
+          <span class="gapwrap" id="g-${pp.n}">Testo: <select id="in-${pp.n}">${o}</select></span><div class="fb" id="fb-${pp.n}"></div></div>`;
+      });
+      h += '</div><div>';
+      p.texts.forEach(tx => { h += `<div class="mtext"><b>${tx.letter}</b><strong>${esc(tx.title || '')}</strong><br>${esc(tx.text)}</div>`; });
+      h += '</div></div>';
+    } else if (p.part === 3) {
+      h += `<div class="textbox">${p.title ? `<h3>${esc(p.title)}</h3>` : ''}${paras(p.text)}</div>`;
+      p.items.forEach(it => { h += mcQuestion(it.n, it.q, it.options); });
+    } else if (p.part === 4) {
+      const letters = p.options.map(o => o.letter);
+      h += `<div class="optlist">${p.options.map(o => `<div><b>${o.letter}</b> ${esc(o.text)}</div>`).join('')}</div>`;
+      h += `<div class="textbox">${p.title ? `<h3>${esc(p.title)}</h3>` : ''}${paras(p.text, n => selectGap(n, letters))}</div>`;
+    } else if (p.part === 5) {
+      h += `<div class="textbox">${p.title ? `<h3>${esc(p.title)}</h3>` : ''}${paras(p.text, n => {
+        const g = p.gaps[n]; return g ? selectGap(n, g.options.map((_, i) => L[i]), g.options) : '[' + n + ']';
+      })}</div>`;
+    } else if (p.part === 6) {
+      h += `<div class="textbox">${p.title ? `<h3>${esc(p.title)}</h3>` : ''}${paras(p.text, n => textGap(n))}</div>`;
+    }
+  } else {
+    if (p.part === 1 || p.part === 2) {
+      p.items.forEach(it => {
+        const extra = (it.context ? `<div class="q-context">${esc(it.context)}</div>` : '') + audioHTML('a' + it.n, it.audio, it.script);
+        h += mcQuestion(it.n, it.q, it.options, extra);
+      });
+    } else if (p.part === 3) {
+      h += `<div class="q-context" style="font-size:1rem">${esc(p.intro || '')}</div>${audioHTML('main', p.audio, p.script)}`;
+      h += `<div class="textbox">${paras(p.notes, n => textGap(n))}</div>`;
+    } else if (p.part === 4) {
+      h += `<div class="q-context" style="font-size:1rem">${esc(p.intro || '')}</div>${audioHTML('main', p.audio, p.script)}`;
+      p.items.forEach(it => { h += mcQuestion(it.n, it.q, it.options); });
+    }
+  }
+
+  h += `<div class="resultbar"><button class="btn btn-red" id="checkBtn" onclick="checkPart()">✔ Correggi</button>
+    <span class="score" id="scoreOut"></span>
+    <button class="btn btn-ghost" id="retryBtn" style="display:none" onclick="showPart(${ti},'${sec}',${pi})">↻ Riprova</button></div></div>`;
+  app.innerHTML = h;
+}
+
+/* ---------- correzione ---------- */
+function expected(n) {
+  const { sec, p } = cur;
+  if (sec === 'reading') {
+    if (p.part === 2) return { type: 'letter', v: p.people.find(x => x.n === n).answer };
+    if (p.part === 4) return { type: 'letter', v: p.answers[n] };
+    if (p.part === 5) return { type: 'letter', v: p.gaps[n].answer, label: p.gaps[n].options[L.indexOf(p.gaps[n].answer)] };
+    if (p.part === 6) return { type: 'text', v: p.answers[n] };
+  } else if (p.part === 3) return { type: 'text', v: p.answers[n] };
+  return { type: 'letter', v: p.items.find(x => x.n === n).answer };
+}
+function checkPart() {
+  let score = 0;
+  keys.forEach(k => {
+    const ex = expected(k.n);
+    let given = '';
+    if (k.kind === 'radio') { const r = document.querySelector(`input[name="r-${k.n}"]:checked`); given = r ? r.value : ''; }
+    else given = document.getElementById('in-' + k.n).value;
+    const ok = ex.type === 'text' ? ex.v.some(a => norm(a) === norm(given)) && norm(given) !== '' : given === ex.v;
+    if (ok) score++;
+    const box = document.getElementById('q-' + k.n) || document.getElementById('g-' + k.n);
+    const gw = document.getElementById('g-' + k.n);
+    if (gw) gw.classList.add(ok ? 'ok' : 'ko');
+    if (box && box !== gw) box.classList.add(ok ? 'ok' : 'ko');
+    const fb = document.getElementById('fb-' + k.n);
+    if (fb) {
+      if (ok) { fb.textContent = k.kind === 'radio' || box !== gw ? '✓ Corretto' : '✓'; fb.className = fb.className.replace(/ ?(ok|ko)/g, '') + ' ok'; fb.style.color = '#00a83a'; }
+      else {
+        const sol = ex.type === 'text' ? ex.v[0] : ex.v + (ex.label ? ' (' + ex.label + ')' : '');
+        fb.textContent = (k.kind === 'radio' || box !== gw) ? '✗ Risposta corretta: ' + sol : '→ ' + sol;
+        fb.style.color = '#e00000';
+      }
+    }
+  });
+  document.querySelectorAll('#app input, #app select').forEach(el => el.disabled = true);
+  checked = true;
+  Object.keys(audioReg).forEach(refreshAudio);
+  const tot = keys.length;
+  document.getElementById('scoreOut').textContent = `${score}/${tot}`;
+  document.getElementById('checkBtn').style.display = 'none';
+  document.getElementById('retryBtn').style.display = 'inline-block';
+  storeBest(`${cur.t.id}|${cur.sec}|${cur.p.part}`, score, tot);
+}
+
+showHome();
+</script>
+</body>
+</html>
