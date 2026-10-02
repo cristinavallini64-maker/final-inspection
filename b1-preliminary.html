@@ -348,7 +348,7 @@ function textGap(n, answers) {
 
 
 /* ---------- writing Part 2 e 3: consegna + testo + tutor IA (stesso Worker del B2) ---------- */
-const WT_URL = 'https://writingtutor.cristinavallini64.workers.dev/';
+const WT_URL = 'https://writingtutor-b1.cristinavallini64.workers.dev/';
 const WT_INFO = {
   message: { name: 'short message (PET for Schools, Writing Part 2)', min: 35, max: 45, target: '35 - 45 parole', scale: 'p2' },
   letter: { name: 'informal letter (PET for Schools, Writing Part 3)', min: 80, max: 110, target: 'circa 100 parole', scale: 'p3' },
@@ -421,7 +421,6 @@ async function runWT(it, i, btn) {
   btn.disabled = true; btn.textContent = 'Analisi in corso…';
   const prompt = `Sei un esaminatore ufficiale Cambridge B1 Preliminary (PET for Schools). Lo studente è un adolescente italiano di livello B1.
 Rispondi in italiano, citando tra virgolette le frasi originali in inglese quando correggi.
-Rispondi in HTML semplice (<h3>, <p>, <ul>, <li>, <b>), senza markdown.
 
 Tipologia di task: ${info.name}
 Lunghezza richiesta: ${info.target}. Il testo dello studente ha ${wtWords(text)} parole.
@@ -430,11 +429,11 @@ ${pts ? 'Punti di contenuto obbligatori:\n- ' + pts.join('\n- ') : ''}
 
 ${WT_SCALES[info.scale]}
 
-Struttura della risposta:
-1. <h3>Punteggio</h3>: la banda/punteggio da 0 a 5, con una frase di motivazione.
-2. <h3>Contenuto</h3>: ${pts ? 'per ciascun punto obbligatorio: trattato pienamente (✔), solo in parte (◐, spiega perché) o mancante (✘)' : 'se il testo risponde alla consegna'}; commento sulla lunghezza.
-3. <h3>Errori da correggere</h3>: al massimo 6 errori importanti; per ciascuno: frase originale → forma corretta → spiegazione breve in italiano.
-4. <h3>Per migliorare</h3>: 2 o 3 consigli concreti per salire di banda.
+Struttura della risposta (ogni titolo in MAIUSCOLO su una riga da solo, elenchi con "- "):
+1. PUNTEGGIO: la banda/punteggio da 0 a 5, con una frase di motivazione.
+2. CONTENUTO: ${pts ? 'per ciascun punto obbligatorio: trattato pienamente (✔), solo in parte (◐, spiega perché) o mancante (✘)' : 'se il testo risponde alla consegna'}; commento sulla lunghezza.
+3. ERRORI DA CORREGGERE: al massimo 6 errori importanti; per ciascuno: frase originale → forma corretta → spiegazione breve in italiano.
+4. PER MIGLIORARE: 2 o 3 consigli concreti per salire di banda.
 Non riscrivere l'intero testo.
 
 Testo dello studente:

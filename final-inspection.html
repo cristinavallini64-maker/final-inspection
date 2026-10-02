@@ -532,7 +532,6 @@ Testi sotto le 80 parole ricevono punteggi più bassi.`,
       btn.disabled = true; btn.textContent = 'ANALISI IN CORSO…';
       const prompt = `Sei un esaminatore ufficiale Cambridge B1 Preliminary (PET for Schools). Lo studente è un adolescente italiano di livello B1.
 Rispondi in italiano, citando tra virgolette le frasi originali in inglese quando correggi.
-Rispondi in HTML semplice (<h3>, <p>, <ul>, <li>, <b>), senza markdown.
 
 Tipologia di task: ${ty.name}
 Lunghezza richiesta: ${ty.target}. Il testo dello studente ha ${words(text)} parole.
@@ -541,11 +540,11 @@ ${pts ? 'Punti di contenuto obbligatori:\n- ' + pts.join('\n- ') : ''}
 
 ${SCALES[ty.scale]}
 
-Struttura della risposta:
-1. <h3>Punteggio</h3>: ${ty.scale === 'new' ? 'il punteggio per ciascuno dei 4 criteri e il totale /20' : 'la banda/punteggio da 0 a 5'}, con una frase di motivazione.
-2. <h3>Contenuto</h3>: ${pts ? 'per ciascun punto obbligatorio: trattato pienamente (✔), solo in parte (◐, spiega perché) o mancante (✘)' : 'se il testo risponde alla traccia'}; commento sulla lunghezza.
-3. <h3>Errori da correggere</h3>: al massimo 6 errori importanti; per ciascuno: frase originale → forma corretta → spiegazione breve in italiano.
-4. <h3>Per migliorare</h3>: 2 o 3 consigli concreti per salire di banda (lessico, connettivi, strutture).
+Struttura della risposta (ogni titolo in MAIUSCOLO su una riga da solo, elenchi con "- "):
+1. PUNTEGGIO: ${ty.scale === 'new' ? 'il punteggio per ciascuno dei 4 criteri e il totale /20' : 'la banda/punteggio da 0 a 5'}, con una frase di motivazione.
+2. CONTENUTO: ${pts ? 'per ciascun punto obbligatorio: trattato pienamente (✔), solo in parte (◐, spiega perché) o mancante (✘)' : 'se il testo risponde alla traccia'}; commento sulla lunghezza.
+3. ERRORI DA CORREGGERE: al massimo 6 errori importanti; per ciascuno: frase originale → forma corretta → spiegazione breve in italiano.
+4. PER MIGLIORARE: 2 o 3 consigli concreti per salire di banda (lessico, connettivi, strutture).
 Non riscrivere l'intero testo.
 
 Testo dello studente:
@@ -556,7 +555,7 @@ ${text}
       try {
         let data = null;
         for (let i = 0; i < 4 && !data; i++) {
-          const r = await fetch('https://writingtutor.cristinavallini64.workers.dev/', {
+          const r = await fetch('https://writingtutor-b1.cristinavallini64.workers.dev/', {
             method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt })
           });
           const d = await r.json().catch(() => ({}));
