@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>B1 Preliminary</title>
+<title>B2 First</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -58,7 +58,7 @@
   .q-context { font-size: 0.9rem; color: #aaa; margin-bottom: 6px; font-style: italic; }
   .opt { display: flex; align-items: flex-start; gap: 10px; padding: 7px 10px; border-radius: 8px; cursor: pointer; }
   .opt:hover { background: #242424; }
-  .opt input { margin-top: 4px; accent-color: #FF0000; }
+  .opt input { margin-top: 4px; accent-color: #00E5FF; }
   .opt b { min-width: 18px; }
   .opt img { max-width: 160px; border-radius: 6px; background: #fff; }
   .fb { margin-top: 6px; font-weight: 900; font-size: 0.92rem; }
@@ -88,15 +88,21 @@
   .resultbar { position: sticky; bottom: 0; background: #0d0d0d; padding: 14px 0; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; border-top: 2px solid #222; margin-top: 10px; }
   .score { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 2px; }
   .empty-note { background: #1a1a1a; border-radius: 10px; padding: 18px; color: #bbb; }
+  .stem { font-weight: 900; letter-spacing: 1px; margin-left: 4px; color: #333; }
+  .tf-first { margin-bottom: 6px; line-height: 1.5; }
+  .tf-key { display: inline-block; background: #00E5FF; color: #000; font-weight: 900; letter-spacing: 1px; border-radius: 6px; padding: 1px 10px; margin: 4px 0 8px; }
+  .tf-line { line-height: 2; }
+  .tf-line input.gap { width: 260px; max-width: 100%; }
+  .q select { margin-left: 6px; }
 </style>
 </head>
 <body>
 
-<div class="hero">
-  <div class="hero-letter">B1</div>
+<div class="hero" style="background:#00E5FF">
+  <div class="hero-letter">B2</div>
   <div class="hero-text">
-    <h1>B1 Preliminary</h1>
-    <p>Reading · Listening — Certificazioni</p>
+    <h1>B2 First</h1>
+    <p>Reading & Use of English · Listening — Certificazioni</p>
   </div>
 </div>
 
@@ -109,39 +115,44 @@
    Ogni test è un oggetto { id, title, reading:[...], listening:[...] }.
    Un test con reading e listening vuoti compare come "in preparazione".
    I testi vanno tra `backtick`: si possono incollare su più righe.
-   Una riga vuota = nuovo paragrafo. I buchi si scrivono [16], [21]...
+   Una riga vuota = nuovo paragrafo. I buchi si scrivono [1], [9]...
+   Risposte scritte: elencare tutte le forme valide, es. ['in spite of','despite'].
+   Maiuscole e punteggiatura non contano.
 
-   READING
-   Part 1: { part:1, items:[ { n:1, text:`avviso`, options:['A','B','C'], answer:'B' } ] }
-   Part 2: { part:2, people:[ { n:6, name:'Elena', text:`...`, answer:'D' } ],
-             texts:[ { letter:'A', title:'...', text:`...` } ] }       (8 testi A–H)
-   Part 3: { part:3, title:'...', text:`...`, items:[ { n:11, q:'...', options:[4], answer:'B' } ] }
-   Part 4: { part:4, title:'...', text:`... [16] ...`,
-             options:[ { letter:'A', text:'...' } ], answers:{ 16:'A', ... } }  (8 frasi A–H)
-   Part 5: { part:5, title:'...', text:`... [21] ...`,
-             gaps:{ 21:{ options:['a','b','c','d'], answer:'C' }, ... } }
-   Part 6: { part:6, title:'...', text:`... [27] ...`, answers:{ 27:['for'], ... } }
+   READING & USE OF ENGLISH
+   Part 1 (scelta multipla nel testo):
+     { part:1, title:'...', text:`... [1] ...`, gaps:{ 1:{ options:['a','b','c','d'], answer:'B' }, ... } }
+   Part 2 (open cloze):
+     { part:2, title:'...', text:`... [9] ...`, answers:{ 9:['for'], ... } }
+   Part 3 (word formation):
+     { part:3, title:'...', text:`... [17] ...`, stems:{ 17:'COMPETE', ... }, answers:{ 17:['competition'], ... } }
+   Part 4 (key word transformation):
+     { part:4, items:[ { n:25, first:'frase originale', key:'PAROLA',
+                         before:'inizio della seconda frase', after:'fine della frase',
+                         answers:['risposta 1','variante accettata'] } ] }
+   Part 5 (testo lungo + domande a 4 opzioni):
+     { part:5, title:'...', text:`...`, items:[ { n:31, q:'...', options:['','','',''], answer:'C' } ] }
+   Part 6 (frasi tolte, A–G):
+     { part:6, title:'...', text:`... [37] ...`, options:[ { letter:'A', text:'...' } ], answers:{ 37:'D', ... } }
+   Part 7 (multiple matching, sezioni A–E):
+     { part:7, title:'...', sections:[ { letter:'A', title:'...', text:`...` } ],
+       items:[ { n:43, q:'Which person ...?', answer:'B' } ] }
 
-   LISTENING  (audio: percorso del file mp3, es. 'audio/t1-l1-1.mp3';
-               se audio è vuoto e c'è script, la pagina legge lo script con la
-               sintesi vocale: righe "M: ..." / "F: ..." = voci diverse)
-   Part 1: { part:1, items:[ { n:1, q:'...', audio:'', script:``, options:[3], answer:'B' } ] }
-           (opzioni con immagine: { img:'img/t1-q1a.png' } al posto del testo)
-   Part 2: { part:2, items:[ { n:8, context:'You will hear...', q:'...', audio:'', script:``, options:[3], answer:'A' } ] }
-   Part 3: { part:3, intro:'...', audio:'', script:``, notes:`... [14] ...`, answers:{ 14:['...'], ... } }
-   Part 4: { part:4, intro:'...', audio:'', script:``, items:[ { n:20, q:'...', options:[3], answer:'B' } ] }
-
-   Risposte aperte (Part 6, Listening Part 3): elencare tutte le forme valide,
-   es. ['8:30','half past eight']. Maiuscole e punteggiatura non contano.
+   LISTENING  (audio: percorso del file mp3, es. 'audio/fce1-t1-l1-1.mp3')
+   Part 1: { part:1, items:[ { n:1, context:'You hear...', q:'...', audio:'', options:['','',''], answer:'A' } ] }
+   Part 2: { part:2, intro:'...', audio:'', notes:`... [9] ...`, answers:{ 9:['...'], ... } }
+   Part 3: { part:3, intro:'...', audio:'', options:[ { letter:'A', text:'...' } ],      (A–H)
+             items:[ { n:19, label:'Speaker 1', answer:'C' } ] }
+   Part 4: { part:4, intro:'...', audio:'', items:[ { n:24, q:'...', options:['','',''], answer:'B' } ] }
    ===================================================================== */
 
 const TESTS = [
 
-/* ---- Libri di past papers: un blocco di 4 test per libro (id: pet1-t1 ... pet1-t4, pet2-t1 ...) ---- */
-{ id: 'pet1-t1', title: 'Cambridge PET 1 · Test 1', reading: [], listening: [] },
-{ id: 'pet1-t2', title: 'Cambridge PET 1 · Test 2', reading: [], listening: [] },
-{ id: 'pet1-t3', title: 'Cambridge PET 1 · Test 3', reading: [], listening: [] },
-{ id: 'pet1-t4', title: 'Cambridge PET 1 · Test 4', reading: [], listening: [] }
+/* ---- Libri di past papers: un blocco di 4 test per libro (id: fce1-t1 ... fce1-t4, fce2-t1 ...) ---- */
+{ id: 'fce1-t1', title: 'Cambridge FCE 1 · Test 1', reading: [], listening: [] },
+{ id: 'fce1-t2', title: 'Cambridge FCE 1 · Test 2', reading: [], listening: [] },
+{ id: 'fce1-t3', title: 'Cambridge FCE 1 · Test 3', reading: [], listening: [] },
+{ id: 'fce1-t4', title: 'Cambridge FCE 1 · Test 4', reading: [], listening: [] }
 
 ];
 
@@ -149,28 +160,34 @@ const TESTS = [
    MOTORE — non serve modificarlo
    ===================================================================== */
 const MAX_PLAYS = 2;            // ascolti consentiti prima della correzione
-const SAVE_KEY = 'b1prelim_v1';
+const SAVE_KEY = 'b2first_v1';
 const L = 'ABCDEFGH';
 
-const RUBRICS = {
-  reading: {
-    1: { en: 'For each question, choose the correct answer.', it: 'Leggi il breve testo e scegli la frase che ne riporta il significato.' },
-    2: { en: 'For each question, choose the correct answer. The people below all want to find something. Read the eight texts and decide which one would be the most suitable for each person.', it: 'Ogni persona ha più richieste: il testo giusto le soddisfa tutte, non solo una.' },
-    3: { en: 'For each question, choose the correct answer.', it: 'Leggi tutto il testo una volta, poi rispondi: le domande seguono l\'ordine del testo.' },
-    4: { en: 'Five sentences have been removed from the text below. For each question, choose the correct answer. There are three extra sentences which you do not need to use.', it: 'Guarda cosa c\'è prima e dopo il buco: pronomi e collegamenti ti dicono quale frase va lì.' },
-    5: { en: 'For each question, choose the correct answer.', it: 'Una sola parola funziona con le parole intorno (preposizioni, collocazioni).' },
-    6: { en: 'For each question, write the correct answer. Write ONE word for each gap.', it: 'Di solito manca una parola grammaticale: preposizione, articolo, congiunzione, ausiliare.' }
-  },
-  listening: {
-    1: { en: 'For each question, choose the correct answer. You will hear each recording twice.', it: 'Leggi la domanda prima di ascoltare: spesso sentirai nominare tutte e tre le opzioni.' },
-    2: { en: 'For each question, choose the correct answer. You will hear each conversation twice.', it: 'Ascolta come si sentono o cosa pensano i parlanti, non solo i fatti.' },
-    3: { en: 'For each question, write the correct answer in the gap. Write one or two words or a number or a date or a time.', it: 'Prima di ascoltare, prova a indovinare che tipo di informazione manca (numero, orario, nome…).' },
-    4: { en: 'For each question, choose the correct answer. You will hear the interview twice.', it: 'Le domande seguono l\'ordine dell\'intervista.' }
-  }
+const SEC_LABEL = { reading: 'Reading & Use of English', listening: 'Listening' };
+const PART_TYPE = {
+  reading: { 1: 'mccloze', 2: 'opencloze', 3: 'wordform', 4: 'transform', 5: 'mclong', 6: 'gapped', 7: 'matching' },
+  listening: { 1: 'mcaudio', 2: 'notes', 3: 'speakers', 4: 'mclong' }
 };
 const PART_INFO = {
-  reading: { 1: 'Short texts', 2: 'Matching', 3: 'Long text', 4: 'Gapped text', 5: 'Multiple-choice cloze', 6: 'Open cloze' },
-  listening: { 1: 'Short recordings', 2: 'Short conversations', 3: 'Gap fill', 4: 'Interview' }
+  reading: { 1: 'Multiple-choice cloze', 2: 'Open cloze', 3: 'Word formation', 4: 'Key word transformation', 5: 'Multiple choice', 6: 'Gapped text', 7: 'Multiple matching' },
+  listening: { 1: 'Short extracts', 2: 'Sentence completion', 3: 'Multiple matching', 4: 'Multiple choice' }
+};
+const RUBRICS = {
+  reading: {
+    1: { en: 'For questions 1–8, read the text below and decide which answer (A, B, C or D) best fits each gap.', it: 'Conta la parola che va con quelle intorno: collocazioni, preposizioni, phrasal verbs.' },
+    2: { en: 'For questions 9–16, read the text below and think of the word which best fits each gap. Use only one word in each gap.', it: 'Manca quasi sempre una parola grammaticale: preposizione, ausiliare, pronome, connettivo.' },
+    3: { en: 'For questions 17–24, read the text below. Use the word given in capitals to form a word that fits in the gap.', it: 'Chiediti prima che parte del discorso serve (nome, aggettivo, avverbio) e se ci vuole un prefisso negativo o il plurale.' },
+    4: { en: 'For questions 25–30, complete the second sentence so that it has a similar meaning to the first sentence, using the word given. Do not change the word given. You must use between two and five words, including the word given.', it: 'La parola chiave non si cambia. Da due a cinque parole in tutto, contratte contano come due.' },
+    5: { en: 'You are going to read an extract. For questions 31–36, choose the answer (A, B, C or D) which you think fits best according to the text.', it: 'Le domande seguono l\'ordine del testo; attenzione alle opzioni che usano le stesse parole del testo ma dicono altro.' },
+    6: { en: 'You are going to read an article. Six sentences have been removed. Choose from the sentences A–G the one which fits each gap. There is one extra sentence which you do not need to use.', it: 'Guarda pronomi, riferimenti e connettivi prima e dopo il buco.' },
+    7: { en: 'You are going to read an article. For questions 43–52, choose from the sections (A–E). The sections may be chosen more than once.', it: 'Leggi prima le domande, poi cerca nel testo le parafrasi: raramente trovi le stesse parole.' }
+  },
+  listening: {
+    1: { en: 'You will hear people talking in eight different situations. For questions 1–8, choose the best answer (A, B or C).', it: 'Leggi la domanda prima di ascoltare: spesso si sentono tutte e tre le opzioni.' },
+    2: { en: 'For questions 9–18, complete the sentences with a word or short phrase.', it: 'Scrivi le parole che senti, senza riformularle. Attenzione all\'ortografia.' },
+    3: { en: 'You will hear five short extracts. For questions 19–23, choose from the list (A–H) what each speaker says. Use the letters only once. There are three extra letters which you do not need to use.', it: 'Ogni lettera si usa una sola volta: prima di ascoltare leggi bene tutte le otto opzioni.' },
+    4: { en: 'You will hear an interview. For questions 24–30, choose the best answer (A, B or C).', it: 'Le domande seguono l\'ordine dell\'intervista.' }
+  }
 };
 
 /* ---------- salvataggio ---------- */
@@ -189,71 +206,48 @@ function norm(s) {
   return String(s).toLowerCase().replace(/[’‘`]/g, "'")
     .replace(/\bcan't\b/g, 'cannot').replace(/\bwon't\b/g, 'will not').replace(/n't\b/g, ' not')
     .replace(/'re\b/g, ' are').replace(/'ve\b/g, ' have').replace(/'ll\b/g, ' will').replace(/'m\b/g, ' am').replace(/'d\b/g, ' would')
-    .replace(/[^a-z0-9'€ ]/g, ' ').replace(/€/g, ' ').replace(/\s+/g, ' ').trim();
+    .replace(/[^a-z0-9' ]/g, ' ').replace(/\s+/g, ' ').trim();
 }
 function paras(text, gapFn) {
-  return String(text).trim().split(/\n\s*\n/).map(p => {
+  return String(text || '').trim().split(/\n\s*\n/).map(p => {
     let h = esc(p).replace(/\n/g, '<br>');
     if (gapFn) h = h.replace(/\[(\d+)\]/g, (m, n) => gapFn(+n));
     return '<p>' + h + '</p>';
   }).join('');
 }
-function optLabel(o) { return (o && typeof o === 'object' && o.img) ? `<img src="${esc(o.img)}" alt="">` : esc(o); }
+function titleBox(p, inner) { return `<div class="textbox">${p.title ? `<h3>${esc(p.title)}</h3>` : ''}${inner}</div>`; }
 
 /* ---------- audio ---------- */
 let plays = {}, checked = false, player = new Audio(), audioReg = {};
-function stopAudio() { try { player.pause(); } catch (e) {} try { speechSynthesis.cancel(); } catch (e) {} }
-function audioHTML(id, src, script) {
-  if (!src && !script) return '';
-  audioReg[id] = { src, script };
+function stopAudio() { try { player.pause(); } catch (e) {} }
+function audioHTML(id, src) {
+  if (!src) return '<div class="plays">🎧 Audio non ancora inserito</div>';
+  audioReg[id] = src;
   plays[id] = plays[id] || 0;
   return `<div class="audiobox"><button class="btn btn-green" id="ab-${id}" onclick="playAudio('${id}')">▶ Ascolta</button>
-    <span class="plays" id="pl-${id}">Ascolti: ${plays[id]}/${MAX_PLAYS}</span></div>` +
-    (script ? `<button class="tbtn" style="display:none" id="tb-${id}" onclick="document.getElementById('tr-${id}').classList.toggle('show')">Trascrizione</button>
-    <div class="transcript" id="tr-${id}">${esc(script)}</div>` : '');
+    <span class="plays" id="pl-${id}">Ascolti: ${plays[id]}/${MAX_PLAYS}</span></div>`;
 }
 function refreshAudio(id) {
-  const b = document.getElementById('ab-' + id), p = document.getElementById('pl-' + id), t = document.getElementById('tb-' + id);
+  const b = document.getElementById('ab-' + id), p = document.getElementById('pl-' + id);
   if (p) p.textContent = checked ? 'Ascolto libero' : `Ascolti: ${plays[id]}/${MAX_PLAYS}`;
   if (b) b.disabled = !checked && plays[id] >= MAX_PLAYS;
-  if (t) t.style.display = checked ? 'inline-block' : 'none';
 }
 function playAudio(id) {
-  const a = audioReg[id]; if (!a) return;
+  const src = audioReg[id]; if (!src) return;
   if (!checked && plays[id] >= MAX_PLAYS) return;
   stopAudio();
   if (!checked) plays[id]++;
   refreshAudio(id);
-  if (a.src) { player.src = a.src; player.play().catch(() => alert('File audio non trovato: ' + a.src)); }
-  else speak(a.script);
+  player.src = src; player.play().catch(() => alert('File audio non trovato: ' + src));
 }
-function speak(script) {
-  if (!('speechSynthesis' in window)) { alert('Il browser non supporta la lettura vocale.'); return; }
-  const all = speechSynthesis.getVoices().filter(v => /^en/i.test(v.lang));
-  const pref = all.filter(v => /en-GB/i.test(v.lang)).concat(all.filter(v => !/en-GB/i.test(v.lang)));
-  const map = {}; let k = 0;
-  String(script).split('\n').forEach(line => {
-    const m = line.match(/^\s*([A-Z][A-Za-z]{0,10}):\s*(.*)$/);
-    const who = m ? m[1] : '_', txt = (m ? m[2] : line).trim();
-    if (!txt) return;
-    if (!(who in map)) map[who] = k++;
-    const u = new SpeechSynthesisUtterance(txt);
-    u.lang = 'en-GB'; u.rate = 0.92;
-    if (pref.length) u.voice = pref[map[who] % pref.length];
-    u.pitch = who === 'F' ? 1.2 : who === 'M' ? 0.8 : 1;
-    speechSynthesis.speak(u);
-  });
-}
-if ('speechSynthesis' in window) speechSynthesis.onvoiceschanged = () => {};
 
 /* ---------- navigazione ---------- */
 const app = document.getElementById('app');
 function hasContent(t) { return (t.reading && t.reading.length) || (t.listening && t.listening.length); }
-function countQ(sec, p) {
+function countQ(p) {
   if (p.items) return p.items.length;
-  if (p.people) return p.people.length;
-  if (p.answers) return Object.keys(p.answers).length;
   if (p.gaps) return Object.keys(p.gaps).length;
+  if (p.answers) return Object.keys(p.answers).length;
   return 0;
 }
 
@@ -261,13 +255,13 @@ function showHome() {
   stopAudio(); window.scrollTo(0, 0);
   const save = loadSave();
   let h = `<div class="topbar"><a href="javascript:window.close()" class="btn btn-red">✕ Chiudi questa scheda</a></div>
-    <div class="block-title bt-red">📚 Scegli il test</div><div class="grid">`;
+    <div class="block-title bt-cyan">📚 Scegli il test</div><div class="grid">`;
   TESTS.forEach((t, i) => {
     const on = hasContent(t);
     let done = 0, tot = 0;
     ['reading', 'listening'].forEach(sec => (t[sec] || []).forEach(p => { tot++; if (save[`${t.id}|${sec}|${p.part}`]) done++; }));
-    h += `<div class="card c-red ${on ? '' : 'off'}" ${on ? `onclick="showTest(${i})"` : ''}>
-      <div class="card-name">${esc(t.title)}</div><div class="card-sub">${esc(t.subtitle || '')}</div>
+    h += `<div class="card c-cyan ${on ? '' : 'off'}" ${on ? `onclick="showTest(${i})"` : ''}>
+      <div class="card-name">${esc(t.title)}</div>
       ${on ? `<span class="badge">${done}/${tot} parti svolte</span>` : '<span class="badge">in preparazione</span>'}</div>`;
   });
   app.innerHTML = h + '</div>';
@@ -279,14 +273,14 @@ function showTest(ti) {
   let h = `<div class="topbar"><button class="btn btn-ghost" onclick="showHome()">← Tutti i test</button></div>
     <h2 class="score" style="margin-bottom:10px">${esc(t.title)}</h2>`;
   if (!hasContent(t)) h += '<div class="empty-note">⏳ Questo test è in preparazione.</div>';
-  [['reading', '📖 Reading', 'cyan'], ['listening', '🎧 Listening', 'green']].forEach(([sec, lab, col], si) => {
+  [['reading', '📖 ' + SEC_LABEL.reading, 'cyan'], ['listening', '🎧 Listening', 'green']].forEach(([sec, lab, col], si) => {
     if (!t[sec] || !t[sec].length) return;
     if (si === 1 && t.reading && t.reading.length) h += '<div class="divider"></div>';
     h += `<div class="block-title bt-${col}">${lab}</div><div class="grid">`;
     t[sec].forEach((p, pi) => {
       const b = save[`${t.id}|${sec}|${p.part}`];
       h += `<div class="card c-${col}" onclick="showPart(${ti},'${sec}',${pi})">
-        <div class="card-name">Part ${p.part}</div><div class="card-sub">${PART_INFO[sec][p.part] || ''} · ${countQ(sec, p)} domande</div>
+        <div class="card-name">Part ${p.part}</div><div class="card-sub">${PART_INFO[sec][p.part] || ''} · ${countQ(p)} domande</div>
         <span class="badge">${b ? `Migliore: ${b.score}/${b.total}` : 'Da fare'}</span></div>`;
     });
     h += '</div>';
@@ -294,26 +288,80 @@ function showTest(ti) {
   app.innerHTML = h;
 }
 
-/* ---------- rendering delle parti ---------- */
+/* ---------- elementi di risposta ---------- */
 let cur = null, keys = [];
-
-function mcQuestion(n, q, options, extra) {
-  keys.push({ n, kind: 'radio' });
+function mcQuestion(n, q, options, answer, extra) {
+  keys.push({ n, kind: 'radio', type: 'letter', v: answer, box: true });
   let h = `<div class="q" id="q-${n}">${extra || ''}<div class="q-head"><span class="q-num">${n}</span>${esc(q || '')}</div>`;
   options.forEach((o, i) => {
-    h += `<label class="opt"><input type="radio" name="r-${n}" value="${L[i]}"><b>${L[i]}</b><span>${optLabel(o)}</span></label>`;
+    h += `<label class="opt"><input type="radio" name="r-${n}" value="${L[i]}"><b>${L[i]}</b><span>${esc(o)}</span></label>`;
   });
   return h + `<div class="fb" id="fb-${n}"></div></div>`;
 }
-function selectGap(n, letters, labels) {
-  keys.push({ n, kind: 'select' });
+function selectGap(n, letters, answer, labels) {
+  keys.push({ n, kind: 'select', type: 'letter', v: answer, label: labels ? labels[letters.indexOf(answer)] : '' });
   let o = '<option value="">—</option>';
   letters.forEach((l, i) => { o += `<option value="${l}">${labels ? l + ' ' + esc(labels[i]) : l}</option>`; });
   return `<span class="gapwrap" id="g-${n}"><span class="gapnum">${n}</span><select id="in-${n}">${o}</select><span class="gapfix" id="fb-${n}"></span></span>`;
 }
-function textGap(n) {
-  keys.push({ n, kind: 'text' });
-  return `<span class="gapwrap" id="g-${n}"><span class="gapnum">${n}</span><input class="gap" id="in-${n}" autocomplete="off" spellcheck="false"><span class="gapfix" id="fb-${n}"></span></span>`;
+function textGap(n, answers, after) {
+  keys.push({ n, kind: 'text', type: 'text', v: answers || [] });
+  return `<span class="gapwrap" id="g-${n}"><span class="gapnum">${n}</span><input class="gap" id="in-${n}" autocomplete="off" spellcheck="false">${after || ''}<span class="gapfix" id="fb-${n}"></span></span>`;
+}
+function selectQuestion(n, head, letters, answer, extra) {
+  keys.push({ n, kind: 'select', type: 'letter', v: answer, box: true });
+  let o = '<option value="">—</option>'; letters.forEach(l => o += `<option value="${l}">${l}</option>`);
+  return `<div class="q" id="q-${n}">${extra || ''}<div class="q-head"><span class="q-num">${n}</span>${esc(head)}
+    <span class="gapwrap" id="g-${n}"><select id="in-${n}">${o}</select></span></div><div class="fb" id="fb-${n}"></div></div>`;
+}
+
+/* ---------- rendering delle parti ---------- */
+function renderPart(sec, p) {
+  const type = PART_TYPE[sec][p.part];
+  let h = '';
+  if (sec === 'listening' && (p.intro || p.audio !== undefined) && type !== 'mcaudio')
+    h += `<div class="q-context" style="font-size:1rem">${esc(p.intro || '')}</div>${audioHTML('main', p.audio)}`;
+
+  if (type === 'mccloze') {
+    h += titleBox(p, paras(p.text, n => { const g = p.gaps[n]; return g ? selectGap(n, g.options.map((_, i) => L[i]), g.answer, g.options) : '[' + n + ']'; }));
+  } else if (type === 'opencloze') {
+    h += titleBox(p, paras(p.text, n => textGap(n, p.answers[n])));
+  } else if (type === 'wordform') {
+    h += titleBox(p, paras(p.text, n => textGap(n, p.answers[n], p.stems && p.stems[n] ? `<span class="stem">(${esc(p.stems[n])})</span>` : '')));
+  } else if (type === 'transform') {
+    p.items.forEach(it => {
+      keys.push({ n: it.n, kind: 'text', type: 'text', v: it.answers || [], box: true });
+      h += `<div class="q" id="q-${it.n}"><div class="q-head"><span class="q-num">${it.n}</span></div>
+        <div class="tf-first">${esc(it.first)}</div><div class="tf-key">${esc(it.key)}</div>
+        <div class="tf-line">${esc(it.before || '')} <span class="gapwrap" id="g-${it.n}"><input class="gap" id="in-${it.n}" autocomplete="off" spellcheck="false"></span> ${esc(it.after || '')}</div>
+        <div class="fb" id="fb-${it.n}"></div></div>`;
+    });
+  } else if (type === 'mclong') {
+    if (p.text) h += titleBox(p, paras(p.text));
+    p.items.forEach(it => { h += mcQuestion(it.n, it.q, it.options, it.answer); });
+  } else if (type === 'gapped') {
+    const letters = p.options.map(o => o.letter);
+    h += `<div class="optlist">${p.options.map(o => `<div><b>${o.letter}</b> ${esc(o.text)}</div>`).join('')}</div>`;
+    h += titleBox(p, paras(p.text, n => selectGap(n, letters, p.answers[n])));
+  } else if (type === 'matching') {
+    const letters = p.sections.map(s => s.letter);
+    h += `<div class="textbox">${p.title ? `<h3>${esc(p.title)}</h3>` : ''}${p.sections.map(s =>
+      `<div class="mtext"><b>${s.letter}</b><strong>${esc(s.title || '')}</strong>${paras(s.text)}</div>`).join('')}</div>`;
+    h += '<div class="q-context" style="font-size:1rem">Which section…</div>';
+    p.items.forEach(it => { h += selectQuestion(it.n, it.q, letters, it.answer); });
+  } else if (type === 'mcaudio') {
+    p.items.forEach(it => {
+      const extra = (it.context ? `<div class="q-context">${esc(it.context)}</div>` : '') + audioHTML('a' + it.n, it.audio);
+      h += mcQuestion(it.n, it.q, it.options, it.answer, extra);
+    });
+  } else if (type === 'notes') {
+    h += titleBox(p, paras(p.notes, n => textGap(n, p.answers[n])));
+  } else if (type === 'speakers') {
+    const letters = p.options.map(o => o.letter);
+    h += `<div class="optlist">${p.options.map(o => `<div><b>${o.letter}</b> ${esc(o.text)}</div>`).join('')}</div>`;
+    p.items.forEach(it => { h += selectQuestion(it.n, it.label, letters, it.answer); });
+  }
+  return h;
 }
 
 function showPart(ti, sec, pi) {
@@ -323,53 +371,9 @@ function showPart(ti, sec, pi) {
   cur = { ti, sec, pi, t, p };
   const r = RUBRICS[sec][p.part] || { en: '', it: '' };
   let h = `<div class="sec-${sec}"><div class="topbar"><button class="btn btn-ghost" onclick="showTest(${ti})">← ${esc(t.title)}</button></div>
-    <div class="block-title bt-${sec === 'reading' ? 'cyan' : 'green'}">${sec === 'reading' ? 'Reading' : 'Listening'} · Part ${p.part}</div>
+    <div class="block-title bt-${sec === 'reading' ? 'cyan' : 'green'}">${SEC_LABEL[sec]} · Part ${p.part}</div>
     <div class="rubric"><div class="en">${esc(p.rubric || r.en)}</div><div class="it">💡 ${esc(r.it)}</div></div>`;
-
-  if (sec === 'reading') {
-    if (p.part === 1) {
-      p.items.forEach(it => { h += mcQuestion(it.n, '', it.options, `<div class="notice">${esc(it.text)}</div>`); });
-    } else if (p.part === 2) {
-      h += '<div class="two-col"><div>';
-      p.people.forEach(pp => {
-        keys.push({ n: pp.n, kind: 'select' });
-        let o = '<option value="">—</option>'; p.texts.forEach(tx => o += `<option value="${tx.letter}">${tx.letter}</option>`);
-        h += `<div class="q" id="q-${pp.n}"><div class="q-head"><span class="q-num">${pp.n}</span>${esc(pp.name)}</div>
-          <div style="line-height:1.5;margin-bottom:8px">${esc(pp.text)}</div>
-          <span class="gapwrap" id="g-${pp.n}">Testo: <select id="in-${pp.n}">${o}</select></span><div class="fb" id="fb-${pp.n}"></div></div>`;
-      });
-      h += '</div><div>';
-      p.texts.forEach(tx => { h += `<div class="mtext"><b>${tx.letter}</b><strong>${esc(tx.title || '')}</strong><br>${esc(tx.text)}</div>`; });
-      h += '</div></div>';
-    } else if (p.part === 3) {
-      h += `<div class="textbox">${p.title ? `<h3>${esc(p.title)}</h3>` : ''}${paras(p.text)}</div>`;
-      p.items.forEach(it => { h += mcQuestion(it.n, it.q, it.options); });
-    } else if (p.part === 4) {
-      const letters = p.options.map(o => o.letter);
-      h += `<div class="optlist">${p.options.map(o => `<div><b>${o.letter}</b> ${esc(o.text)}</div>`).join('')}</div>`;
-      h += `<div class="textbox">${p.title ? `<h3>${esc(p.title)}</h3>` : ''}${paras(p.text, n => selectGap(n, letters))}</div>`;
-    } else if (p.part === 5) {
-      h += `<div class="textbox">${p.title ? `<h3>${esc(p.title)}</h3>` : ''}${paras(p.text, n => {
-        const g = p.gaps[n]; return g ? selectGap(n, g.options.map((_, i) => L[i]), g.options) : '[' + n + ']';
-      })}</div>`;
-    } else if (p.part === 6) {
-      h += `<div class="textbox">${p.title ? `<h3>${esc(p.title)}</h3>` : ''}${paras(p.text, n => textGap(n))}</div>`;
-    }
-  } else {
-    if (p.part === 1 || p.part === 2) {
-      p.items.forEach(it => {
-        const extra = (it.context ? `<div class="q-context">${esc(it.context)}</div>` : '') + audioHTML('a' + it.n, it.audio, it.script);
-        h += mcQuestion(it.n, it.q, it.options, extra);
-      });
-    } else if (p.part === 3) {
-      h += `<div class="q-context" style="font-size:1rem">${esc(p.intro || '')}</div>${audioHTML('main', p.audio, p.script)}`;
-      h += `<div class="textbox">${paras(p.notes, n => textGap(n))}</div>`;
-    } else if (p.part === 4) {
-      h += `<div class="q-context" style="font-size:1rem">${esc(p.intro || '')}</div>${audioHTML('main', p.audio, p.script)}`;
-      p.items.forEach(it => { h += mcQuestion(it.n, it.q, it.options); });
-    }
-  }
-
+  h += renderPart(sec, p);
   h += `<div class="resultbar"><button class="btn btn-red" id="checkBtn" onclick="checkPart()">✔ Correggi</button>
     <span class="score" id="scoreOut"></span>
     <button class="btn btn-ghost" id="retryBtn" style="display:none" onclick="showPart(${ti},'${sec}',${pi})">↻ Riprova</button></div></div>`;
@@ -377,37 +381,23 @@ function showPart(ti, sec, pi) {
 }
 
 /* ---------- correzione ---------- */
-function expected(n) {
-  const { sec, p } = cur;
-  if (sec === 'reading') {
-    if (p.part === 2) return { type: 'letter', v: p.people.find(x => x.n === n).answer };
-    if (p.part === 4) return { type: 'letter', v: p.answers[n] };
-    if (p.part === 5) return { type: 'letter', v: p.gaps[n].answer, label: p.gaps[n].options[L.indexOf(p.gaps[n].answer)] };
-    if (p.part === 6) return { type: 'text', v: p.answers[n] };
-  } else if (p.part === 3) return { type: 'text', v: p.answers[n] };
-  return { type: 'letter', v: p.items.find(x => x.n === n).answer };
-}
 function checkPart() {
   let score = 0;
   keys.forEach(k => {
-    const ex = expected(k.n);
     let given = '';
     if (k.kind === 'radio') { const r = document.querySelector(`input[name="r-${k.n}"]:checked`); given = r ? r.value : ''; }
     else given = document.getElementById('in-' + k.n).value;
-    const ok = ex.type === 'text' ? ex.v.some(a => norm(a) === norm(given)) && norm(given) !== '' : given === ex.v;
+    const ok = k.type === 'text' ? norm(given) !== '' && k.v.some(a => norm(a) === norm(given)) : given === k.v;
     if (ok) score++;
-    const box = document.getElementById('q-' + k.n) || document.getElementById('g-' + k.n);
-    const gw = document.getElementById('g-' + k.n);
+    const gw = document.getElementById('g-' + k.n), qb = document.getElementById('q-' + k.n);
     if (gw) gw.classList.add(ok ? 'ok' : 'ko');
-    if (box && box !== gw) box.classList.add(ok ? 'ok' : 'ko');
+    if (qb) qb.classList.add(ok ? 'ok' : 'ko');
     const fb = document.getElementById('fb-' + k.n);
     if (fb) {
-      if (ok) { fb.textContent = k.kind === 'radio' || box !== gw ? '✓ Corretto' : '✓'; fb.className = fb.className.replace(/ ?(ok|ko)/g, '') + ' ok'; fb.style.color = '#00a83a'; }
-      else {
-        const sol = ex.type === 'text' ? ex.v[0] : ex.v + (ex.label ? ' (' + ex.label + ')' : '');
-        fb.textContent = (k.kind === 'radio' || box !== gw) ? '✗ Risposta corretta: ' + sol : '→ ' + sol;
-        fb.style.color = '#e00000';
-      }
+      const sol = k.type === 'text' ? (k.v[0] || '?') : k.v + (k.label ? ' (' + k.label + ')' : '');
+      if (k.box) fb.textContent = ok ? '✓ Corretto' : '✗ Risposta corretta: ' + sol;
+      else fb.textContent = ok ? '✓' : '→ ' + sol;
+      fb.style.color = ok ? '#00a83a' : '#e00000';
     }
   });
   document.querySelectorAll('#app input, #app select').forEach(el => el.disabled = true);
@@ -420,7 +410,7 @@ function checkPart() {
   storeBest(`${cur.t.id}|${cur.sec}|${cur.p.part}`, score, tot);
 }
 
-/* apertura diretta di un test: b1-preliminary.html?test=t1 */
+/* apertura diretta di un test: b2-first.html?test=fce1-t1 */
 (function () {
   const id = new URLSearchParams(location.search).get('test');
   const i = TESTS.findIndex(t => t.id === id);
