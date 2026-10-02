@@ -375,15 +375,15 @@ Testi sotto le 80 parole ricevono punteggi più bassi.`
 };
 /* chiamata al Worker con nuovi tentativi automatici se il servizio è sovraccarico */
 async function wtCall(prompt, onRetry) {
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 2; i++) {
     try {
       const r = await fetch(WT_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt }) });
       const data = await r.json().catch(() => ({}));
       if (r.ok && !data.error && data.result) return data;
       const msg = data.error || ('Errore del server (' + r.status + ')');
-      if (i < 3 && (/high demand|overloaded|unavailable|try again|rate|quota|429|503/i.test(msg) || r.status >= 500 || r.status === 429)) { onRetry && onRetry(i + 1); await new Promise(z => setTimeout(z, 4000 * (i + 1))); continue; }
+      if (i < 1 && (/high demand|overloaded|unavailable|try again|rate|quota|429|503/i.test(msg) || r.status >= 500 || r.status === 429)) { onRetry && onRetry(i + 1); await new Promise(z => setTimeout(z, 3000)); continue; }
       throw new Error(msg);
-    } catch (e) { if (i >= 3 || !/fetch|network/i.test(e.message)) throw e; onRetry && onRetry(i + 1); await new Promise(z => setTimeout(z, 4000 * (i + 1))); }
+    } catch (e) { if (i >= 1 || !/fetch|network/i.test(e.message)) throw e; onRetry && onRetry(i + 1); await new Promise(z => setTimeout(z, 3000)); }
   }
 }
 function wtMsg(m) { return /high demand|overloaded|unavailable|try again|rate|quota|429|503/i.test(m) ? 'Il servizio di correzione in questo momento è molto occupato. Il tuo testo non è perso: riprova tra qualche minuto.' : 'Errore durante la richiesta: ' + m; }
@@ -442,7 +442,7 @@ Testo dello studente:
 ${text}
 """`;
   try {
-    const data = await wtCall(prompt, n => { btn.textContent = 'Server occupato, riprovo (' + n + '/3)…'; });
+    const data = await wtCall(prompt, n => { btn.textContent = 'Server occupato, riprovo…'; });
     res.innerHTML = data.result; res.style.display = 'block';
   } catch (e) { err.textContent = wtMsg(e.message); err.style.display = 'block'; }
   finally { btn.disabled = false; btn.textContent = '✔ Valuta il mio Writing'; }
