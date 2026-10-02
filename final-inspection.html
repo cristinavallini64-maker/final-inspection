@@ -540,12 +540,13 @@ ${pts ? 'Punti di contenuto obbligatori:\n- ' + pts.join('\n- ') : ''}
 
 ${SCALES[ty.scale]}
 
-Struttura della risposta (ogni titolo in MAIUSCOLO su una riga da solo, elenchi con "- "). SII BREVISSIMO: lo studente è un ragazzo e legge solo poche righe. In tutto al massimo 80 parole.
-1. PUNTEGGIO: ${ty.scale === 'new' ? 'i 4 criteri su una riga (es. Content 4 · Communicative 3 · Organisation 3 · Language 3 = 13/20)' : 'solo il voto (es. 4/5)'} e una frase di massimo 12 parole.
-2. CONTENUTO: ${pts ? 'una riga per punto: ✔ (fatto), ◐ (solo in parte: motivo in massimo 8 parole) o ✘ (manca)' : 'una riga: risponde alla consegna sì/no e perché'}.
-3. ERRORI: al massimo 3, i più importanti, una riga ciascuno nel formato: "frase sbagliata" → forma corretta (motivo in massimo 6 parole).
-4. CONSIGLIO: uno solo, in una frase.
-Niente introduzioni, niente saluti, niente ripetizioni. Non riscrivere il testo.
+Rispondi SOLO con queste tre parti, come nei commenti d'esame Cambridge, in tutto al massimo 70 parole:
+EXAMINER COMMENTS
+Una o due frasi in italiano: quali punti della consegna sono stati trattati bene e quale manca o è trattato solo in parte, e se il messaggio arriva al lettore.
+MARK: ${ty.scale === 'new' ? 'Content X · Communicative Achievement X · Organisation X · Language X = X/20' : 'X/5'}
+CORREZIONI
+Al massimo 4 errori di grammatica o di lessico, una riga ciascuno nel formato: "frase sbagliata" → forma corretta.
+Nient'altro: niente consigli, niente introduzioni, niente saluti. Non riscrivere il testo.
 
 Testo dello studente:
 """
