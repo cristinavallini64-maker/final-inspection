@@ -55,16 +55,16 @@ Riferimenti reali Cambridge: una lettera sicura con frasi complesse varie, conne
     if (corr) res.insertBefore(div, corr); else res.appendChild(div);
   };
 
-  /* Part 3 (lettera / storia): niente voto, solo commento e correzioni */
+  /* Writing (messaggio, lettera, storia): niente voto, solo commento e correzioni */
   const origRun = window.runWT;
   window.runWT = async function (it, i, btn) {
     const info = WT_INFO[it.kind];
-    if (info.scale !== 'p3') return origRun(it, i, btn);
     const text = document.getElementById('wt-text-' + i).value.trim(), err = document.getElementById('wt-err-' + i), res = document.getElementById('wt-res-' + i);
     err.style.display = 'none'; res.style.display = 'none';
     if (!text) { err.textContent = 'Scrivi il tuo testo prima di chiedere la valutazione.'; err.style.display = 'block'; return; }
     btn.disabled = true; btn.textContent = 'Analisi in corso…';
-    const prompt = WT.prompt(info, it, text, null)
+    const pts = it.points && it.points.length ? it.points : null;
+    const prompt = WT.prompt(info, it, text, pts)
       .replace(/^MARK:[^\n]*\n/m, '')
       .replace('Rispondi SOLO con queste tre parti', 'Rispondi SOLO con queste due parti')
       + '\nIMPORTANTE: NON scrivere voti, bande, punteggi o numeri di valutazione, né nel commento né altrove. Solo il commento e le correzioni.';
@@ -77,7 +77,7 @@ Riferimenti reali Cambridge: una lettera sicura con frasi complesse varie, conne
     finally { btn.disabled = false; btn.textContent = '✔ Valuta il mio Writing'; }
   };
   window.WT = {
-    version: '2 ott 18:00',
+    version: '2 ott 18:05',
     SCALES,
     prompt(info, it, text, pts) {
       const WT_SCALES = SCALES;
