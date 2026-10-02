@@ -369,7 +369,7 @@ Gli errori piccoli non tolgono punti se il messaggio è chiaro.
 Sii rigoroso come un vero esaminatore Cambridge: per ogni punto richiesto controlla che risponda ESATTAMENTE alla consegna (informazione precisa, tempo verbale e funzione richiesti, per esempio un'intenzione futura se la consegna chiede cosa farà). Se un punto è vago, impreciso o risponde a una domanda diversa, è trattato solo in parte. Il 5 si dà solo se tutti i punti sono pienamente appropriati e il messaggio è chiarissimo; con un punto trattato solo in parte il massimo è 4. Un punto conta come presente SOLO se lo studente fa esplicitamente quello che la consegna chiede (es. "proporre un altro giorno" = deve proporre di vedersi e indicare quando). Non "salvare" un punto interpretando una frase che non lo esprime: in quel caso il punto MANCA e il voto massimo è 3. Superare un po' il numero di parole non toglie punti.`,
   p3: `Valuta la lettera / storia con QUATTRO punteggi separati, ciascuno da 1 a 5. Leggi le descrizioni con attenzione e non dare 4 o 5 se il testo non corrisponde davvero alla descrizione.
 
-EFFETTO (il testo risponde alla consegna e arriva al lettore):
+CHIAREZZA (quanto sforzo deve fare il lettore per capire il testo; nella griglia Cambridge: "effect on the target reader" / "effort required of the reader"):
 5 = nessuno sforzo per il lettore · 4 = poco sforzo · 3 = qualche sforzo · 2 = sforzo notevole · 1 = difficile da capire.
 Non si toglie punteggio se manca un dettaglio della consegna, basta che il testo sia pertinente.
 
@@ -406,7 +406,7 @@ function wtMsg(m) { return /high demand|overloaded|unavailable|try again|rate|qu
 function wtBand(res) {
   const all = res.textContent, mi = all.search(/MARK/i), t = mi >= 0 ? all.slice(mi) : all;
   const g = k => { const m = t.match(new RegExp(k + '\\s*:?\\s*(\\d)')); return m ? +m[1] : null; };
-  const e = g('Effetto'), l = g('Lingua'), o = g('Organizzazione'), c = g('Correttezza');
+  const e = g('Chiarezza'), l = g('Lingua'), o = g('Organizzazione'), c = g('Correttezza');
   if ([e, l, o, c].some(x => x === null)) return;
   const band = Math.max(0, Math.min(5, Math.round((e + 2 * l + o + c) / 5)));
   const div = document.createElement('div');
@@ -427,7 +427,7 @@ function renderWriting(t, p, sp) {
       <div class="textbox"><h3>Question ${it.n}</h3>${paras(it.task)}</div>
       <textarea class="wt-area" id="wt-text-${i}" placeholder="Write your text here…"></textarea>
       <div class="wt-meta"><span id="wt-count-${i}">Parole: 0</span><span>Target: ${WT_INFO[it.kind].target}</span></div>
-      <div class="wt-ver">versione tutor: 2 ott 17:25</div>
+      <div class="wt-ver">versione tutor: 2 ott 17:30</div>
       <button class="btn btn-red wt-go" data-i="${i}">✔ Valuta il mio Writing</button>
       <div class="wt-err" id="wt-err-${i}"></div><div class="wt-res" id="wt-res-${i}"></div>
     </div>`;
@@ -462,7 +462,7 @@ ${WT_SCALES[info.scale]}
 Rispondi SOLO con queste tre parti, come nei commenti d'esame Cambridge, in tutto al massimo 70 parole:
 EXAMINER COMMENTS
 ${info.scale === 'p2' ? 'Una o due frasi in italiano: quali punti della consegna sono stati trattati bene e quale manca o è trattato solo in parte, e se il messaggio arriva al lettore.' : 'Una o due frasi in italiano sul testo nel suo insieme: effetto sul lettore, varietà e ambizione della lingua (con un esempio citato), connettivi e organizzazione, gravità degli errori.'}
-${info.scale === 'p3' ? 'MARK: Effetto X · Lingua X · Organizzazione X · Correttezza X   (scrivi solo i quattro numeri, NON scrivere la banda finale: la calcola il programma)' : 'MARK: X/5'}
+${info.scale === 'p3' ? 'MARK: Chiarezza X · Lingua X · Organizzazione X · Correttezza X   (scrivi solo i quattro numeri, NON scrivere la banda finale: la calcola il programma)' : 'MARK: X/5'}
 CORREZIONI
 Al massimo 4 errori di grammatica o di lessico, una riga ciascuno nel formato: "frase sbagliata" → forma corretta.
 Nient'altro: niente consigli, niente introduzioni, niente saluti. Non riscrivere il testo.
