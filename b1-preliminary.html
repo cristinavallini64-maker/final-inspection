@@ -102,6 +102,17 @@
     .longwrap { grid-template-columns: 1fr; }
     .textcol, .two-col > div:last-child { position: static; max-height: none; }
   }
+  .pill input { display: none; }
+  .pill span { display: inline-block; padding: 6px 14px; border-radius: 16px; background: #2a2a2a; color: #eee; font-weight: 900; cursor: pointer; }
+  .pill input:checked + span { background: #FF0000; color: #000; }
+  .wt-choice { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .wt-area { width: 100%; min-height: 220px; background: #000; color: #fff; border: 1px solid #333; border-radius: 10px; padding: 14px; font-family: 'Nunito', sans-serif; font-size: 1rem; line-height: 1.5; resize: vertical; }
+  .wt-area:focus { outline: none; border-color: #FF0000; }
+  .wt-meta { display: flex; justify-content: space-between; color: #888; font-size: 0.85rem; font-weight: 800; margin: 6px 0 12px; }
+  .wt-err { display: none; margin-top: 14px; padding: 12px; background: rgba(255,0,0,0.15); border: 1px solid #ff4444; border-radius: 8px; color: #ff6666; font-weight: 700; }
+  .wt-res { display: none; margin-top: 18px; padding: 20px; background: #000; border-left: 4px solid #FF0000; border-radius: 8px; line-height: 1.7; }
+  .wt-res h3 { margin: 10px 0 6px; color: #FF0000; }
+  .wt-res ul { margin-left: 20px; }
 </style>
 </head>
 <body>
@@ -155,7 +166,9 @@ const FORMATS = {
       5: { opts: 4, type: 'mccloze', info: 'Multiple-choice cloze', en: 'Read the text below and choose the correct word for each space.', it: 'Una sola parola va bene con quelle intorno: guarda preposizioni e collocazioni.' }
     },
     writing: {
-      1: { type: 'transform', info: 'Sentence transformation', en: 'For each question, complete the second sentence so that it means the same as the first. Use no more than three words.', it: 'Al massimo tre parole. Le contrazioni contano come due parole; l\'ortografia deve essere esatta.' }
+      1: { type: 'transform', info: 'Sentence transformation', en: 'For each question, complete the second sentence so that it means the same as the first. Use no more than three words.', it: 'Al massimo tre parole. Le contrazioni contano come due parole; l\'ortografia deve essere esatta.' },
+      2: { type: 'writetask', info: 'Short message', en: 'Write a short message. Write 35–45 words.', it: 'Devi trattare tutti e tre i punti della consegna: ognuno vale per il punteggio.' },
+      3: { type: 'writetask', info: 'Letter or story', choice: true, en: 'Choose ONE question. Write about 100 words.', it: 'Scegli la lettera o la storia. Usa connettivi (and, but, because, so, then…) e varia i tempi verbali.' }
     },
     listening: {
       1: { opts: 3, type: 'mcaudio', info: 'Short recordings', en: 'There are seven questions in this part. For each question, choose the correct answer.', it: 'Leggi la domanda prima di ascoltare: spesso si sentono tutte e tre le opzioni.' },
@@ -217,7 +230,7 @@ function filled(p) {
     if (found || !o || typeof o !== 'object') return;
     for (const k in o) {
       const v = o[k];
-      if (['text', 'q', 'name', 'first', 'notes', 'img'].includes(k) && typeof v === 'string' && v.trim()) { found = true; return; }
+      if (['text', 'q', 'name', 'first', 'notes', 'img', 'task'].includes(k) && typeof v === 'string' && v.trim()) { found = true; return; }
       if (typeof v === 'object') walk(v);
     }
   })(p);
@@ -303,7 +316,7 @@ function showTest(ti) {
     parts.forEach(p => {
       const pi = t[sec].indexOf(p), b = save[`${t.id}|${sec}|${p.part}`];
       h += `<div class="card c-${col}" onclick="showPart(${ti},'${sec}',${pi})">
-        <div class="card-name">Part ${p.part}</div><div class="card-sub">${spec(t, sec, p).info} · ${countQ(p)} domande</div>
+        <div class="card-name">Part ${p.part}</div><div class="card-sub">${spec(t, sec, p).info}${spec(t, sec, p).type === 'writetask' ? ' · valutazione IA' : ' · ' + countQ(p) + ' domande'}</div>
         <span class="badge">${b ? `Migliore: ${b.score}/${b.total}` : 'Da fare'}</span></div>`;
     });
     h += '</div>';
@@ -332,6 +345,95 @@ function textGap(n, answers) {
   return `<span class="gapwrap" id="g-${n}"><span class="gapnum">${n}</span><input class="gap" id="in-${n}" autocomplete="off" spellcheck="false"><span class="gapfix" id="fb-${n}"></span></span>`;
 }
 
+
+
+/* ---------- writing Part 2 e 3: consegna + testo + tutor IA (stesso Worker del B2) ---------- */
+const WT_URL = 'https://writingtutor.cristinavallini64.workers.dev/';
+const WT_INFO = {
+  message: { name: 'short message (PET for Schools, Writing Part 2)', min: 35, max: 45, target: '35 - 45 parole', scale: 'p2' },
+  letter: { name: 'informal letter (PET for Schools, Writing Part 3)', min: 80, max: 110, target: 'circa 100 parole', scale: 'p3' },
+  story: { name: 'story (PET for Schools, Writing Part 3)', min: 80, max: 110, target: 'circa 100 parole', scale: 'p3' }
+};
+const WT_SCALES = {
+  p2: `Scala Cambridge per il messaggio breve (punteggio da 0 a 5):
+5 = tutti e tre i punti richiesti sono trattati in modo appropriato; il messaggio è chiaro per il lettore.
+4 = tutti e tre i punti sono trattati in modo adeguato; nel complesso il messaggio arriva.
+3 = tutti i punti sono tentati ma il lettore deve fare qualche sforzo, OPPURE manca un punto ma gli altri sono chiari.
+2 = due punti mancano o non sono riusciti; il messaggio arriva solo in parte; OPPURE testo un po' corto (20–25 parole).
+1 = poco contenuto pertinente, il lettore fa molta fatica, OPPURE testo molto corto (10–19 parole).
+0 = contenuto del tutto non pertinente o incomprensibile, oppure meno di 10 parole.
+Gli errori piccoli non tolgono punti se il messaggio è chiaro.`,
+  p3: `Scala Cambridge per la lettera / storia (banda da 0 a 5):
+5 = il testo ottiene pienamente l'effetto voluto sul lettore; lingua sicura e ambiziosa per il livello, ampia varietà di strutture e lessico; collegamenti semplici efficaci e testo ben organizzato; errori solo minori; nessuno sforzo per il lettore.
+4 = ottiene l'effetto voluto; lingua abbastanza ambiziosa, una certa varietà; qualche collegamento e una certa organizzazione; errori che non impediscono la comprensione; poco sforzo per il lettore.
+3 = a tratti fatica a ottenere l'effetto; lingua poco ambiziosa oppure ambiziosa ma imprecisa; un tentativo di organizzazione ma collegamenti non sempre tenuti; errori per lo più non gravi; un certo sforzo per il lettore.
+2 = fatica a ottenere l'effetto; lingua semplicistica, limitata o ripetitiva; testo poco coerente; molti errori che a volte impediscono la comprensione.
+1 = effetto negativo sul lettore; lingua molto limitata; testo seriamente incoerente.
+0 = troppo poco testo da valutare, illeggibile o non pertinente.
+Testi sotto le 80 parole ricevono punteggi più bassi.`
+};
+function wtWords(s) { return s.trim() ? s.trim().split(/\s+/).length : 0; }
+function renderWriting(t, p, sp) {
+  let h = '';
+  if (sp.choice && p.items.length > 1) {
+    h += '<div class="wt-choice">' + p.items.map((it, i) => `<label class="pill"><input type="radio" name="wtpick" value="${i}" ${i === 0 ? 'checked' : ''}><span>Question ${it.n} · ${it.kind === 'letter' ? 'Letter' : 'Story'}</span></label>`).join('') + '</div>';
+  }
+  p.items.forEach((it, i) => {
+    h += `<div class="wt-item" data-i="${i}" ${i ? 'style="display:none"' : ''}>
+      <div class="textbox"><h3>Question ${it.n}</h3>${paras(it.task)}</div>
+      <textarea class="wt-area" id="wt-text-${i}" placeholder="Write your text here…"></textarea>
+      <div class="wt-meta"><span id="wt-count-${i}">Parole: 0</span><span>Target: ${WT_INFO[it.kind].target}</span></div>
+      <button class="btn btn-red wt-go" data-i="${i}">✔ Valuta il mio Writing</button>
+      <div class="wt-err" id="wt-err-${i}"></div><div class="wt-res" id="wt-res-${i}"></div>
+    </div>`;
+  });
+  return h;
+}
+function initWriting(p) {
+  document.querySelectorAll('input[name="wtpick"]').forEach(r => r.onchange = () =>
+    document.querySelectorAll('.wt-item').forEach(d => d.style.display = d.dataset.i === r.value ? '' : 'none'));
+  p.items.forEach((it, i) => {
+    const ta = document.getElementById('wt-text-' + i), cnt = document.getElementById('wt-count-' + i), info = WT_INFO[it.kind];
+    ta.oninput = () => { const n = wtWords(ta.value); cnt.textContent = 'Parole: ' + n; cnt.style.color = n && (n < info.min || n > info.max) ? '#ff6666' : ''; };
+  });
+  document.querySelectorAll('.wt-go').forEach(b => b.onclick = () => runWT(p.items[+b.dataset.i], +b.dataset.i, b));
+}
+async function runWT(it, i, btn) {
+  const text = document.getElementById('wt-text-' + i).value.trim(), err = document.getElementById('wt-err-' + i), res = document.getElementById('wt-res-' + i);
+  const info = WT_INFO[it.kind], pts = it.points && it.points.length ? it.points : null;
+  err.style.display = 'none'; res.style.display = 'none';
+  if (!text) { err.textContent = 'Scrivi il tuo testo prima di chiedere la valutazione.'; err.style.display = 'block'; return; }
+  btn.disabled = true; btn.textContent = 'Analisi in corso…';
+  const prompt = `Sei un esaminatore ufficiale Cambridge B1 Preliminary (PET for Schools). Lo studente è un adolescente italiano di livello B1.
+Rispondi in italiano, citando tra virgolette le frasi originali in inglese quando correggi.
+Rispondi in HTML semplice (<h3>, <p>, <ul>, <li>, <b>), senza markdown.
+
+Tipologia di task: ${info.name}
+Lunghezza richiesta: ${info.target}. Il testo dello studente ha ${wtWords(text)} parole.
+Consegna: ${it.task}
+${pts ? 'Punti di contenuto obbligatori:\n- ' + pts.join('\n- ') : ''}
+
+${WT_SCALES[info.scale]}
+
+Struttura della risposta:
+1. <h3>Punteggio</h3>: la banda/punteggio da 0 a 5, con una frase di motivazione.
+2. <h3>Contenuto</h3>: ${pts ? 'per ciascun punto obbligatorio, se c\'è (✔) o manca (✘)' : 'se il testo risponde alla consegna'}; commento sulla lunghezza.
+3. <h3>Errori da correggere</h3>: al massimo 6 errori importanti; per ciascuno: frase originale → forma corretta → spiegazione breve in italiano.
+4. <h3>Per migliorare</h3>: 2 o 3 consigli concreti per salire di banda.
+Non riscrivere l'intero testo.
+
+Testo dello studente:
+"""
+${text}
+"""`;
+  try {
+    const r = await fetch(WT_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt }) });
+    const data = await r.json();
+    if (!r.ok || data.error) throw new Error(data.error || 'Errore del server (' + r.status + ')');
+    res.innerHTML = data.result; res.style.display = 'block';
+  } catch (e) { err.textContent = 'Errore durante la richiesta: ' + e.message; err.style.display = 'block'; }
+  finally { btn.disabled = false; btn.textContent = '✔ Valuta il mio Writing'; }
+}
 
 /* ---------- rendering delle parti ---------- */
 function renderPart(t, sec, p) {
@@ -388,6 +490,8 @@ function renderPart(t, sec, p) {
     });
   } else if (type === 'notes') {
     h += titleBox(p, paras(p.notes, n => textGap(n, p.answers[n])));
+  } else if (type === 'writetask') {
+    h += renderWriting(t, p, sp);
   }
   return h;
 }
@@ -402,6 +506,7 @@ function showPart(ti, sec, pi) {
     <div class="block-title bt-${col}">${SEC_NAME[sec]} · Part ${p.part}</div>
     <div class="rubric"><div class="en">${esc(p.rubric || sp.en)}</div><div class="it">💡 ${esc(sp.it)}</div></div>`;
   h += renderPart(t, sec, p);
+  if (sp.type === 'writetask') { app.innerHTML = h + '</div>'; initWriting(p); return; }
   h += `<div class="resultbar"><button class="btn btn-red" id="checkBtn" onclick="checkPart()">✔ Correggi</button>
     <span class="score" id="scoreOut"></span>
     <button class="btn btn-ghost" id="retryBtn" style="display:none" onclick="showPart(${ti},'${sec}',${pi})">↻ Riprova</button></div></div>`;
