@@ -88,6 +88,17 @@
   .resultbar { position: sticky; bottom: 0; background: #0d0d0d; padding: 14px 0; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; border-top: 2px solid #222; margin-top: 10px; }
   .score { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 2px; }
   .empty-note { background: #1a1a1a; border-radius: 10px; padding: 18px; color: #bbb; }
+  .tf-line { line-height: 2; }
+  .tf-line input.gap { width: 220px; max-width: 100%; }
+  .notice img { display: block; }
+  .longwrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+  .textcol { position: sticky; top: 10px; max-height: calc(100vh - 20px); overflow-y: auto; border-radius: 10px; }
+  .textcol .textbox { margin-bottom: 0; }
+  .two-col > div:last-child { position: sticky; top: 10px; max-height: calc(100vh - 20px); overflow-y: auto; }
+  @media (max-width: 860px) {
+    .longwrap { grid-template-columns: 1fr; }
+    .textcol, .two-col > div:last-child { position: static; max-height: none; }
+  }
 </style>
 </head>
 <body>
@@ -96,7 +107,7 @@
   <div class="hero-letter">B1</div>
   <div class="hero-text">
     <h1>B1 Preliminary</h1>
-    <p>Reading · Listening — Certificazioni</p>
+    <p>Reading · Writing · Listening — Certificazioni</p>
   </div>
 </div>
 
@@ -104,44 +115,21 @@
 
 <script>
 /* =====================================================================
-   DATI DEI TEST — è l'unica parte da modificare.
+   ELENCO DEI TEST
    ---------------------------------------------------------------------
-   Ogni test è un oggetto { id, title, reading:[...], listening:[...] }.
-   Un test con reading e listening vuoti compare come "in preparazione".
-   I testi vanno tra `backtick`: si possono incollare su più righe.
-   Una riga vuota = nuovo paragrafo. I buchi si scrivono [16], [21]...
-
-   READING
-   Part 1: { part:1, items:[ { n:1, text:`avviso`, options:['A','B','C'], answer:'B' } ] }
-   Part 2: { part:2, people:[ { n:6, name:'Elena', text:`...`, answer:'D' } ],
-             texts:[ { letter:'A', title:'...', text:`...` } ] }       (8 testi A–H)
-   Part 3: { part:3, title:'...', text:`...`, items:[ { n:11, q:'...', options:[4], answer:'B' } ] }
-   Part 4: { part:4, title:'...', text:`... [16] ...`,
-             options:[ { letter:'A', text:'...' } ], answers:{ 16:'A', ... } }  (8 frasi A–H)
-   Part 5: { part:5, title:'...', text:`... [21] ...`,
-             gaps:{ 21:{ options:['a','b','c','d'], answer:'C' }, ... } }
-   Part 6: { part:6, title:'...', text:`... [27] ...`, answers:{ 27:['for'], ... } }
-
-   LISTENING  (audio: percorso del file mp3, es. 'audio/t1-l1-1.mp3';
-               se audio è vuoto e c'è script, la pagina legge lo script con la
-               sintesi vocale: righe "M: ..." / "F: ..." = voci diverse)
-   Part 1: { part:1, items:[ { n:1, q:'...', audio:'', script:``, options:[3], answer:'B' } ] }
-           (opzioni con immagine: { img:'img/t1-q1a.png' } al posto del testo)
-   Part 2: { part:2, items:[ { n:8, context:'You will hear...', q:'...', audio:'', script:``, options:[3], answer:'A' } ] }
-   Part 3: { part:3, intro:'...', audio:'', script:``, notes:`... [14] ...`, answers:{ 14:['...'], ... } }
-   Part 4: { part:4, intro:'...', audio:'', script:``, items:[ { n:20, q:'...', options:[3], answer:'B' } ] }
-
-   Risposte aperte (Part 6, Listening Part 3): elencare tutte le forme valide,
-   es. ['8:30','half past eight']. Maiuscole e punteggiatura non contano.
+   Ogni test ha il suo file nella cartella tests/ del repo (es. tests/pet1-t1.js),
+   creato con editor.html: non serve modificare questo file.
+   Per aggiungere un libro nuovo basta aggiungere qui 4 righe come queste.
    ===================================================================== */
+window.TESTDATA = window.TESTDATA || {};
 
 const TESTS = [
 
-/* ---- Libri di past papers: un blocco di 4 test per libro (id: pet1-t1 ... pet1-t4, pet2-t1 ...) ---- */
-{ id: 'pet1-t1', title: 'Cambridge PET 1 · Test 1', reading: [], listening: [] },
-{ id: 'pet1-t2', title: 'Cambridge PET 1 · Test 2', reading: [], listening: [] },
-{ id: 'pet1-t3', title: 'Cambridge PET 1 · Test 3', reading: [], listening: [] },
-{ id: 'pet1-t4', title: 'Cambridge PET 1 · Test 4', reading: [], listening: [] }
+/* ---- Cambridge PET 1 (i contenuti si creano con editor.html e si caricano nella cartella tests/) ---- */
+{ id:'pet1-t1', title:'Cambridge PET 1 · Test 1', src:'tests/pet1-t1.js' },
+{ id:'pet1-t2', title:'Cambridge PET 1 · Test 2', src:'tests/pet1-t2.js' },
+{ id:'pet1-t3', title:'Cambridge PET 1 · Test 3', src:'tests/pet1-t3.js' },
+{ id:'pet1-t4', title:'Cambridge PET 1 · Test 4', src:'tests/pet1-t4.js' }
 
 ];
 
@@ -149,29 +137,48 @@ const TESTS = [
    MOTORE — non serve modificarlo
    ===================================================================== */
 const MAX_PLAYS = 2;            // ascolti consentiti prima della correzione
-const SAVE_KEY = 'b1prelim_v1';
+const SAVE_KEY = 'b1prelim_v2';
 const L = 'ABCDEFGH';
+const SECTIONS = [['reading', '📖 Reading', 'cyan'], ['writing', '✍️ Writing', 'red'], ['listening', '🎧 Listening', 'green']];
+const SEC_NAME = { reading: 'Reading', writing: 'Writing', listening: 'Listening' };
 
-const RUBRICS = {
-  reading: {
-    1: { en: 'For each question, choose the correct answer.', it: 'Leggi il breve testo e scegli la frase che ne riporta il significato.' },
-    2: { en: 'For each question, choose the correct answer. The people below all want to find something. Read the eight texts and decide which one would be the most suitable for each person.', it: 'Ogni persona ha più richieste: il testo giusto le soddisfa tutte, non solo una.' },
-    3: { en: 'For each question, choose the correct answer.', it: 'Leggi tutto il testo una volta, poi rispondi: le domande seguono l\'ordine del testo.' },
-    4: { en: 'Five sentences have been removed from the text below. For each question, choose the correct answer. There are three extra sentences which you do not need to use.', it: 'Guarda cosa c\'è prima e dopo il buco: pronomi e collegamenti ti dicono quale frase va lì.' },
-    5: { en: 'For each question, choose the correct answer.', it: 'Una sola parola funziona con le parole intorno (preposizioni, collocazioni).' },
-    6: { en: 'For each question, write the correct answer. Write ONE word for each gap.', it: 'Di solito manca una parola grammaticale: preposizione, articolo, congiunzione, ausiliare.' }
+const FORMATS = {
+  '2010': {
+    reading: {
+      1: { opts: 3, type: 'notices', info: 'Short texts', en: 'Look at the text in each question. What does it say? Choose the correct letter A, B or C.', it: 'Leggi l\'avviso e scegli la frase che ne riporta il significato.' },
+      2: { opts: 8, type: 'match', info: 'Matching', en: 'The people below all want to find something. Read the eight texts and decide which one would be the most suitable for each person.', it: 'Ogni persona ha più richieste: il testo giusto le soddisfa tutte.' },
+      3: { type: 'truefalse', info: 'True / False', labels: ['Correct', 'Incorrect'], en: 'Look at the sentences below. Read the text to decide if each sentence is correct or incorrect.', it: 'Cerca nel testo il punto preciso: le frasi seguono l\'ordine del testo.' },
+      4: { opts: 4, type: 'mclong', info: 'Multiple choice', en: 'Read the text and questions below. For each question, choose the correct letter A, B, C or D.', it: 'Alcune domande riguardano l\'opinione o lo scopo di chi scrive, non solo i fatti.' },
+      5: { opts: 4, type: 'mccloze', info: 'Multiple-choice cloze', en: 'Read the text below and choose the correct word for each space.', it: 'Una sola parola va bene con quelle intorno: guarda preposizioni e collocazioni.' }
+    },
+    writing: {
+      1: { type: 'transform', info: 'Sentence transformation', en: 'For each question, complete the second sentence so that it means the same as the first. Use no more than three words.', it: 'Al massimo tre parole. Le contrazioni contano come due parole; l\'ortografia deve essere esatta.' }
+    },
+    listening: {
+      1: { opts: 3, type: 'mcaudio', info: 'Short recordings', en: 'There are seven questions in this part. For each question, choose the correct answer.', it: 'Leggi la domanda prima di ascoltare: spesso si sentono tutte e tre le opzioni.' },
+      2: { opts: 3, type: 'mclong', info: 'Interview', en: 'For each question, choose the correct answer A, B or C.', it: 'Le domande seguono l\'ordine della registrazione.' },
+      3: { type: 'notes', info: 'Gap fill', en: 'For each question, fill in the missing information in the numbered space.', it: 'Prima di ascoltare, prova a indovinare che tipo di informazione manca (numero, orario, nome…).' },
+      4: { type: 'truefalse', info: 'True / False', labels: ['Yes', 'No'], en: 'Look at the six sentences for this part. Decide if each sentence is correct or incorrect. If it is correct, choose A for YES. If it is not correct, choose B for NO.', it: 'Attenzione a chi dice cosa: spesso le frasi riguardano l\'opinione di uno solo dei due.' }
+    }
   },
-  listening: {
-    1: { en: 'For each question, choose the correct answer. You will hear each recording twice.', it: 'Leggi la domanda prima di ascoltare: spesso sentirai nominare tutte e tre le opzioni.' },
-    2: { en: 'For each question, choose the correct answer. You will hear each conversation twice.', it: 'Ascolta come si sentono o cosa pensano i parlanti, non solo i fatti.' },
-    3: { en: 'For each question, write the correct answer in the gap. Write one or two words or a number or a date or a time.', it: 'Prima di ascoltare, prova a indovinare che tipo di informazione manca (numero, orario, nome…).' },
-    4: { en: 'For each question, choose the correct answer. You will hear the interview twice.', it: 'Le domande seguono l\'ordine dell\'intervista.' }
+  '2020': {
+    reading: {
+      1: { opts: 3, type: 'notices', info: 'Short texts', en: 'For each question, choose the correct answer.', it: 'Leggi il breve testo e scegli la frase che ne riporta il significato.' },
+      2: { opts: 8, type: 'match', info: 'Matching', en: 'For each question, choose the correct answer. The people below all want to find something. Read the eight texts and decide which one would be the most suitable for each person.', it: 'Ogni persona ha più richieste: il testo giusto le soddisfa tutte.' },
+      3: { opts: 4, type: 'mclong', info: 'Long text', en: 'For each question, choose the correct answer.', it: 'Leggi tutto il testo una volta, poi rispondi: le domande seguono l\'ordine del testo.' },
+      4: { type: 'gapped', info: 'Gapped text', en: 'Five sentences have been removed from the text below. For each question, choose the correct answer. There are three extra sentences which you do not need to use.', it: 'Guarda cosa c\'è prima e dopo il buco: pronomi e collegamenti ti dicono quale frase va lì.' },
+      5: { opts: 4, type: 'mccloze', info: 'Multiple-choice cloze', en: 'For each question, choose the correct answer.', it: 'Una sola parola funziona con le parole intorno (preposizioni, collocazioni).' },
+      6: { type: 'opencloze', info: 'Open cloze', en: 'For each question, write the correct answer. Write ONE word for each gap.', it: 'Di solito manca una parola grammaticale: preposizione, articolo, congiunzione, ausiliare.' }
+    },
+    listening: {
+      1: { opts: 3, type: 'mcaudio', info: 'Short recordings', en: 'For each question, choose the correct answer.', it: 'Leggi la domanda prima di ascoltare: spesso sentirai nominare tutte e tre le opzioni.' },
+      2: { opts: 3, type: 'mcaudio', info: 'Short conversations', en: 'For each question, choose the correct answer.', it: 'Ascolta come si sentono o cosa pensano i parlanti, non solo i fatti.' },
+      3: { type: 'notes', info: 'Gap fill', en: 'For each question, write the correct answer in the gap. Write one or two words or a number or a date or a time.', it: 'Prima di ascoltare, prova a indovinare che tipo di informazione manca.' },
+      4: { opts: 3, type: 'mclong', info: 'Interview', en: 'For each question, choose the correct answer.', it: 'Le domande seguono l\'ordine dell\'intervista.' }
+    }
   }
 };
-const PART_INFO = {
-  reading: { 1: 'Short texts', 2: 'Matching', 3: 'Long text', 4: 'Gapped text', 5: 'Multiple-choice cloze', 6: 'Open cloze' },
-  listening: { 1: 'Short recordings', 2: 'Short conversations', 3: 'Gap fill', 4: 'Interview' }
-};
+function spec(t, sec, p) { const f = FORMATS[t.format || '2020'] || FORMATS['2020']; return (f[sec] && f[sec][p.part]) || { type: '', info: '', en: '', it: '' }; }
 
 /* ---------- salvataggio ---------- */
 function loadSave() { try { return JSON.parse(localStorage.getItem(SAVE_KEY)) || {}; } catch (e) { return {}; } }
@@ -189,71 +196,65 @@ function norm(s) {
   return String(s).toLowerCase().replace(/[’‘`]/g, "'")
     .replace(/\bcan't\b/g, 'cannot').replace(/\bwon't\b/g, 'will not').replace(/n't\b/g, ' not')
     .replace(/'re\b/g, ' are').replace(/'ve\b/g, ' have').replace(/'ll\b/g, ' will').replace(/'m\b/g, ' am').replace(/'d\b/g, ' would')
-    .replace(/[^a-z0-9'€ ]/g, ' ').replace(/€/g, ' ').replace(/\s+/g, ' ').trim();
+    .replace(/[^a-z0-9' ]/g, ' ').replace(/\s+/g, ' ').trim();
 }
 function paras(text, gapFn) {
-  return String(text).trim().split(/\n\s*\n/).map(p => {
+  return String(text || '').trim().split(/\n\s*\n/).map(p => {
     let h = esc(p).replace(/\n/g, '<br>');
     if (gapFn) h = h.replace(/\[(\d+)\]/g, (m, n) => gapFn(+n));
     return '<p>' + h + '</p>';
   }).join('');
 }
+function titleBox(p, inner) { return `<div class="textbox">${p.title ? `<h3>${esc(p.title)}</h3>` : ''}${inner}</div>`; }
 function optLabel(o) { return (o && typeof o === 'object' && o.img) ? `<img src="${esc(o.img)}" alt="">` : esc(o); }
+/* una parte è "pronta" quando contiene almeno un testo */
+function filled(p) {
+  let found = false;
+  (function walk(o) {
+    if (found || !o || typeof o !== 'object') return;
+    for (const k in o) {
+      const v = o[k];
+      if (['text', 'q', 'name', 'first', 'notes', 'img'].includes(k) && typeof v === 'string' && v.trim()) { found = true; return; }
+      if (typeof v === 'object') walk(v);
+    }
+  })(p);
+  return found;
+}
+function readyParts(t, sec) { return (t[sec] || []).filter(filled); }
 
 /* ---------- audio ---------- */
 let plays = {}, checked = false, player = new Audio(), audioReg = {};
-function stopAudio() { try { player.pause(); } catch (e) {} try { speechSynthesis.cancel(); } catch (e) {} }
-function audioHTML(id, src, script) {
-  if (!src && !script) return '';
-  audioReg[id] = { src, script };
+function stopAudio() { try { player.pause(); } catch (e) {} }
+function audioHTML(id, src) {
+  if (!src) return '';
+  audioReg[id] = src;
   plays[id] = plays[id] || 0;
   return `<div class="audiobox"><button class="btn btn-green" id="ab-${id}" onclick="playAudio('${id}')">▶ Ascolta</button>
-    <span class="plays" id="pl-${id}">Ascolti: ${plays[id]}/${MAX_PLAYS}</span></div>` +
-    (script ? `<button class="tbtn" style="display:none" id="tb-${id}" onclick="document.getElementById('tr-${id}').classList.toggle('show')">Trascrizione</button>
-    <div class="transcript" id="tr-${id}">${esc(script)}</div>` : '');
+    <span class="plays" id="pl-${id}">Ascolti: ${plays[id]}/${MAX_PLAYS}</span></div>`;
 }
 function refreshAudio(id) {
-  const b = document.getElementById('ab-' + id), p = document.getElementById('pl-' + id), t = document.getElementById('tb-' + id);
+  const b = document.getElementById('ab-' + id), p = document.getElementById('pl-' + id);
   if (p) p.textContent = checked ? 'Ascolto libero' : `Ascolti: ${plays[id]}/${MAX_PLAYS}`;
   if (b) b.disabled = !checked && plays[id] >= MAX_PLAYS;
-  if (t) t.style.display = checked ? 'inline-block' : 'none';
 }
 function playAudio(id) {
-  const a = audioReg[id]; if (!a) return;
+  const src = audioReg[id]; if (!src) return;
   if (!checked && plays[id] >= MAX_PLAYS) return;
   stopAudio();
   if (!checked) plays[id]++;
   refreshAudio(id);
-  if (a.src) { player.src = a.src; player.play().catch(() => alert('File audio non trovato: ' + a.src)); }
-  else speak(a.script);
+  player.src = src; player.play().catch(() => alert('File audio non trovato: ' + src));
 }
-function speak(script) {
-  if (!('speechSynthesis' in window)) { alert('Il browser non supporta la lettura vocale.'); return; }
-  const all = speechSynthesis.getVoices().filter(v => /^en/i.test(v.lang));
-  const pref = all.filter(v => /en-GB/i.test(v.lang)).concat(all.filter(v => !/en-GB/i.test(v.lang)));
-  const map = {}; let k = 0;
-  String(script).split('\n').forEach(line => {
-    const m = line.match(/^\s*([A-Z][A-Za-z]{0,10}):\s*(.*)$/);
-    const who = m ? m[1] : '_', txt = (m ? m[2] : line).trim();
-    if (!txt) return;
-    if (!(who in map)) map[who] = k++;
-    const u = new SpeechSynthesisUtterance(txt);
-    u.lang = 'en-GB'; u.rate = 0.92;
-    if (pref.length) u.voice = pref[map[who] % pref.length];
-    u.pitch = who === 'F' ? 1.2 : who === 'M' ? 0.8 : 1;
-    speechSynthesis.speak(u);
-  });
-}
-if ('speechSynthesis' in window) speechSynthesis.onvoiceschanged = () => {};
 
 /* ---------- navigazione ---------- */
 const app = document.getElementById('app');
-function hasContent(t) { return (t.reading && t.reading.length) || (t.listening && t.listening.length); }
-function countQ(sec, p) {
+function hasContent(t) { return SECTIONS.some(([sec]) => readyParts(t, sec).length); }
+function countQ(p) {
+  if (p.key) return Object.keys(p.key).length;
   if (p.items) return p.items.length;
   if (p.people) return p.people.length;
-  if (p.answers) return Object.keys(p.answers).length;
   if (p.gaps) return Object.keys(p.gaps).length;
+  if (p.answers) return Object.keys(p.answers).length;
   return 0;
 }
 
@@ -263,30 +264,43 @@ function showHome() {
   let h = `<div class="topbar"><a href="javascript:window.close()" class="btn btn-red">✕ Chiudi questa scheda</a></div>
     <div class="block-title bt-red">📚 Scegli il test</div><div class="grid">`;
   TESTS.forEach((t, i) => {
-    const on = hasContent(t);
+    const on = hasContent(t) || (t.src && !t.loaded);
     let done = 0, tot = 0;
-    ['reading', 'listening'].forEach(sec => (t[sec] || []).forEach(p => { tot++; if (save[`${t.id}|${sec}|${p.part}`]) done++; }));
+    SECTIONS.forEach(([sec]) => readyParts(t, sec).forEach(p => { tot++; if (save[`${t.id}|${sec}|${p.part}`]) done++; }));
     h += `<div class="card c-red ${on ? '' : 'off'}" ${on ? `onclick="showTest(${i})"` : ''}>
-      <div class="card-name">${esc(t.title)}</div><div class="card-sub">${esc(t.subtitle || '')}</div>
-      ${on ? `<span class="badge">${done}/${tot} parti svolte</span>` : '<span class="badge">in preparazione</span>'}</div>`;
+      <div class="card-name">${esc(t.title)}</div>
+      ${on ? (tot ? `<span class="badge">${done}/${tot} parti svolte</span>` : '<span class="badge">Apri</span>') : '<span class="badge">in preparazione</span>'}</div>`;
   });
   app.innerHTML = h + '</div>';
 }
 
+function loadTest(t, done) {
+  if (!t.src || t.loaded) return done();
+  const s = document.createElement('script');
+  s.src = t.src + '?v=' + Date.now();
+  s.onload = () => { Object.assign(t, window.TESTDATA[t.id] || {}); t.loaded = true; done(); };
+  s.onerror = () => { t.loaded = true; done(); };
+  document.head.appendChild(s);
+}
 function showTest(ti) {
+  const t0 = TESTS[ti];
+  if (t0.src && !t0.loaded) { app.innerHTML = '<div class="empty-note">Caricamento…</div>'; return loadTest(t0, () => showTest(ti)); }
   stopAudio(); window.scrollTo(0, 0);
   const t = TESTS[ti], save = loadSave();
   let h = `<div class="topbar"><button class="btn btn-ghost" onclick="showHome()">← Tutti i test</button></div>
     <h2 class="score" style="margin-bottom:10px">${esc(t.title)}</h2>`;
   if (!hasContent(t)) h += '<div class="empty-note">⏳ Questo test è in preparazione.</div>';
-  [['reading', '📖 Reading', 'cyan'], ['listening', '🎧 Listening', 'green']].forEach(([sec, lab, col], si) => {
-    if (!t[sec] || !t[sec].length) return;
-    if (si === 1 && t.reading && t.reading.length) h += '<div class="divider"></div>';
+  let first = true;
+  SECTIONS.forEach(([sec, lab, col]) => {
+    const parts = readyParts(t, sec);
+    if (!parts.length) return;
+    if (!first) h += '<div class="divider"></div>';
+    first = false;
     h += `<div class="block-title bt-${col}">${lab}</div><div class="grid">`;
-    t[sec].forEach((p, pi) => {
-      const b = save[`${t.id}|${sec}|${p.part}`];
+    parts.forEach(p => {
+      const pi = t[sec].indexOf(p), b = save[`${t.id}|${sec}|${p.part}`];
       h += `<div class="card c-${col}" onclick="showPart(${ti},'${sec}',${pi})">
-        <div class="card-name">Part ${p.part}</div><div class="card-sub">${PART_INFO[sec][p.part] || ''} · ${countQ(sec, p)} domande</div>
+        <div class="card-name">Part ${p.part}</div><div class="card-sub">${spec(t, sec, p).info} · ${countQ(p)} domande</div>
         <span class="badge">${b ? `Migliore: ${b.score}/${b.total}` : 'Da fare'}</span></div>`;
     });
     h += '</div>';
@@ -294,82 +308,97 @@ function showTest(ti) {
   app.innerHTML = h;
 }
 
-/* ---------- rendering delle parti ---------- */
+/* ---------- elementi di risposta ---------- */
 let cur = null, keys = [];
-
-function mcQuestion(n, q, options, extra) {
-  keys.push({ n, kind: 'radio' });
+function mcQuestion(n, q, options, answer, extra, labelsOnly) {
+  keys.push({ n, kind: 'radio', type: 'letter', v: answer, box: true });
   let h = `<div class="q" id="q-${n}">${extra || ''}<div class="q-head"><span class="q-num">${n}</span>${esc(q || '')}</div>`;
   options.forEach((o, i) => {
     h += `<label class="opt"><input type="radio" name="r-${n}" value="${L[i]}"><b>${L[i]}</b><span>${optLabel(o)}</span></label>`;
   });
   return h + `<div class="fb" id="fb-${n}"></div></div>`;
 }
-function selectGap(n, letters, labels) {
-  keys.push({ n, kind: 'select' });
+function selectGap(n, letters, answer, labels) {
+  keys.push({ n, kind: 'select', type: 'letter', v: answer, label: labels ? labels[letters.indexOf(answer)] : '' });
   let o = '<option value="">—</option>';
   letters.forEach((l, i) => { o += `<option value="${l}">${labels ? l + ' ' + esc(labels[i]) : l}</option>`; });
   return `<span class="gapwrap" id="g-${n}"><span class="gapnum">${n}</span><select id="in-${n}">${o}</select><span class="gapfix" id="fb-${n}"></span></span>`;
 }
-function textGap(n) {
-  keys.push({ n, kind: 'text' });
+function textGap(n, answers) {
+  keys.push({ n, kind: 'text', type: 'text', v: answers || [] });
   return `<span class="gapwrap" id="g-${n}"><span class="gapnum">${n}</span><input class="gap" id="in-${n}" autocomplete="off" spellcheck="false"><span class="gapfix" id="fb-${n}"></span></span>`;
+}
+
+
+/* ---------- rendering delle parti ---------- */
+function renderPart(t, sec, p) {
+  const sp = spec(t, sec, p), type = sp.type;
+  let h = '';
+  if (sec === 'listening' && (type !== 'mcaudio' || p.audio)) {
+    if (p.intro) h += `<div class="q-context" style="font-size:1rem">${esc(p.intro)}</div>`;
+    h += audioHTML('main', p.audio);
+  }
+  if (type === 'notices') {
+    p.items.forEach(it => {
+      const box = it.img ? `<div class="notice"><img src="${esc(it.img)}" alt="" style="max-width:100%"></div>` : `<div class="notice">${esc(it.text || '')}</div>`;
+      h += mcQuestion(it.n, it.q, it.options, it.answer, box);
+    });
+  } else if (type === 'match') {
+    h += '<div class="two-col"><div>';
+    p.people.forEach(pp => {
+      keys.push({ n: pp.n, kind: 'select', type: 'letter', v: pp.answer, box: true });
+      let o = '<option value="">—</option>'; p.texts.forEach(tx => o += `<option value="${tx.letter}">${tx.letter}</option>`);
+      h += `<div class="q" id="q-${pp.n}"><div class="q-head"><span class="q-num">${pp.n}</span>${esc(pp.name)}</div>
+        <div style="line-height:1.5;margin-bottom:8px">${esc(pp.text)}</div>
+        <span class="gapwrap" id="g-${pp.n}">Testo: <select id="in-${pp.n}">${o}</select></span><div class="fb" id="fb-${pp.n}"></div></div>`;
+    });
+    h += '</div><div>';
+    p.texts.forEach(tx => { h += `<div class="mtext"><b>${tx.letter}</b><strong>${esc(tx.title || '')}</strong>${paras(tx.text)}</div>`; });
+    h += '</div></div>';
+  } else if (type === 'truefalse') {
+    const labels = p.labels || sp.labels || ['Correct', 'Incorrect'];
+    let qs = ''; p.items.forEach(it => { qs += mcQuestion(it.n, it.q, labels, it.answer); });
+    h += p.text ? `<div class="longwrap"><div class="textcol">${titleBox(p, paras(p.text))}</div><div>${qs}</div></div>` : qs;
+  } else if (type === 'mclong') {
+    let qs = ''; p.items.forEach(it => { qs += mcQuestion(it.n, it.q, it.options, it.answer); });
+    h += p.text ? `<div class="longwrap"><div class="textcol">${titleBox(p, paras(p.text))}</div><div>${qs}</div></div>` : qs;
+  } else if (type === 'gapped') {
+    const letters = p.options.map(o => o.letter);
+    h += `<div class="longwrap"><div class="textcol">${titleBox(p, paras(p.text, n => selectGap(n, letters, p.answers[n])))}</div>
+      <div class="optlist">${p.options.map(o => `<div><b>${o.letter}</b> ${esc(o.text)}</div>`).join('')}</div></div>`;
+  } else if (type === 'mccloze') {
+    h += titleBox(p, paras(p.text, n => { const g = p.gaps[n]; return g ? selectGap(n, g.options.map((_, i) => L[i]), g.answer, g.options) : '[' + n + ']'; }));
+  } else if (type === 'opencloze') {
+    h += titleBox(p, paras(p.text, n => textGap(n, p.answers[n])));
+  } else if (type === 'transform') {
+    if (p.title) h += `<div class="q-context" style="font-size:1rem">${esc(p.title)}</div>`;
+    p.items.forEach(it => {
+      keys.push({ n: it.n, kind: 'text', type: 'text', v: it.answers || [], box: true });
+      h += `<div class="q" id="q-${it.n}"><div class="q-head"><span class="q-num">${it.n}</span>${esc(it.first)}</div>
+        <div class="tf-line">${esc(it.before || '')} <span class="gapwrap" id="g-${it.n}"><input class="gap" id="in-${it.n}" autocomplete="off" spellcheck="false"></span> ${esc(it.after || '')}</div>
+        <div class="fb" id="fb-${it.n}"></div></div>`;
+    });
+  } else if (type === 'mcaudio') {
+    p.items.forEach(it => {
+      const extra = (it.context ? `<div class="q-context">${esc(it.context)}</div>` : '') + audioHTML('a' + it.n, it.audio);
+      h += mcQuestion(it.n, it.q, it.options, it.answer, extra);
+    });
+  } else if (type === 'notes') {
+    h += titleBox(p, paras(p.notes, n => textGap(n, p.answers[n])));
+  }
+  return h;
 }
 
 function showPart(ti, sec, pi) {
   stopAudio(); window.scrollTo(0, 0);
   checked = false; plays = {}; audioReg = {}; keys = [];
-  const t = TESTS[ti], p = t[sec][pi];
+  const t = TESTS[ti], p = t[sec][pi], sp = spec(t, sec, p);
   cur = { ti, sec, pi, t, p };
-  const r = RUBRICS[sec][p.part] || { en: '', it: '' };
+  const col = sec === 'reading' ? 'cyan' : sec === 'writing' ? 'red' : 'green';
   let h = `<div class="sec-${sec}"><div class="topbar"><button class="btn btn-ghost" onclick="showTest(${ti})">← ${esc(t.title)}</button></div>
-    <div class="block-title bt-${sec === 'reading' ? 'cyan' : 'green'}">${sec === 'reading' ? 'Reading' : 'Listening'} · Part ${p.part}</div>
-    <div class="rubric"><div class="en">${esc(p.rubric || r.en)}</div><div class="it">💡 ${esc(r.it)}</div></div>`;
-
-  if (sec === 'reading') {
-    if (p.part === 1) {
-      p.items.forEach(it => { h += mcQuestion(it.n, '', it.options, `<div class="notice">${esc(it.text)}</div>`); });
-    } else if (p.part === 2) {
-      h += '<div class="two-col"><div>';
-      p.people.forEach(pp => {
-        keys.push({ n: pp.n, kind: 'select' });
-        let o = '<option value="">—</option>'; p.texts.forEach(tx => o += `<option value="${tx.letter}">${tx.letter}</option>`);
-        h += `<div class="q" id="q-${pp.n}"><div class="q-head"><span class="q-num">${pp.n}</span>${esc(pp.name)}</div>
-          <div style="line-height:1.5;margin-bottom:8px">${esc(pp.text)}</div>
-          <span class="gapwrap" id="g-${pp.n}">Testo: <select id="in-${pp.n}">${o}</select></span><div class="fb" id="fb-${pp.n}"></div></div>`;
-      });
-      h += '</div><div>';
-      p.texts.forEach(tx => { h += `<div class="mtext"><b>${tx.letter}</b><strong>${esc(tx.title || '')}</strong><br>${esc(tx.text)}</div>`; });
-      h += '</div></div>';
-    } else if (p.part === 3) {
-      h += `<div class="textbox">${p.title ? `<h3>${esc(p.title)}</h3>` : ''}${paras(p.text)}</div>`;
-      p.items.forEach(it => { h += mcQuestion(it.n, it.q, it.options); });
-    } else if (p.part === 4) {
-      const letters = p.options.map(o => o.letter);
-      h += `<div class="optlist">${p.options.map(o => `<div><b>${o.letter}</b> ${esc(o.text)}</div>`).join('')}</div>`;
-      h += `<div class="textbox">${p.title ? `<h3>${esc(p.title)}</h3>` : ''}${paras(p.text, n => selectGap(n, letters))}</div>`;
-    } else if (p.part === 5) {
-      h += `<div class="textbox">${p.title ? `<h3>${esc(p.title)}</h3>` : ''}${paras(p.text, n => {
-        const g = p.gaps[n]; return g ? selectGap(n, g.options.map((_, i) => L[i]), g.options) : '[' + n + ']';
-      })}</div>`;
-    } else if (p.part === 6) {
-      h += `<div class="textbox">${p.title ? `<h3>${esc(p.title)}</h3>` : ''}${paras(p.text, n => textGap(n))}</div>`;
-    }
-  } else {
-    if (p.part === 1 || p.part === 2) {
-      p.items.forEach(it => {
-        const extra = (it.context ? `<div class="q-context">${esc(it.context)}</div>` : '') + audioHTML('a' + it.n, it.audio, it.script);
-        h += mcQuestion(it.n, it.q, it.options, extra);
-      });
-    } else if (p.part === 3) {
-      h += `<div class="q-context" style="font-size:1rem">${esc(p.intro || '')}</div>${audioHTML('main', p.audio, p.script)}`;
-      h += `<div class="textbox">${paras(p.notes, n => textGap(n))}</div>`;
-    } else if (p.part === 4) {
-      h += `<div class="q-context" style="font-size:1rem">${esc(p.intro || '')}</div>${audioHTML('main', p.audio, p.script)}`;
-      p.items.forEach(it => { h += mcQuestion(it.n, it.q, it.options); });
-    }
-  }
-
+    <div class="block-title bt-${col}">${SEC_NAME[sec]} · Part ${p.part}</div>
+    <div class="rubric"><div class="en">${esc(p.rubric || sp.en)}</div><div class="it">💡 ${esc(sp.it)}</div></div>`;
+  h += renderPart(t, sec, p);
   h += `<div class="resultbar"><button class="btn btn-red" id="checkBtn" onclick="checkPart()">✔ Correggi</button>
     <span class="score" id="scoreOut"></span>
     <button class="btn btn-ghost" id="retryBtn" style="display:none" onclick="showPart(${ti},'${sec}',${pi})">↻ Riprova</button></div></div>`;
@@ -377,37 +406,23 @@ function showPart(ti, sec, pi) {
 }
 
 /* ---------- correzione ---------- */
-function expected(n) {
-  const { sec, p } = cur;
-  if (sec === 'reading') {
-    if (p.part === 2) return { type: 'letter', v: p.people.find(x => x.n === n).answer };
-    if (p.part === 4) return { type: 'letter', v: p.answers[n] };
-    if (p.part === 5) return { type: 'letter', v: p.gaps[n].answer, label: p.gaps[n].options[L.indexOf(p.gaps[n].answer)] };
-    if (p.part === 6) return { type: 'text', v: p.answers[n] };
-  } else if (p.part === 3) return { type: 'text', v: p.answers[n] };
-  return { type: 'letter', v: p.items.find(x => x.n === n).answer };
-}
 function checkPart() {
   let score = 0;
   keys.forEach(k => {
-    const ex = expected(k.n);
     let given = '';
     if (k.kind === 'radio') { const r = document.querySelector(`input[name="r-${k.n}"]:checked`); given = r ? r.value : ''; }
     else given = document.getElementById('in-' + k.n).value;
-    const ok = ex.type === 'text' ? ex.v.some(a => norm(a) === norm(given)) && norm(given) !== '' : given === ex.v;
+    const ok = k.type === 'text' ? norm(given) !== '' && k.v.some(a => norm(a) === norm(given)) : given !== '' && given === k.v;
     if (ok) score++;
-    const box = document.getElementById('q-' + k.n) || document.getElementById('g-' + k.n);
-    const gw = document.getElementById('g-' + k.n);
+    const gw = document.getElementById('g-' + k.n), qb = document.getElementById('q-' + k.n);
     if (gw) gw.classList.add(ok ? 'ok' : 'ko');
-    if (box && box !== gw) box.classList.add(ok ? 'ok' : 'ko');
+    if (qb) qb.classList.add(ok ? 'ok' : 'ko');
     const fb = document.getElementById('fb-' + k.n);
     if (fb) {
-      if (ok) { fb.textContent = k.kind === 'radio' || box !== gw ? '✓ Corretto' : '✓'; fb.className = fb.className.replace(/ ?(ok|ko)/g, '') + ' ok'; fb.style.color = '#00a83a'; }
-      else {
-        const sol = ex.type === 'text' ? ex.v[0] : ex.v + (ex.label ? ' (' + ex.label + ')' : '');
-        fb.textContent = (k.kind === 'radio' || box !== gw) ? '✗ Risposta corretta: ' + sol : '→ ' + sol;
-        fb.style.color = '#e00000';
-      }
+      const sol = k.type === 'text' ? (k.v[0] || '?') : (k.v || '?') + (k.label ? ' (' + k.label + ')' : '');
+      if (k.box) fb.textContent = ok ? '✓ Corretto' : '✗ Risposta corretta: ' + sol;
+      else fb.textContent = ok ? '✓' : '→ ' + sol;
+      fb.style.color = ok ? '#00a83a' : '#e00000';
     }
   });
   document.querySelectorAll('#app input, #app select').forEach(el => el.disabled = true);
@@ -420,7 +435,7 @@ function checkPart() {
   storeBest(`${cur.t.id}|${cur.sec}|${cur.p.part}`, score, tot);
 }
 
-/* apertura diretta di un test: b1-preliminary.html?test=t1 */
+/* apertura diretta di un test: b1-preliminary.html?test=pet1-t1 */
 (function () {
   const id = new URLSearchParams(location.search).get('test');
   const i = TESTS.findIndex(t => t.id === id);
