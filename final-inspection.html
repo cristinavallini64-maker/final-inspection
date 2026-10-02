@@ -490,7 +490,8 @@ ${text}
 2 = due punti mancano o non sono riusciti; il messaggio arriva solo in parte; OPPURE testo un po' corto (20–25 parole).
 1 = poco contenuto pertinente, il lettore fa molta fatica, OPPURE testo molto corto (10–19 parole).
 0 = contenuto del tutto non pertinente o incomprensibile, oppure meno di 10 parole.
-Gli errori piccoli non tolgono punti se il messaggio è chiaro.`,
+Gli errori piccoli non tolgono punti se il messaggio è chiaro.
+Sii rigoroso come un vero esaminatore Cambridge: per ogni punto richiesto controlla che risponda ESATTAMENTE alla consegna (informazione precisa, tempo verbale e funzione richiesti, per esempio un'intenzione futura se la consegna chiede cosa farà). Se un punto è vago, impreciso o risponde a una domanda diversa, è trattato solo in parte. Il 5 si dà solo se tutti i punti sono pienamente appropriati e il messaggio è chiarissimo; con un punto trattato solo in parte il massimo è 4.`,
       p3: `Scala Cambridge per la lettera / storia (banda da 0 a 5):
 5 = il testo ottiene pienamente l'effetto voluto sul lettore; lingua sicura e ambiziosa per il livello, ampia varietà di strutture e lessico; collegamenti semplici efficaci e testo ben organizzato; errori solo minori, dovuti a tentativi ambiziosi; nessuno sforzo per il lettore.
 4 = ottiene l'effetto voluto; lingua abbastanza ambiziosa, una certa varietà di strutture e lessico; qualche collegamento tra le frasi e una certa organizzazione; alcuni errori che non impediscono la comprensione; poco sforzo per il lettore.
@@ -542,7 +543,7 @@ ${SCALES[ty.scale]}
 
 Struttura della risposta:
 1. <h3>Punteggio</h3>: ${ty.scale === 'new' ? 'il punteggio per ciascuno dei 4 criteri e il totale /20' : 'la banda/punteggio da 0 a 5'}, con una frase di motivazione.
-2. <h3>Contenuto</h3>: ${pts ? 'per ciascun punto obbligatorio, se c\'è (✔) o manca (✘)' : 'se il testo risponde alla traccia'}; commento sulla lunghezza.
+2. <h3>Contenuto</h3>: ${pts ? 'per ciascun punto obbligatorio: trattato pienamente (✔), solo in parte (◐, spiega perché) o mancante (✘)' : 'se il testo risponde alla traccia'}; commento sulla lunghezza.
 3. <h3>Errori da correggere</h3>: al massimo 6 errori importanti; per ciascuno: frase originale → forma corretta → spiegazione breve in italiano.
 4. <h3>Per migliorare</h3>: 2 o 3 consigli concreti per salire di banda (lessico, connettivi, strutture).
 Non riscrivere l'intero testo.
@@ -551,15 +552,23 @@ Testo dello studente:
 """
 ${text}
 """`;
+      const BUSY = /high demand|overloaded|unavailable|try again|rate|quota|429|503/i;
       try {
-        const r = await fetch('https://writingtutor.cristinavallini64.workers.dev/', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt })
-        });
-        const data = await r.json();
-        if (!r.ok || data.error) throw new Error(data.error || 'Errore del server (' + r.status + ')');
+        let data = null;
+        for (let i = 0; i < 4 && !data; i++) {
+          const r = await fetch('https://writingtutor.cristinavallini64.workers.dev/', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt })
+          });
+          const d = await r.json().catch(() => ({}));
+          if (r.ok && !d.error && d.result) { data = d; break; }
+          const msg = d.error || ('Errore del server (' + r.status + ')');
+          if (i < 3 && (BUSY.test(msg) || r.status >= 500)) { btn.textContent = 'Server occupato, riprovo (' + (i + 1) + '/3)…'; await new Promise(z => setTimeout(z, 4000 * (i + 1))); continue; }
+          throw new Error(msg);
+        }
         res.innerHTML = data.result; res.style.display = 'block';
       } catch (e) {
-        err.textContent = 'Si è verificato un errore durante la richiesta: ' + e.message; err.style.display = 'block';
+        err.textContent = BUSY.test(e.message) ? 'Il servizio di correzione in questo momento è molto occupato. Il tuo testo non è perso: riprova tra qualche minuto.' : 'Si è verificato un errore durante la richiesta: ' + e.message;
+        err.style.display = 'block';
       } finally { btn.disabled = false; btn.textContent = 'VALUTA IL MIO WRITING'; }
     };
   })();
