@@ -313,7 +313,7 @@ function showHome() {
   let h = `<div class="topbar"><a href="javascript:window.close()" class="btn btn-red">✕ Chiudi questa scheda</a></div>
     <div class="block-title bt-red">📚 Scegli il test</div><div class="grid">`;
   TESTS.forEach((t, i) => {
-    const on = hasContent(t) || (t.src && !t.loaded);
+    const on = hasContent(t) || (t.src && !t.loaded && t.exists !== false);
     let done = 0, tot = 0;
     SECTIONS.forEach(([sec]) => readyParts(t, sec).forEach(p => { tot++; if (save[`${t.id}|${sec}|${p.part}`]) done++; }));
     h += `<div class="card c-red ${on ? '' : 'off'}" ${on ? `onclick="go('${t.id}')"` : ''}>
@@ -321,6 +321,11 @@ function showHome() {
       ${on ? (tot ? `<span class="badge">${done}/${tot} parti svolte</span>` : '<span class="badge">Apri</span>') : '<span class="badge">in preparazione</span>'}</div>`;
   });
   app.innerHTML = h + '</div>';
+  /* controlla quali file dei test esistono già: quelli mancanti risultano "in preparazione" */
+  TESTS.filter(t => t.src && !t.loaded && t.exists === undefined).forEach(t => {
+    t.exists = null;
+    fetch(t.src, { method: 'HEAD', cache: 'no-store' }).then(r => { t.exists = r.ok; if (!r.ok && !location.hash && !new URLSearchParams(location.search).get('test')) showHome(); }).catch(() => { t.exists = true; });
+  });
 }
 
 function loadTest(t, done) {
