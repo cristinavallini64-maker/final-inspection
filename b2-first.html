@@ -327,7 +327,7 @@ function loadTest(t, done) {
   if (!t.src || t.loaded) return done();
   const s = document.createElement('script');
   s.src = t.src + '?v=' + Date.now();
-  s.onload = () => { Object.assign(t, window.TESTDATA[t.id] || {}); t.loaded = true; done(); };
+  s.onload = () => { Object.assign(t, window.TESTDATA[t.id] || {}); (t.reading || []).forEach(p => { if (p.questions && !p.items) p.items = p.questions; }); t.loaded = true; done(); };
   s.onerror = () => { t.loaded = true; done(); };
   document.head.appendChild(s);
 }
