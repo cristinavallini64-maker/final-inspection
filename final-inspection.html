@@ -234,7 +234,7 @@
 
     </div>
 
-    <div class="sub-title sub-gap">🛠️ Allenamento mirato · Use of English & Writing</div>
+    <div class="sub-title sub-gap">🛠️ Allenamento mirato · Use of English</div>
     <div class="sub-note">Non sono test: sono palestre per esercitarsi sulle parti più difficili dell'esame.</div>
     <div class="topics">
 
@@ -266,41 +266,7 @@
 
     </div>
 
-  <!-- WRITING TUTOR INTEGRATO -->
-  <div class="writing-tutor-container">
-    <div class="writing-tutor-title">✍️ CAMBRIDGE B2 FIRST — WRITING TUTOR IA</div>
-    <p class="writing-tutor-desc">Inserisci la traccia dell'esercizio, seleziona la tipologia di testo, incolla la tua produzione e ricevi un feedback dettagliato secondo i criteri Cambridge.</p>
 
-    <div class="wt-form-group">
-      <label for="wtTaskType">Tipologia di Testo (Task Type)</label>
-      <select id="wtTaskType" class="wt-select">
-        <option value="Essay">Essay (Saggio)</option>
-        <option value="Article">Article (Articolo)</option>
-        <option value="Email / Letter">Email / Letter (Email / Lettera)</option>
-        <option value="Report">Report (Relazione)</option>
-        <option value="Review">Review (Recensione)</option>
-      </select>
-    </div>
-
-    <div class="wt-form-group">
-      <label for="wtTaskPrompt">Traccia / Consegna dell'esercizio (Task Prompt)</label>
-      <textarea id="wtTaskPrompt" class="wt-textarea-prompt" placeholder="Incolla o scrivi qui la traccia fornita dal docente o dal libro (opzionale ma consigliato)..."></textarea>
-    </div>
-
-    <div class="wt-form-group">
-      <label for="wtText">Il tuo testo (Incolla qui)</label>
-      <textarea id="wtText" class="wt-textarea" placeholder="Write your essay or text here... (140-190 words)"></textarea>
-      <div class="wt-meta">
-        <span id="wtWordCount">Parole: 0</span>
-        <span>Target: 140 - 190 parole</span>
-      </div>
-    </div>
-
-    <button id="wtSubmitBtn" class="wt-btn" onclick="runWritingTutor()">Valuta il mio Writing</button>
-
-    <div id="wtError" class="wt-error"></div>
-    <div id="wtResult" class="wt-result"></div>
-  </div>
 
   </div>
 
@@ -334,75 +300,7 @@
   </div>
 
 </div>
-<script>
-  // --- SCRIPTS PER IL WRITING TUTOR ---
-  const wtTextarea = document.getElementById('wtText');
-  const wtWordCountSpan = document.getElementById('wtWordCount');
 
-  wtTextarea.addEventListener('input', () => {
-    const text = wtTextarea.value.trim();
-    const words = text ? text.split(/\s+/).length : 0;
-    wtWordCountSpan.textContent = `Parole: ${words}`;
-  });
-
-  async function runWritingTutor() {
-    const text = wtTextarea.value.trim();
-    const taskPrompt = document.getElementById('wtTaskPrompt').value.trim();
-    const taskType = document.getElementById('wtTaskType').value;
-    
-    const workerUrl = 'https://writingtutor.cristinavallini64.workers.dev/';
-    const submitBtn = document.getElementById('wtSubmitBtn');
-    const errorBox = document.getElementById('wtError');
-    const resultBox = document.getElementById('wtResult');
-
-    errorBox.style.display = 'none';
-    resultBox.style.display = 'none';
-
-    if (!text) {
-      errorBox.textContent = "Per favore, inserisci un testo prima di richiedere la valutazione.";
-      errorBox.style.display = 'block';
-      return;
-    }
-
-    submitBtn.disabled = true;
-    submitBtn.textContent = "ANALISI IN CORSO CON GEMINI IA...";
-
-    const prompt = `Sei un esaminatore ufficiale Cambridge B2 First (FCE).
-Valuta il seguente testo fornendo una risposta in lingua italiana ma citando le frasi originali in inglese per le correzioni.
-
-Tipologia di task: ${taskType}
-Traccia dell'esercizio (Task Prompt): ${taskPrompt ? taskPrompt : "Nessuna traccia fornita specificamente. Valuta in base alla tipologia selezionata."}
-
-Testo dello studente:
-"""
-${text}
-"""`;
-
-    try {
-      const response = await fetch(workerUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: prompt })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok || data.error) {
-        throw new Error(data.error || `Errore del server (${response.status})`);
-      }
-
-      resultBox.innerHTML = data.result;
-      resultBox.style.display = 'block';
-
-    } catch (err) {
-      errorBox.textContent = "Si è verificato un errore durante la richiesta: " + err.message;
-      errorBox.style.display = 'block';
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = "VALUTA IL MIO WRITING";
-    }
-  }
-</script>
 
 
 </body>
