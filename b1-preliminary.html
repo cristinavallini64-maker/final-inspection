@@ -94,6 +94,7 @@
   .tf-line { line-height: 2; }
   .tf-line input.gap { width: 220px; max-width: 100%; }
   .notice img { display: block; }
+  .nimg { display: block; max-width: 100%; max-height: 340px; border-radius: 6px; margin: 4px 0 12px; }
   .longwrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
   .textcol { position: sticky; top: 10px; max-height: calc(100vh - 20px); overflow-y: auto; border-radius: 10px; }
   .textcol .textbox { margin-bottom: 0; }
@@ -513,7 +514,7 @@ function renderPart(t, sec, p) {
   }
   if (type === 'notices') {
     p.items.forEach(it => {
-      const box = it.img ? `<div class="notice"><img src="${esc(it.img)}" alt="" style="max-width:100%"></div>` : `<div class="notice">${esc(it.text || '')}</div>`;
+      const box = it.img ? `<img class="nimg" src="${esc(it.img)}" alt="">` : `<div class="notice">${esc(it.text || '')}</div>`;
       h += mcQuestion(it.n, it.q, it.options, it.answer, box);
     });
   } else if (type === 'match') {
