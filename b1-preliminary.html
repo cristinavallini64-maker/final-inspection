@@ -609,6 +609,7 @@ function nextPart(t, sec, pi) {
   return i >= 0 && i < list.length - 1 ? list[i + 1] : null;
 }
 function go(hash) {
+  if (!hash && location.search) { history.pushState(null, '', location.pathname); return route(); }   /* "Tutti i test" dal link ?test=… */
   if (('#' + hash) === location.hash || (!hash && !location.hash)) route();
   else location.hash = hash;
 }
@@ -626,6 +627,7 @@ function route() {
   showTest(ti);
 }
 window.addEventListener('hashchange', route);
+window.addEventListener('popstate', () => { if (!location.hash) route(); });
 route();
 </script>
 </body>
