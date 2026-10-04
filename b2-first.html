@@ -339,7 +339,7 @@ function loadTest(t, done) {
 function showTest(ti) {
   stopAudio(); window.scrollTo(0, 0);
   const t = TESTS[ti], save = loadSave();
-  let h = `<div class="topbar"><button class="btn btn-ghost" onclick="go('')">← Tutti i test</button></div>
+  let h = `<div class="topbar"><a class="btn btn-ghost" href="final-inspection.html">← Final Inspection</a></div>
     <h2 class="score" style="margin-bottom:10px">${esc(t.title)}</h2>`;
   if (!hasContent(t)) h += '<div class="empty-note">⏳ Questo test è in preparazione.</div>';
   let first = true;
@@ -583,7 +583,7 @@ function route() {
   const hash = decodeURIComponent(location.hash.replace(/^#/, ''));
   const [id, sec, part] = hash ? hash.split('/') : [new URLSearchParams(location.search).get('test')];
   const ti = TESTS.findIndex(t => t.id === id);
-  if (ti < 0) return showHome();
+  if (ti < 0) { location.replace('final-inspection.html'); return; }   /* niente elenco generale: si torna alla pagina I */
   const t = TESTS[ti];
   if (t.src && !t.loaded) { app.innerHTML = '<div class="empty-note">Caricamento…</div>'; return loadTest(t, route); }
   if (sec && t[sec]) {
