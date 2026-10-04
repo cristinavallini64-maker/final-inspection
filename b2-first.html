@@ -248,7 +248,7 @@ function kwtShow(k) { const o = k.split(/\s+OR\s+/)[0].split('|').map(x => expan
 function paras(text, gapFn) {
   return String(text || '').trim().split(/\n\s*\n/).map(p => {
     let h = esc(p).replace(/\n/g, '<br>');
-    if (gapFn) h = h.replace(/\[(\d+)\]/g, (m, n) => gapFn(+n));
+    if (gapFn) h = h.replace(/\[\s*\[(\d+)\]\s*\]|\[(\d+)\]/g, (m, a, b) => gapFn(+(a || b)));   /* accetta [9] e [[9]] */
     return '<p>' + h + '</p>';
   }).join('');
 }
@@ -451,8 +451,11 @@ async function runWT(p, it, i, btn) {
 }
 
 /* ---------- rendering delle parti ---------- */
+function lettered(list) { return (list || []).map((o, i) => typeof o === 'string' ? { letter: L[i], text: o } : o); }   /* accetta anche frasi senza lettera */
 function renderPart(t, sec, p) {
   const sp = spec(t, sec, p), type = sp.type;
+  if (p.options && (type === 'gapped' || type === 'speakers')) p.options = lettered(p.options);
+  if (p.sections) p.sections = lettered(p.sections);
   let h = '';
   if (sec === 'listening' && p.audio) {
     if (p.intro) h += `<div class="q-context" style="font-size:1rem">${esc(p.intro)}</div>`;
