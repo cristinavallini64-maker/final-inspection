@@ -282,6 +282,7 @@ function readyParts(t, sec) { return (t[sec] || []).filter(filled); }
 
 /* ---------- audio ---------- */
 let plays = {}, checked = false, player = new Audio(), audioReg = {};
+player.addEventListener('ended', () => { if (player.dataset.id) refreshAudio(player.dataset.id); });
 function stopAudio() { try { player.pause(); } catch (e) {} }
 function audioHTML(id, src) {
   if (!src) return '';
@@ -293,15 +294,17 @@ function audioHTML(id, src) {
 function refreshAudio(id) {
   const b = document.getElementById('ab-' + id), p = document.getElementById('pl-' + id);
   if (p) p.textContent = checked ? 'Ascolto libero' : `Ascolti: ${plays[id]}/${MAX_PLAYS}`;
-  if (b) b.disabled = !checked && plays[id] >= MAX_PLAYS;
+  if (b) b.disabled = (!checked && plays[id] >= MAX_PLAYS) || (player.dataset.id === id && !player.paused && !player.ended);
 }
 function playAudio(id) {
   const src = audioReg[id]; if (!src) return;
+  if (player.dataset.id === id && !player.paused && !player.ended) return;   /* già in riproduzione: niente pausa né ripartenza */
   if (!checked && plays[id] >= MAX_PLAYS) return;
   stopAudio();
   if (!checked) plays[id]++;
+  player.dataset.id = id;
   refreshAudio(id);
-  player.src = src; player.play().catch(() => alert('File audio non trovato: ' + src));
+  player.src = src; player.play().then(() => refreshAudio(id)).catch(() => alert('File audio non trovato: ' + src));
 }
 
 /* ---------- navigazione ---------- */
