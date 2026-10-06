@@ -273,6 +273,7 @@ function filled(p) {
     for (const k in o) {
       const v = o[k];
       if (['text', 'q', 'name', 'first', 'notes', 'img', 'task'].includes(k) && typeof v === 'string' && v.trim()) { found = true; return; }
+      if (k === 'options' && Array.isArray(v) && v.some(x => typeof x === 'string' && x.trim())) { found = true; return; }   /* opzioni come semplici frasi */
       if (typeof v === 'object') walk(v);
     }
   })(p);
