@@ -45,6 +45,9 @@
   .rubric .it { font-size: 0.9rem; color: #bbb; margin-top: 6px; }
   .sec-reading .rubric { border-left-color: #00CFCF; }
   .sec-listening .rubric { border-left-color: #00CC44; }
+  .example { background: #fff; border: 2px dashed #888; border-radius: 10px; padding: 10px 12px 12px; margin-bottom: 22px; max-width: 760px; }
+  .example .ex-h { color: #555; font-weight: 700; font-size: .85rem; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+  .example img { display: block; width: 100%; height: auto; }
 
   .textbox { background: #f4f1e8; color: #111; border-radius: 10px; padding: 18px 22px; margin-bottom: 18px; line-height: 1.65; font-size: 1.02rem; }
   .textbox h3 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px; font-size: 1.5rem; margin-bottom: 8px; }
@@ -604,6 +607,7 @@ function showPart(ti, sec, pi) {
   let h = `<div class="sec-${sec}"><div class="topbar"><button class="btn btn-ghost" onclick="go('${t.id}')">← ${esc(t.title)}</button></div>
     <div class="block-title bt-${col}">${SEC_NAME[sec]} · Part ${p.part}</div>
     <div class="rubric"><div class="en">${esc(p.rubric || sp.en)}</div><div class="it">💡 ${esc(sp.it)}</div></div>`;
+  if (p.example) h += `<div class="example"><div class="ex-h">Example · Esempio</div><img src="${esc(p.example)}" alt="Example"></div>`;
   h += renderPart(t, sec, p);
   const nx = nextPart(t, sec, pi);
   const nextBtn = nx ? `<button class="btn btn-green" onclick="go('${t.id}/${nx[0]}/${nx[1]}')">Parte successiva →</button>` : `<button class="btn btn-ghost" onclick="go('${t.id}')">Torna al test</button>`;
