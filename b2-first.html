@@ -263,6 +263,12 @@ function storeBest(key, score, total) {
   } catch (e) {}
 }
 
+/* writing con valutazione IA: parte segnata come svolta + bozza del testo salvata */
+function storeDone(key) { try { const s = loadSave(); if (!s[key]) s[key] = { done: true }; localStorage.setItem(SAVE_KEY, JSON.stringify(s)); } catch (e) {} }
+function draftKey(i) { return SAVE_KEY + '-wt|' + cur.t.id + '|' + cur.p.part + '|' + i; }
+function getDraft(i) { try { return localStorage.getItem(draftKey(i)) || ''; } catch (e) { return ''; } }
+function setDraft(i, v) { try { localStorage.setItem(draftKey(i), v); } catch (e) {} }
+
 /* ---------- utilità ---------- */
 function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 function norm(s) {
@@ -412,7 +418,7 @@ function showTest(ti) {
       const b = save[`${t.id}|${sec}|${p.part}`], sp = spec(t, sec, p);
       h += `<div class="card c-${col}" onclick="go('${t.id}/${sec}/${p.part}')">
         <div class="card-name">Part ${p.part}</div><div class="card-sub">${sp.info}${sp.type === 'writetask' ? ' · valutazione IA' : ' · ' + countQ(p) + ' domande'}</div>
-        <span class="badge">${b ? `Migliore: ${b.score}/${b.total}` : 'Da fare'}</span></div>`;
+        <span class="badge">${b ? (b.done ? 'Svolto ✓' : `Migliore: ${b.score}/${b.total}`) : 'Da fare'}</span></div>`;
     });
     h += '</div>';
   });
@@ -498,7 +504,9 @@ function initWriting(p) {
     document.querySelectorAll('.wt-item').forEach(d => d.style.display = d.dataset.i === r.value ? '' : 'none'));
   p.items.forEach((it, i) => {
     const ta = document.getElementById('wt-text-' + i), cnt = document.getElementById('wt-count-' + i), info = wtInfo(p.part, it.kind);
-    ta.oninput = () => { const n = wtWords(ta.value); cnt.textContent = 'Parole: ' + n; cnt.style.color = n && (n < info.min || n > info.max) ? '#ff6666' : ''; };
+    ta.value = getDraft(i);
+    ta.oninput = () => { setDraft(i, ta.value); const n = wtWords(ta.value); cnt.textContent = 'Parole: ' + n; cnt.style.color = n && (n < info.min || n > info.max) ? '#ff6666' : ''; };
+    ta.oninput();
   });
   document.querySelectorAll('.wt-go').forEach(b => b.onclick = () => runWT(p, p.items[+b.dataset.i], +b.dataset.i, b));
 }
@@ -512,6 +520,7 @@ async function runWT(p, it, i, btn) {
   try {
     const data = await wtCall(WT.prompt(info, it, text, pts, wtWords(text)), () => { btn.textContent = 'Server occupato, riprovo…'; });
     res.innerHTML = String(data.result).replace(/\*\*/g, '').replace(/(^|<br>)\s*#+\s*/g, '$1'); res.style.display = 'block';
+    storeDone(`${cur.t.id}|${cur.sec}|${cur.p.part}`);
   } catch (e) { err.textContent = wtMsg(e.message); err.style.display = 'block'; }
   finally { btn.disabled = false; btn.textContent = '✔ Valuta il mio Writing'; }
 }

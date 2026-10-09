@@ -73,6 +73,7 @@ Riferimenti reali Cambridge: una lettera sicura con frasi complesse varie, conne
       res.innerHTML = data.result;
       res.querySelectorAll('div').forEach(d => { if (/^\s*(MARK|BAND|BANDA|VOTO)\b/i.test(d.textContent)) d.remove(); });
       res.style.display = 'block';
+      if (typeof storeDone === 'function' && typeof cur !== 'undefined' && cur) storeDone(cur.t.id + '|' + cur.sec + '|' + cur.p.part);
     } catch (e) { err.textContent = wtMsg(e.message); err.style.display = 'block'; }
     finally { btn.disabled = false; btn.textContent = '✔ Valuta il mio Writing'; }
   };
