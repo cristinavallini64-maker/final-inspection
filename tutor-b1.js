@@ -78,7 +78,7 @@ Riferimenti reali Cambridge: una lettera sicura con frasi complesse varie, conne
     finally { btn.disabled = false; btn.textContent = '✔ Valuta il mio Writing'; }
   };
   window.WT = {
-    version: '2 ott 18:05',
+    version: '9 ott 13:25',
     SCALES,
     prompt(info, it, text, pts) {
       const WT_SCALES = SCALES;

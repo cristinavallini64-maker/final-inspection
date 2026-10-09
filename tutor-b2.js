@@ -5,7 +5,7 @@
    Usa lo stesso Worker del tutor B2 della pagina I.
    ===================================================================== */
 window.WT = {
-  version: '4 ott 2026',
+  version: '9 ott 13:25',
   prompt(info, it, text, pts, words) {
     return `Sei un esaminatore ufficiale Cambridge B2 First (FCE). Lo studente è un adolescente italiano.
 Rispondi in italiano, citando tra virgolette le frasi originali in inglese quando correggi.
