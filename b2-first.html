@@ -125,6 +125,7 @@
   .wt-res { white-space: normal; }
   .fb:empty { display: none; }
 </style>
+<script src="https://cristinavallini64-maker.github.io/grammar-tutor/tracker.js"></script>
 </head>
 <body>
 
@@ -632,6 +633,7 @@ function checkPart() {
   document.getElementById('retryBtn').style.display = 'inline-block';
   const nw = document.getElementById('nextWrap'); if (nw) nw.style.display = 'inline';
   storeBest(`${cur.t.id}|${cur.sec}|${cur.p.part}`, score, tot);
+  { const _k=`${cur.t.id}|${cur.sec}|${cur.p.part}`; window._efDone=window._efDone||{}; if(!window._efDone[_k]){ window._efDone[_k]=1; if(window.EFTrack) EFTrack.event('punteggio:'+(cur.t.title||cur.t.id)+' · '+cur.sec+' part '+cur.p.part+' (su '+tot+')', tot?Math.round(score/tot*100):0); } }
 }
 
 /* ---------- navigazione con indirizzo: indietro del browser e ricarica tornano allo stesso punto ----------
