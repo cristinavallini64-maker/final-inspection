@@ -664,11 +664,12 @@ function checkPart(force) {
   finishPart();
 }
 function finishPart() {
-  let score = 0, tot = 0, n1 = 0, n2 = 0;
+  let score = 0, tot = 0, n1 = 0, n2 = 0, t1 = 0, t2 = 0, anyRetry = false;
   keys.forEach(k => {
     const max = k._max || evalKey(k, '').max, p1 = r1[k.n] || 0;
-    let pts = p1, fixed = false;
-    if (k._retry) { const p2 = evalKey(k, givenOf(k)).pts; if (p2 / 2 > pts) pts = p2 / 2; fixed = p2 === max; }
+    let pts = p1, fixed = false, after2 = p1;
+    if (k._retry) { anyRetry = true; const p2 = evalKey(k, givenOf(k)).pts; after2 = Math.max(p1, p2); if (p2 / 2 > pts) pts = p2 / 2; fixed = p2 === max; }
+    t1 += p1; t2 += after2;
     score += pts; tot += max;
     if (p1 === max) { n1++; markKey(k, 'ok'); fbKey(k, '✓ Corretto', '#00a83a'); }
     else if (fixed) { n2++; markKey(k, 'ok'); fbKey(k, '½ Corretto al secondo tentativo', '#d08000'); }
@@ -682,7 +683,12 @@ function finishPart() {
   document.getElementById('retryBtn').style.display = 'inline-block';
   const nw = document.getElementById('nextWrap'); if (nw) nw.style.display = 'inline';
   storeBest(`${cur.t.id}|${cur.sec}|${cur.p.part}`, score, tot);
-  if (window.EFTrack) EFTrack.event('punteggio:'+(cur.t.title||cur.t.id)+' · '+cur.sec+' part '+cur.p.part+' (su '+tot+')', tot?Math.round(score/tot*100):0);   /* ogni svolgimento: il cruscotto mostra il primo, il migliore e quante volte */
+  if (window.EFTrack) {
+    const base = 'punteggio:'+(cur.t.title||cur.t.id)+' · '+cur.sec+' part '+cur.p.part, pc = x => tot ? Math.round(x/tot*100) : 0;
+    EFTrack.event(base+' [t1] (su '+tot+')', pc(t1));                   /* risposte giuste alla 1a correzione */
+    if (anyRetry) EFTrack.event(base+' [t2] (su '+tot+')', pc(t2));     /* risposte giuste dopo il 2o tentativo */
+    EFTrack.event(base+' (su '+tot+')', pc(score));                     /* punteggio con i mezzi punti */
+  }   /* ogni svolgimento: il cruscotto mostra il primo, il migliore e quante volte */
 }
 
 /* ---------- navigazione con indirizzo: indietro del browser e ricarica tornano allo stesso punto ----------
