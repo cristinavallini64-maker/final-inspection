@@ -649,11 +649,12 @@ function lockKey(k, on) { if (k.kind === 'radio') document.querySelectorAll(`inp
 function markKey(k, cls) { ['g-', 'q-'].forEach(p => { const el = document.getElementById(p + k.n); if (el) { el.classList.remove('ok', 'ko'); if (cls) el.classList.add(cls); } }); }
 function fbKey(k, txt, col) { const fb = document.getElementById('fb-' + k.n); if (fb) { fb.textContent = txt; fb.style.color = col; } }
 function pendKey() { return SAVE_KEY + '-pend|' + cur.t.id + '|' + cur.sec + '|' + cur.p.part; }
-function savePending() { try { const a = {}; keys.forEach(k => a[k.n] = givenOf(k)); localStorage.setItem(pendKey(), JSON.stringify(a)); } catch (e) {} }
+function savePending() { try { const a = { _t: Date.now() }; keys.forEach(k => a[k.n] = givenOf(k)); localStorage.setItem(pendKey(), JSON.stringify(a)); } catch (e) {} }
 function clearPending() { try { localStorage.removeItem(pendKey()); } catch (e) {} }
 function restorePending() {
   let a = null; try { a = JSON.parse(localStorage.getItem(pendKey()) || 'null'); } catch (e) {}
   if (!a) return;
+  if (!a._t || Date.now() - a._t > 12 * 3600 * 1000) { clearPending(); return; }   /* lasciata a meta' da piu' di 12 ore: si riparte da zero */
   keys.forEach(k => {
     const v = a[k.n]; if (v === undefined || v === '') return;
     if (k.kind === 'radio') { document.querySelectorAll(`input[name="r-${k.n}"]`).forEach(r => { if (r.value === v) r.checked = true; }); }
