@@ -337,7 +337,8 @@ function readyParts(t, sec) { return (t[sec] || []).filter(filled); }
 
 /* ---------- audio ---------- */
 let plays = {}, checked = false, player = new Audio(), audioReg = {};
-player.addEventListener('ended', () => { if (player.dataset.id) refreshAudio(player.dataset.id); });
+let heard = {};   /* registrazioni ascoltate fino in fondo (le tracce contengono gia' il secondo ascolto) */
+player.addEventListener('ended', () => { if (player.dataset.id) { heard[player.dataset.id] = true; refreshAudio(player.dataset.id); } });
 function stopAudio() { try { player.pause(); } catch (e) {} }
 function audioHTML(id, src) {
   if (!src) return '';
@@ -583,7 +584,7 @@ function renderPart(t, sec, p) {
 
 function showPart(ti, sec, pi) {
   stopAudio(); window.scrollTo(0, 0);
-  checked = false; plays = {}; audioReg = {}; keys = []; round = 0; r1 = {};
+  checked = false; plays = {}; audioReg = {}; keys = []; round = 0; r1 = {}; heard = {};
   const t = TESTS[ti], p = t[sec][pi], sp = spec(t, sec, p);
   cur = { ti, sec, pi, t, p };
   let h = `<div class="sec-${sec}"><div class="topbar"><button class="btn btn-ghost" onclick="go('${t.id}')">← ${esc(t.title)}</button></div>
@@ -632,9 +633,19 @@ function restorePending() {
     if (k.kind === 'radio') { document.querySelectorAll(`input[name="r-${k.n}"]`).forEach(r => { if (r.value === v) r.checked = true; }); }
     else { const el = document.getElementById('in-' + k.n); if (el) el.value = v; }
   });
-  checkPart();   /* la prima correzione era gia' stata fatta: si riparte dal secondo tentativo */
+  checkPart(true);   /* la prima correzione era gia' stata fatta: si riparte dal secondo tentativo */
 }
-function checkPart() {
+function checkPart(force) {
+  if (round === 0 && !force) {
+    const daFinire = Object.keys(audioReg).filter(id => !heard[id]);
+    if (daFinire.length) {   /* come all'esame: si corregge solo dopo aver ascoltato tutta la registrazione, secondo ascolto compreso */
+      const o = document.getElementById('scoreOut');
+      o.textContent = 'Prima di correggere ascolta la registrazione fino alla fine: anche il secondo ascolto serve, controlla le risposte.';
+      o.style.color = '#e00000';
+      return;
+    }
+  }
+  const so = document.getElementById('scoreOut'); if (so) so.style.color = '';
   if (round === 0) {
     let retry = 0, s1 = 0, tot = 0;
     keys.forEach(k => {
