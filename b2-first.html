@@ -447,6 +447,17 @@ function textGap(n, answers, stem) {
   keys.push({ n, kind: 'text', type: 'text', v: allAlts(answers) });
   return `<span class="gapwrap" id="g-${n}"><span class="gapnum">${n}</span><input class="gap" id="in-${n}" autocomplete="off" spellcheck="false">${stem ? `<span class="stem">${esc(stem)}</span>` : ''}<span class="gapfix" id="fb-${n}"></span></span>`;
 }
+function selectPair(n1, n2, head, letters, answer) {
+  keys.push({ n: n1, kind: 'select', type: 'letter', v: answer, box: true, pair: n2 });
+  keys.push({ n: n2, kind: 'select', type: 'letter', v: answer, box: true, pair: n1 });
+  let o = '<option value="">—</option>'; letters.forEach(l => o += `<option value="${l}">${l}</option>`);
+  return `<div class="q" id="q-${n1}"><div class="q-head" style="margin:0 0 8px"><span class="q-num">${n1}–${n2}</span>${esc(head || '')}</div>
+    <div style="font-size:.85rem;opacity:.75;margin-bottom:8px">Due risposte diverse, in qualsiasi ordine.</div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap">
+      <span class="gapwrap" id="g-${n1}"><span class="gapnum">${n1}</span><select id="in-${n1}">${o}</select></span>
+      <span class="gapwrap" id="g-${n2}"><span class="gapnum">${n2}</span><select id="in-${n2}">${o}</select></span></div>
+    <div class="fb" id="fb-${n1}" style="width:100%;margin:6px 0 0"></div><div class="fb" id="fb-${n2}" style="width:100%;margin:0"></div></div>`;
+}
 function selectQuestion(n, head, letters, answer, extra) {
   keys.push({ n, kind: 'select', type: 'letter', v: answer, box: true });
   let o = '<option value="">—</option>'; letters.forEach(l => o += `<option value="${l}">${l}</option>`);
@@ -549,7 +560,11 @@ function renderPart(t, sec, p) {
     const letters = p.sections.map(s => s.letter);
     let txt = (p.text ? paras(p.text) : '') + p.sections.map(s => `<div class="sect"><h4>${s.letter}${s.title ? ' · ' + esc(s.title) : ''}</h4>${paras(s.text)}</div>`).join('');
     let qs = p.stem ? `<div class="q-head" style="font-size:1.1rem;margin-bottom:10px">${esc(p.stem)}</div>` : '';
-    p.items.forEach(it => { qs += selectQuestion(it.n, it.q, letters, it.answer); });
+    for (let i = 0; i < p.items.length; i++) {
+      const it = p.items[i], nx = p.items[i + 1];
+      if (nx && nx.q === it.q && String(it.answer).includes('/') && nx.answer === it.answer) { qs += selectPair(it.n, nx.n, it.q, letters, it.answer); i++; }   /* domanda con due risposte (es. 17-18): come all'esame, una sola domanda */
+      else qs += selectQuestion(it.n, it.q, letters, it.answer);
+    }
     h += `<div class="longwrap"><div class="textcol">${titleBox(p, txt)}</div><div>${qs}</div></div>`;
   } else if (type === 'mccloze') {
     h += titleBox(p, paras(p.text, n => { const g = p.gaps[n]; return g ? selectGap(n, g.options.map((_, i) => L[i]), g.answer, g.options) : '[' + n + ']'; }));
@@ -606,6 +621,7 @@ function showPart(ti, sec, pi) {
 function evalKey(k, given) {
   if (k.type === 'kwt') return { pts: kwtScore(given, k.v), max: 2 };
   if (k.type === 'text') return { pts: sameText(given, k.v) ? 1 : 0, max: 1 };
+  if (k.pair && k.n > k.pair) { const o = keys.find(x => x.n === k.pair); if (o && given !== '' && givenOf(o) === given) return { pts: 0, max: 1 }; }   /* la stessa lettera due volte vale una sola */
   return { pts: given !== '' && String(k.v).split('/').map(x => x.trim()).includes(given) ? 1 : 0, max: 1 };   /* "A/E" = in qualsiasi ordine */
 }
 function solOf(k) { return k.type === 'kwt' ? kwtShow(k.v[0] || '?') : k.type === 'text' ? (k.v[0] || '?') : String(k.v || '?').replace('/', ' o ') + (k.label ? ' (' + k.label + ')' : ''); }
