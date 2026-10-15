@@ -610,7 +610,7 @@ function renderPart(t, sec, p) {
 
 function showPart(ti, sec, pi) {
   stopAudio(); window.scrollTo(0, 0);
-  checked = false; plays = {}; audioReg = {}; keys = [];
+  checked = false; plays = {}; audioReg = {}; keys = []; round = 0; r1 = {};
   const t = TESTS[ti], p = t[sec][pi], sp = spec(t, sec, p);
   cur = { ti, sec, pi, t, p };
   const col = sec === 'reading' ? 'cyan' : sec === 'writing' ? 'red' : 'green';
@@ -627,38 +627,80 @@ function showPart(ti, sec, pi) {
     <button class="btn btn-ghost" id="retryBtn" style="display:none" onclick="showPart(${ti},'${sec}',${pi})">↻ Riprova</button>
     <span id="nextWrap" style="display:none">${nextBtn}</span></div></div>`;
   app.innerHTML = h;
+  restorePending();
 }
 
 /* ---------- correzione ---------- */
-function checkPart() {
-  let score = 0;
+function evalKey(k, given) {
+  const ok = k.type === 'text' ? norm(given) !== '' && k.v.some(a => norm(a) === norm(given)) : given !== '' && given === k.v;
+  return { pts: ok ? 1 : 0, max: 1 };
+}
+function solOf(k) { return k.type === 'text' ? (k.v[0] || '?') : (k.v || '?') + (k.label ? ' (' + k.label + ')' : ''); }
+/* ---------- correzione in due tempi (metodo dell'insegnante) ----------
+   1a correzione: risposta giusta = 1 punto; si vede solo giusto/sbagliato, NON la soluzione.
+   Le sbagliate si possono correggere UNA volta: corretta al 2o tentativo = mezzo punto.
+   Domande con due sole opzioni (Correct/Incorrect, Yes/No): niente 2o tentativo.
+   Le soluzioni compaiono solo alla fine. Una parte lasciata a meta' si riapre allo stesso punto. */
+let round = 0, r1 = {};
+function fmtPts(x) { return String(Math.round(x * 2) / 2).replace('.', ','); }
+function givenOf(k) { if (k.kind === 'radio') { const r = document.querySelector(`input[name="r-${k.n}"]:checked`); return r ? r.value : ''; } const el = document.getElementById('in-' + k.n); return el ? el.value : ''; }
+function choicesOf(k) { if (k.kind === 'radio') return document.querySelectorAll(`input[name="r-${k.n}"]`).length; if (k.kind === 'select') { const s = document.getElementById('in-' + k.n); return s ? s.options.length - 1 : 0; } return 99; }
+function lockKey(k, on) { if (k.kind === 'radio') document.querySelectorAll(`input[name="r-${k.n}"]`).forEach(el => el.disabled = on); else { const el = document.getElementById('in-' + k.n); if (el) el.disabled = on; } }
+function markKey(k, cls) { ['g-', 'q-'].forEach(p => { const el = document.getElementById(p + k.n); if (el) { el.classList.remove('ok', 'ko'); if (cls) el.classList.add(cls); } }); }
+function fbKey(k, txt, col) { const fb = document.getElementById('fb-' + k.n); if (fb) { fb.textContent = txt; fb.style.color = col; } }
+function pendKey() { return SAVE_KEY + '-pend|' + cur.t.id + '|' + cur.sec + '|' + cur.p.part; }
+function savePending() { try { const a = {}; keys.forEach(k => a[k.n] = givenOf(k)); localStorage.setItem(pendKey(), JSON.stringify(a)); } catch (e) {} }
+function clearPending() { try { localStorage.removeItem(pendKey()); } catch (e) {} }
+function restorePending() {
+  let a = null; try { a = JSON.parse(localStorage.getItem(pendKey()) || 'null'); } catch (e) {}
+  if (!a) return;
   keys.forEach(k => {
-    let given = '';
-    if (k.kind === 'radio') { const r = document.querySelector(`input[name="r-${k.n}"]:checked`); given = r ? r.value : ''; }
-    else given = document.getElementById('in-' + k.n).value;
-    const ok = k.type === 'text' ? norm(given) !== '' && k.v.some(a => norm(a) === norm(given)) : given !== '' && given === k.v;
-    if (ok) score++;
-    const gw = document.getElementById('g-' + k.n), qb = document.getElementById('q-' + k.n);
-    if (gw) gw.classList.add(ok ? 'ok' : 'ko');
-    if (qb) qb.classList.add(ok ? 'ok' : 'ko');
-    const fb = document.getElementById('fb-' + k.n);
-    if (fb) {
-      const sol = k.type === 'text' ? (k.v[0] || '?') : (k.v || '?') + (k.label ? ' (' + k.label + ')' : '');
-      if (k.box) fb.textContent = ok ? '✓ Corretto' : '✗ Risposta corretta: ' + sol;
-      else fb.textContent = ok ? '✓' : '→ ' + sol;
-      fb.style.color = ok ? '#00a83a' : '#e00000';
+    const v = a[k.n]; if (v === undefined || v === '') return;
+    if (k.kind === 'radio') { document.querySelectorAll(`input[name="r-${k.n}"]`).forEach(r => { if (r.value === v) r.checked = true; }); }
+    else { const el = document.getElementById('in-' + k.n); if (el) el.value = v; }
+  });
+  checkPart();   /* la prima correzione era gia' stata fatta: si riparte dal secondo tentativo */
+}
+function checkPart() {
+  if (round === 0) {
+    let retry = 0, s1 = 0, tot = 0;
+    keys.forEach(k => {
+      const e = evalKey(k, givenOf(k)); r1[k.n] = e.pts; k._max = e.max; k._retry = false; tot += e.max; s1 += e.pts;
+      if (e.pts === e.max) { markKey(k, 'ok'); fbKey(k, '✓', '#00a83a'); lockKey(k, true); }
+      else if (choicesOf(k) <= 2) { markKey(k, 'ko'); fbKey(k, '✗', '#e00000'); lockKey(k, true); }
+      else { k._retry = true; retry++; markKey(k, 'ko'); fbKey(k, '✗ Riprova: se la correggi vale la metà dei punti', '#d08000'); }
+    });
+    if (retry > 0) {
+      round = 1; savePending();
+      Object.keys(plays).forEach(id => { plays[id] = Math.min(plays[id], MAX_PLAYS - 1); });   /* un ascolto in piu' per riprovare */
+      Object.keys(audioReg).forEach(refreshAudio);
+      document.getElementById('checkBtn').textContent = '✔ Correggi di nuovo';
+      document.getElementById('scoreOut').textContent = `Prima correzione: ${fmtPts(s1)}/${tot} · da riprovare: ${retry}`;
+      return;
     }
+  }
+  finishPart();
+}
+function finishPart() {
+  let score = 0, tot = 0, n1 = 0, n2 = 0;
+  keys.forEach(k => {
+    const max = k._max || evalKey(k, '').max, p1 = r1[k.n] || 0;
+    let pts = p1, fixed = false;
+    if (k._retry) { const p2 = evalKey(k, givenOf(k)).pts; if (p2 / 2 > pts) pts = p2 / 2; fixed = p2 === max; }
+    score += pts; tot += max;
+    if (p1 === max) { n1++; markKey(k, 'ok'); fbKey(k, '✓ Corretto', '#00a83a'); }
+    else if (fixed) { n2++; markKey(k, 'ok'); fbKey(k, '½ Corretto al secondo tentativo', '#d08000'); }
+    else { markKey(k, 'ko'); fbKey(k, (pts > 0 ? '½ ' : '✗ ') + 'Risposta corretta: ' + solOf(k), pts > 0 ? '#d08000' : '#e00000'); }
   });
   document.querySelectorAll('#app input, #app select').forEach(el => el.disabled = true);
-  checked = true;
+  checked = true; round = 2; clearPending();
   Object.keys(audioReg).forEach(refreshAudio);
-  const tot = keys.length;
-  document.getElementById('scoreOut').textContent = `${score}/${tot}`;
+  document.getElementById('scoreOut').textContent = `${fmtPts(score)}/${tot}` + (n2 ? ` (giuste subito: ${n1} · corrette al 2° tentativo: ${n2})` : '');
   document.getElementById('checkBtn').style.display = 'none';
   document.getElementById('retryBtn').style.display = 'inline-block';
   const nw = document.getElementById('nextWrap'); if (nw) nw.style.display = 'inline';
   storeBest(`${cur.t.id}|${cur.sec}|${cur.p.part}`, score, tot);
-  if (window.EFTrack) EFTrack.event('punteggio:'+(cur.t.title||cur.t.id)+' · '+cur.sec+' part '+cur.p.part+' (su '+tot+')', tot?Math.round(score/tot*100):0);   /* ogni tentativo: il cruscotto mostra il primo, il migliore e quante volte */
+  if (window.EFTrack) EFTrack.event('punteggio:'+(cur.t.title||cur.t.id)+' · '+cur.sec+' part '+cur.p.part+' (su '+tot+')', tot?Math.round(score/tot*100):0);   /* ogni svolgimento: il cruscotto mostra il primo, il migliore e quante volte */
 }
 
 /* ---------- navigazione con indirizzo: indietro del browser e ricarica tornano allo stesso punto ----------
