@@ -612,7 +612,7 @@ function solOf(k) { return k.type === 'kwt' ? kwtShow(k.v[0] || '?') : k.type ==
 /* ---------- correzione in due tempi (metodo dell'insegnante) ----------
    1a correzione: risposta giusta = 1 punto; si vede solo giusto/sbagliato, NON la soluzione.
    Le sbagliate si possono correggere UNA volta: corretta al 2o tentativo = mezzo punto.
-   Domande con due sole opzioni (Correct/Incorrect, Yes/No): niente 2o tentativo.
+   Domande con due sole opzioni (Correct/Incorrect, Yes/No) e tutto il listening: niente 2o tentativo.
    Le soluzioni compaiono solo alla fine. Una parte lasciata a meta' si riapre allo stesso punto. */
 let round = 0, r1 = {};
 function fmtPts(x) { return String(Math.round(x * 2) / 2).replace('.', ','); }
@@ -651,13 +651,11 @@ function checkPart(force) {
     keys.forEach(k => {
       const e = evalKey(k, givenOf(k)); r1[k.n] = e.pts; k._max = e.max; k._retry = false; tot += e.max; s1 += e.pts;
       if (e.pts === e.max) { markKey(k, 'ok'); fbKey(k, '✓', '#00a83a'); lockKey(k, true); }
-      else if (choicesOf(k) <= 2) { markKey(k, 'ko'); fbKey(k, '✗', '#e00000'); lockKey(k, true); }
+      else if (choicesOf(k) <= 2 || cur.sec === 'listening') { markKey(k, 'ko'); fbKey(k, '✗', '#e00000'); lockKey(k, true); }   /* listening: una sola correzione, come all'esame */
       else { k._retry = true; retry++; markKey(k, 'ko'); fbKey(k, '✗ Riprova: se la correggi vale la metà dei punti', '#d08000'); }
     });
     if (retry > 0) {
       round = 1; savePending();
-      Object.keys(plays).forEach(id => { plays[id] = Math.min(plays[id], MAX_PLAYS - 1); });   /* un ascolto in piu' per riprovare */
-      Object.keys(audioReg).forEach(refreshAudio);
       document.getElementById('checkBtn').textContent = '✔ Correggi di nuovo';
       document.getElementById('scoreOut').textContent = `Prima correzione: ${fmtPts(s1)}/${tot} · da riprovare: ${retry}`;
       return;
