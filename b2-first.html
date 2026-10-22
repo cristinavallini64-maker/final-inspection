@@ -475,19 +475,32 @@ function wtInfo(part, kind) {
   return part === 1 ? { name: (WT_KIND[kind] || 'Letter') + ' (B2 First, Writing Part 1, compulsory task)', min: 120, max: 150, target: '120 - 150 parole' }
                     : { name: (WT_KIND[kind] || 'Text') + ' (B2 First, Writing Part 2)', min: 120, max: 180, target: '120 - 180 parole' };
 }
+const WT_TIMEOUT = 90000;   /* tempo massimo di attesa per una risposta (ms) */
 async function wtCall(prompt, onRetry) {
   for (let i = 0; i < 2; i++) {
+    const ctl = window.AbortController ? new AbortController() : null;
+    const tm = ctl ? setTimeout(() => ctl.abort(), WT_TIMEOUT) : null;
     try {
-      const r = await fetch(WT_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt }) });
+      const r = await fetch(WT_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt }), signal: ctl ? ctl.signal : undefined });
       const data = await r.json().catch(() => ({}));
       if (r.ok && !data.error && data.result) return data;
       const msg = data.error || ('Errore del server (' + r.status + ')');
       if (i < 1 && (/high demand|overloaded|unavailable|try again|rate|quota|429|503/i.test(msg) || r.status >= 500 || r.status === 429)) { onRetry && onRetry(i + 1); await new Promise(z => setTimeout(z, 3000)); continue; }
       throw new Error(msg);
-    } catch (e) { if (i >= 1 || !/fetch|network/i.test(e.message)) throw e; onRetry && onRetry(i + 1); await new Promise(z => setTimeout(z, 3000)); }
+    } catch (e) {
+      if (e.name === 'AbortError') throw new Error('WT_TIMEOUT');
+      if (i >= 1 || !/fetch|network|load failed/i.test(e.message)) throw e;
+      onRetry && onRetry(i + 1); await new Promise(z => setTimeout(z, 3000));
+    } finally { if (tm) clearTimeout(tm); }
   }
 }
-function wtMsg(m) { return /high demand|overloaded|unavailable|try again|rate|quota|429|503/i.test(m) ? 'Il servizio di correzione in questo momento è molto occupato. Il tuo testo non è perso: riprova tra qualche minuto.' : 'Errore durante la richiesta: ' + m; }
+function wtMsg(m) {
+  const salvo = ' Il tuo testo non è perso: resta salvato su questo dispositivo.';
+  if (m === 'WT_TIMEOUT') return 'Il servizio di correzione non ha risposto entro ' + (WT_TIMEOUT / 1000) + ' secondi. Di solito è la rete (per esempio il Wi-Fi della scuola) che blocca il collegamento: prova con un\'altra rete (dati del telefono, Wi-Fi di casa).' + salvo;
+  if (/failed to fetch|load failed|networkerror|network/i.test(m)) return 'Il dispositivo non riesce a collegarsi al servizio di correzione. Controlla la connessione; se sei connesso, è la rete che blocca il collegamento: prova con un\'altra rete (dati del telefono, Wi-Fi di casa).' + salvo + ' (Dettaglio: ' + m + ')';
+  if (/high demand|overloaded|unavailable|try again|rate|quota|429|503/i.test(m)) return 'Il servizio di correzione in questo momento è molto occupato.' + salvo + ' Riprova tra qualche minuto.';
+  return 'Errore durante la richiesta: ' + m + '.' + salvo;
+}
 function wtWords(s) { return s.trim() ? s.trim().split(/\s+/).length : 0; }
 function renderWriting(t, p, sp) {
   let h = '';
@@ -529,13 +542,13 @@ async function runWT(p, it, i, btn) {
   err.style.display = 'none'; res.style.display = 'none';
   if (!text) { err.textContent = 'Scrivi il tuo testo prima di chiedere la valutazione.'; err.style.display = 'block'; return; }
   if (!window.WT) { err.textContent = 'Il tutor non è ancora caricato: riprova tra un attimo.'; err.style.display = 'block'; return; }
-  btn.disabled = true; btn.textContent = 'Analisi in corso…';
+  btn.disabled = true; const t0 = Date.now(), tick = setInterval(() => { if (btn.disabled) btn.textContent = 'Analisi in corso… ' + Math.round((Date.now() - t0) / 1000) + ' s'; }, 1000); btn.textContent = 'Analisi in corso…';
   try {
     const data = await wtCall(WT.prompt(info, it, text, pts, wtWords(text)), () => { btn.textContent = 'Server occupato, riprovo…'; });
     res.innerHTML = String(data.result).replace(/\*\*/g, '').replace(/(^|<br>)\s*#+\s*/g, '$1'); res.style.display = 'block';
     storeDone(`${cur.t.id}|${cur.sec}|${cur.p.part}`);
   } catch (e) { err.textContent = wtMsg(e.message); err.style.display = 'block'; }
-  finally { btn.disabled = false; btn.textContent = '✔ Valuta il mio Writing'; }
+  finally { clearInterval(tick); btn.disabled = false; btn.textContent = '✔ Valuta il mio Writing'; }
 }
 
 /* ---------- rendering delle parti ---------- */
