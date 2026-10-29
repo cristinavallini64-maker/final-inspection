@@ -209,8 +209,7 @@ TESTDATA["inv3"] = {
     {
      "q": "From that moment people started to move as…",
      "a": [
-      "passengers",
-      "passangers"
+      "passengers"
      ]
     },
     {
