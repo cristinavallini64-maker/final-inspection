@@ -51,6 +51,8 @@
   .textbox h3 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px; font-size: 1.5rem; margin-bottom: 8px; }
   .textbox p { margin-bottom: 10px; }
   .textbox .subt { font-weight: 800; font-style: italic; margin: -4px 0 12px; }
+  .textbox h4.nocase { text-transform: none; letter-spacing: 0; font-size: 1.05rem; margin-top: 16px; }
+  .textbox .srcline { font-size: 0.82rem; color: #666; font-style: italic; margin-top: 8px; }
   .textbox h4 { margin: 10px 0 2px; font-size: 0.95rem; text-transform: uppercase; letter-spacing: .04em; }
   .textbox .sect { margin-bottom: 14px; }
   .textbox .sect-h { margin-bottom: 4px; }
@@ -139,6 +141,7 @@ const TESTS = [
   { id: 'inv1', src: 'tests/inv1.js' },
   { id: 'inv2', src: 'tests/inv2.js' },
   { id: 'inv3', src: 'tests/inv3.js' },
+  { id: 'inv4', src: 'tests/inv4.js' },
 ];
 const SECTIONS = [['listening', '🎧 Listening'], ['reading', '📖 Reading']];
 const SAVE_KEY = 'invalsi-final';
@@ -309,11 +312,18 @@ function textHTML(task) {
   const H = `<h3>${esc(task.title)}</h3>` + (task.subtitle ? `<div class="subt">${esc(task.subtitle)}</div>` : '');
   const L = (task.options || []).map(o => o.l);
   if (task.html) return `<div class="textbox"><h3>${esc(task.title)}</h3>${task.html}</div>`;
+  const SRC = task.source ? `<p class="srcline">${esc(task.source)}</p>` : '';
+  if (task.blocks) {   /* testi con titoletti (es. modi di dire), lacune dentro i paragrafi */
+    const body = task.blocks.map(bk => `<h4 class="nocase">${esc(bk.h)}</h4>` + bk.paras.map(p => '<p>' + esc(p).replace(/\{\{(\d+)\}\}/g, (m, k) => {
+      k = +k; return k === 0 ? exampleInline(task.example.a) : inlineSel(k, L, task.items[k - 1].a);
+    }) + '</p>').join('')).join('');
+    return `<div class="textbox">${H}${body}${SRC}</div>`;
+  }
   if (task.inline) {
     const body = task.paras.map(p => '<p>' + esc(p).replace(/\{\{(\d+)\}\}/g, (m, k) => {
       k = +k; return k === 0 ? exampleInline(task.example.a) : inlineSel(k, L, task.items[k - 1].a);
     }) + '</p>').join('');
-    return `<div class="textbox">${H}${body}</div>`;
+    return `<div class="textbox">${H}${body}${SRC}</div>`;
   }
   if (task.headings) {
     const body = task.sections.map(s => {
@@ -321,10 +331,10 @@ function textHTML(task) {
       const head = k === 0 ? exampleInline(task.example.a) : inlineSel(k, L, task.items[k - 1].a);
       return `<div class="sect"><div class="sect-h">${head}</div>${s.paras.map(p => `<p>${esc(p)}</p>`).join('')}</div>`;
     }).join('');
-    return `<div class="textbox">${H}${body}</div>`;
+    return `<div class="textbox">${H}${body}${SRC}</div>`;
   }
   if (task.texts) return `<div class="textbox" style="padding:12px"><h3 style="margin:4px 8px 10px">${esc(task.title)}</h3>${task.texts.map(x => `<div class="mtext"><b>${x.l}</b>${esc(x.t)}</div>`).join('')}</div>`;
-  if (task.paras) return `<div class="textbox">${H}${task.paras.map(p => `<p>${esc(p)}</p>`).join('')}</div>`;
+  if (task.paras) return `<div class="textbox">${H}${task.paras.map(p => `<p>${esc(p)}</p>`).join('')}${SRC}</div>`;
   return '';
 }
 
