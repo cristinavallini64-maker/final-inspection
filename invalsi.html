@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INVALSI Inglese</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0d0d0d; font-family: 'Nunito', sans-serif; color: #eee; }
+
+  .hero { background: #FFFF00; padding: 40px 40px 32px; display: flex; align-items: center; gap: 26px; }
+  .hero-letter { font-family: 'Bebas Neue', sans-serif; font-size: 7rem; color: #000; line-height: 1; flex-shrink: 0; }
+  .hero-text h1 { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; letter-spacing: 3px; color: #000; }
+  .hero-text p { font-size: 1rem; color: #111; margin-top: 4px; font-weight: 700; }
+
+  .main { max-width: 1200px; margin: 0 auto; padding: 32px 16px 60px; font-size: 1.08rem; }
+  .btn { display: inline-block; border: none; cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 900; border-radius: 20px; padding: 8px 20px; font-size: 0.95rem; text-decoration: none; transition: all 0.2s; }
+  .btn-yellow { background: #FFFF00; color: #000; }
+  .btn-green { background: #00CC44; color: #000; }
+  .btn-cyan { background: #00CFCF; color: #000; }
+  .btn-ghost { background: #222; color: #eee; }
+  .btn:hover { filter: brightness(1.15); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .topbar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
+
+  .block-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.7rem; letter-spacing: 4px; padding: 10px 22px; border-radius: 8px; margin: 10px 0 16px; display: inline-block; color: #000; }
+  .bt-reading { background: #00CFCF; } .bt-listening { background: #00CC44; }
+  .test-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 2px; margin-bottom: 4px; }
+  .test-src { color: #999; font-weight: 700; font-size: 0.9rem; margin-bottom: 18px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; margin-bottom: 18px; }
+  .card { border-radius: 14px; padding: 18px 20px; color: #000; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.5); transition: transform 0.2s; display: flex; flex-direction: column; gap: 8px; text-decoration: none; }
+  .card:hover { transform: translateY(-4px); }
+  .c-reading { background: #00CFCF; } .c-listening { background: #00CC44; }
+  .card-name { font-weight: 900; font-size: 1.1rem; }
+  .card-sub { font-size: 0.85rem; font-weight: 700; }
+  .badge { align-self: flex-start; background: rgba(0,0,0,0.25); border-radius: 10px; padding: 3px 10px; font-size: 0.78rem; font-weight: 900; }
+  .lvl { display: inline-block; background: #000; color: #FFFF00; border-radius: 6px; padding: 0 7px; font-size: 0.8rem; margin-left: 6px; vertical-align: 2px; }
+  .summary { background: #1a1a1a; border-radius: 10px; padding: 14px 18px; margin-bottom: 26px; font-weight: 800; line-height: 1.7; }
+  .summary b { color: #FFFF00; }
+  .divider { height: 4px; border-radius: 4px; margin: 8px 0 30px; background: linear-gradient(90deg, #FFFF00, #00CFCF, #00CC44); }
+
+  .rubric { background: #1a1a1a; border-left: 6px solid #FFFF00; border-radius: 8px; padding: 14px 18px; margin-bottom: 22px; }
+  .rubric .en { font-weight: 700; font-size: 1.02rem; white-space: pre-line; line-height: 1.55; }
+  .rubric .it { font-size: 0.9rem; color: #bbb; margin-top: 8px; }
+  .sec-reading .rubric { border-left-color: #00CFCF; }
+  .sec-listening .rubric { border-left-color: #00CC44; }
+
+  .textbox { background: #f4f1e8; color: #111; border-radius: 10px; padding: 18px 22px; margin-bottom: 18px; line-height: 1.65; font-size: 1.02rem; }
+  .textbox h3 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px; font-size: 1.5rem; margin-bottom: 8px; }
+  .textbox p { margin-bottom: 10px; }
+  .textbox h4 { margin: 10px 0 2px; font-size: 0.95rem; text-transform: uppercase; letter-spacing: .04em; }
+  .textbox .sect { margin-bottom: 14px; }
+  .textbox .sect-h { margin-bottom: 4px; }
+  .brochure { display: grid; grid-template-columns: 1fr 2fr; gap: 22px; font-size: 0.95rem; }
+  .brochure p { margin-bottom: 6px; }
+  .mtext { background: #f4f1e8; color: #111; border-radius: 8px; padding: 10px 14px; margin-bottom: 10px; line-height: 1.55; font-size: 0.97rem; }
+  .mtext b { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 1px; margin-right: 6px; }
+
+  .longwrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+  .textcol { position: sticky; top: 10px; max-height: calc(100vh - 20px); overflow-y: auto; border-radius: 10px; }
+  .textcol .textbox { margin-bottom: 0; }
+
+  .q { background: #181818; border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; border: 2px solid transparent; }
+  .q.ok { border-color: #00CC44; } .q.ko { border-color: #FF3333; } .q.half { border-color: #FF9900; }
+  .q.ex { background: #141414; border: 2px dashed #555; }
+  .q-head { font-weight: 900; margin-bottom: 8px; line-height: 1.45; }
+  .q-num { display: inline-block; background: #FFFF00; color: #000; border-radius: 6px; padding: 0 8px; margin-right: 8px; }
+  .q.ex .q-num { background: #555; color: #fff; }
+  .opt { display: flex; align-items: flex-start; gap: 10px; padding: 7px 10px; border-radius: 8px; cursor: pointer; }
+  .opt:hover { background: #242424; }
+  .opt input { margin-top: 5px; accent-color: #FFFF00; }
+  .opt b { min-width: 18px; }
+  .opt.right { background: rgba(0,204,68,0.15); }
+  .fb { margin-top: 6px; font-weight: 900; font-size: 0.92rem; }
+  .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  select, input.gap { font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 700; border: 2px solid #333; border-radius: 6px; padding: 4px 8px; background: #fff; color: #000; }
+  input.gap { width: 280px; max-width: 100%; }
+  select:disabled, input.gap:disabled { opacity: 1; }
+  .ok select, .ok input.gap { border-color: #00CC44; background: #e6ffed; }
+  .ko select, .ko input.gap { border-color: #FF3333; background: #ffe6e6; }
+  .half select, .half input.gap { border-color: #FF9900; background: #fff3e0; }
+  .gapwrap { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+  .gapnum { font-weight: 900; font-size: 0.8rem; background: #111; color: #fff; border-radius: 4px; padding: 0 5px; }
+  .gapfix { font-weight: 900; color: #c00; font-size: 0.85rem; white-space: normal; }
+  .gapfix.good { color: #00a83a; }
+  .optlist { background: #1c1c1c; border-radius: 10px; padding: 14px 18px; margin-bottom: 18px; line-height: 1.6; }
+  .optlist div { margin-bottom: 4px; }
+  .optlist b { color: #FFFF00; display: inline-block; min-width: 22px; }
+  .pairlab { font-weight: 900; color: #aaa; }
+
+  .audiobox { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; background: #1a1a1a; border-radius: 10px; padding: 12px 16px; margin-bottom: 22px; }
+  .plays { font-size: 0.9rem; font-weight: 700; color: #bbb; }
+  .abar { flex: 1 1 200px; height: 8px; background: #333; border-radius: 4px; overflow: hidden; min-width: 160px; }
+  .abar div { height: 100%; width: 0; background: #00CC44; }
+  .atime { font-size: 0.85rem; font-weight: 800; color: #aaa; min-width: 92px; }
+  .transcript { display: none; background: #222; border-radius: 8px; padding: 12px 16px; margin-top: 10px; white-space: pre-line; font-size: 0.93rem; line-height: 1.6; color: #ddd; }
+  .transcript.show { display: block; }
+
+  .resultbar { position: sticky; bottom: 0; background: #0d0d0d; padding: 14px 0; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; border-top: 2px solid #222; margin-top: 10px; }
+  .score { font-family: 'Bebas Neue', sans-serif; font-size: 1.7rem; letter-spacing: 2px; }
+  .empty-note { background: #1a1a1a; border-radius: 10px; padding: 18px; color: #bbb; }
+
+  @media (max-width: 860px) {
+    .longwrap { grid-template-columns: 1fr; }
+    .textcol { position: static; max-height: none; }
+    .brochure { grid-template-columns: 1fr; }
+    .hero { padding: 28px 16px; gap: 16px; } .hero-letter { font-size: 4.5rem; } .hero-text h1 { font-size: 2.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-letter">I</div>
+  <div class="hero-text">
+    <h1>INVALSI · Inglese</h1>
+    <p>Quinto anno · Reading e Listening · livelli B1 e B2</p>
+  </div>
+</div>
+
+<div class="main" id="app"></div>
+<audio id="player" preload="none"></audio>
+
+<script>
+/* =====================================================================
+   ELENCO DEI TEST — per aggiungerne uno: mettere tests/invN.js e gli audio
+   audio/invN-l1.mp3 … audio/invN-l5.mp3, poi aggiungere una riga qui sotto
+   e la scheda nella pagina final-inspection.html
+   ===================================================================== */
+const TESTS = [
+  { id: 'inv1', src: 'tests/inv1.js' },
+];
+const SECTIONS = [['listening', '🎧 Listening'], ['reading', '📖 Reading']];
+const SAVE_KEY = 'invalsi-final';
+const IT = {
+  mc: 'Scegli la risposta corretta (A, B, C o D). Una sola risposta è giusta.',
+  short: 'Rispondi con al massimo 4 parole.',
+  match: 'Abbina ogni domanda alla lettera giusta. Alcune lettere non servono.',
+};
+
+/* ---------- salvataggio ---------- */
+function loadSave() { try { return JSON.parse(localStorage.getItem(SAVE_KEY)) || {}; } catch (e) { return {}; } }
+function storeBest(key, score, total) {
+  try { const s = loadSave(); if (!s[key] || score > s[key].score) s[key] = { score, total }; localStorage.setItem(SAVE_KEY, JSON.stringify(s)); } catch (e) {}
+}
+
+/* ---------- utilità ---------- */
+function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function norm(s) {
+  return String(s).toLowerCase().replace(/[’‘`]/g, "'").replace(/[–—]/g, '-')
+    .replace(/\bit's\b/g, 'it is').replace(/£\s*/g, '').replace(/\bpounds?\b/g, 'pounds')
+    .replace(/[^a-z0-9' ]/g, ' ').replace(/\s+/g, ' ').trim()
+    .replace(/^(the|a|an|to|on|in|from) /, '').trim();
+}
+function fmtPts(x) { return String(Math.round(x * 2) / 2).replace('.', ','); }
+function fmtTime(s) { s = Math.max(0, Math.round(s || 0)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+const params = new URLSearchParams(location.search);
+const app = document.getElementById('app');
+
+/* ---------- caricamento ---------- */
+function loadTest(t, done) {
+  if (t.loaded) return done();
+  const s = document.createElement('script');
+  s.src = t.src + '?v=' + Date.now();
+  s.onload = () => { Object.assign(t, (window.TESTDATA || {})[t.id] || {}); t.loaded = true; done(); };
+  s.onerror = () => { t.loaded = true; done(); };
+  document.head.appendChild(s);
+}
+
+/* ---------- audio: una riproduzione prima della correzione (la traccia contiene già i due ascolti) ---------- */
+const player = document.getElementById('player');
+let audioState = null;   /* { src, plays, heard } */
+function stopAudio() { try { player.pause(); } catch (e) {} }
+player.addEventListener('timeupdate', () => {
+  const b = document.getElementById('abar'), tm = document.getElementById('atime');
+  if (b && player.duration) b.style.width = (player.currentTime / player.duration * 100) + '%';
+  if (tm) tm.textContent = fmtTime(player.currentTime) + ' / ' + fmtTime(player.duration);
+});
+player.addEventListener('ended', () => { if (audioState) { audioState.heard = true; refreshAudio(); } });
+function refreshAudio() {
+  const b = document.getElementById('abtn'), p = document.getElementById('aplays');
+  if (!b || !audioState) return;
+  const playing = !player.paused && !player.ended;
+  if (checked) { b.disabled = false; b.textContent = playing ? '⏸ Pausa' : '▶ Ascolta'; p.textContent = 'Ascolto libero'; return; }
+  b.disabled = playing || audioState.plays >= 1;
+  b.textContent = '▶ Ascolta';
+  p.textContent = audioState.heard ? 'Registrazione finita: puoi correggere' : playing ? 'In ascolto… (non si può mettere in pausa, come alla prova)' : 'Un solo avvio: la traccia contiene istruzioni, due ascolti e pause';
+}
+function playAudio() {
+  if (!audioState) return;
+  if (checked) { if (!player.paused) player.pause(); else player.play(); return refreshAudio(); }
+  if (audioState.plays >= 1) return;
+  if (!confirm('La registrazione parte e non si può fermare né riavviare (dura circa ' + (cur.task.mins || 10) + ' minuti). Pronto?')) return;
+  audioState.plays++;
+  player.src = audioState.src;
+  player.play().then(refreshAudio).catch(() => { audioState.plays--; alert('File audio non trovato: ' + audioState.src); refreshAudio(); });
+  refreshAudio();
+}
+player.addEventListener('play', refreshAudio);
+player.addEventListener('pause', refreshAudio);
+
+/* ---------- pagina del test ---------- */
+function taskKey(t, sec, task) { return `${t.id}|${sec}|${task.n}`; }
+function nItems(task) { return task.items.length; }
+
+function showTest(t, onlySec) {
+  stopAudio(); window.scrollTo(0, 0);
+  const save = loadSave();
+  let h = `<div class="topbar"><a class="btn btn-ghost" href="final-inspection.html">← Final Inspection</a></div>
+    <div class="test-title">${esc(t.title || t.id)}</div><div class="test-src">${esc(t.source || '')}</div>`;
+  const secs = SECTIONS.filter(([s]) => (t[s] || []).length && (!onlySec || s === onlySec));
+  if (!secs.length) h += '<div class="empty-note">⏳ Questo test è in preparazione.</div>';
+  secs.forEach(([sec, lab], i) => {
+    if (i) h += '<div class="divider"></div>';
+    h += `<div class="block-title bt-${sec}">${lab}</div><div class="grid">`;
+    const lv = { B1: [0, 0, 0], B2: [0, 0, 0] };   /* fatti, punti, totale */
+    t[sec].forEach(task => {
+      const b = save[taskKey(t, sec, task)];
+      const L = lv[task.level] || (lv[task.level] = [0, 0, 0]);
+      L[2] += nItems(task); if (b) { L[0]++; L[1] += b.score; }
+      h += `<a class="card c-${sec}" href="#${sec}/${task.n}">
+        <div class="card-name">Task ${task.n}<span class="lvl">${esc(task.level)}</span></div>
+        <div class="card-sub">${esc(task.title)}</div>
+        <div class="card-sub">${esc(task.method)} · ${nItems(task)} domande</div>
+        <span class="badge">${b ? `Migliore: ${fmtPts(b.score)}/${b.total}` : 'Da fare'}</span></a>`;
+    });
+    h += '</div>';
+    const parts = Object.entries(lv).filter(([, L]) => L[2]).map(([k, L]) => {
+      const n = t[sec].filter(x => x.level === k).length;
+      return `${k}: <b>${L[0] === n ? fmtPts(L[1]) + '/' + L[2] : '—'}</b>${L[0] < n ? ` <span style="color:#888">(${L[0]}/${n} task svolti)</span>` : ''}`;
+    });
+    h += `<div class="summary">Punteggio migliore · ${parts.join(' &nbsp;·&nbsp; ')}</div>`;
+  });
+  if (onlySec) {
+    const other = SECTIONS.find(([s]) => s !== onlySec && (t[s] || []).length);
+    if (other) h += `<div class="topbar"><a class="btn btn-ghost" href="?test=${t.id}&sec=${other[0]}">Vai al ${other[1]}</a></div>`;
+  }
+  app.innerHTML = h;
+}
+
+/* ---------- elementi di risposta ---------- */
+let cur = null, keys = [], checked = false, round = 0;
+function sel(k, letters, ex) {
+  let o = '<option value="">—</option>';
+  letters.forEach(l => { o += `<option value="${l}">${l}</option>`; });
+  if (ex) return `<select disabled><option>${esc(ex)}</option></select>`;
+  return `<select id="in-${k}">${o}</select>`;
+}
+function inlineSel(k, letters, answer) {
+  keys.push({ n: k, kind: 'select', v: answer, max: letters.length });
+  return `<span class="gapwrap" id="w-${k}"><span class="gapnum">${k}</span>${sel(k, letters)}<span class="gapfix" id="fb-${k}"></span></span>`;
+}
+function exampleInline(letter) { return `<span class="gapwrap"><span class="gapnum">0</span>${sel(0, [], letter)}</span>`; }
+
+function renderItems(task) {
+  const L = (task.options || []).map(o => o.l);
+  let h = '';
+  const ex = task.example;
+  if (task.type === 'mc') {
+    const opt = (n, o, i, right) => `<label class="opt${right ? ' right' : ''}"><input type="radio" name="r-${n}" value="${'ABCD'[i]}" ${n === 0 ? (right ? 'checked disabled' : 'disabled') : ''}><b>${'ABCD'[i]}</b><span>${esc(o)}</span></label>`;
+    if (ex) h += `<div class="q ex"><div class="q-head"><span class="q-num">0</span>${esc(ex.q)}</div>${ex.opts.map((o, i) => opt(0, o, i, 'ABCD'[i] === ex.a)).join('')}</div>`;
+    task.items.forEach((it, i) => {
+      const n = i + 1;
+      keys.push({ n, kind: 'radio', v: it.a, max: it.opts.length });
+      h += `<div class="q" id="w-${n}"><div class="q-head"><span class="q-num">Q${n}</span>${esc(it.q)}</div>${it.opts.map((o, j) => opt(n, o, j)).join('')}<div class="fb" id="fb-${n}"></div></div>`;
+    });
+  } else if (task.type === 'short') {
+    if (ex) h += `<div class="q ex"><div class="q-head"><span class="q-num">0</span>${esc(ex.q)}</div><input class="gap" value="${esc(ex.a)}" disabled></div>`;
+    task.items.forEach((it, i) => {
+      const n = i + 1;
+      if (it.pair) {
+        keys.push({ n, kind: 'pair', v: it.pair, max: 99 });
+        h += `<div class="q" id="w-${n}"><div class="q-head"><span class="q-num">Q${n}</span>${esc(it.q)}</div>
+          <div class="row"><span class="pairlab">a.</span><input class="gap" id="in-${n}a" autocomplete="off" spellcheck="false">
+          <span class="pairlab">b.</span><input class="gap" id="in-${n}b" autocomplete="off" spellcheck="false"></div><div class="fb" id="fb-${n}"></div></div>`;
+      } else {
+        keys.push({ n, kind: 'text', v: it.a, max: 99 });
+        h += `<div class="q" id="w-${n}"><div class="q-head"><span class="q-num">Q${n}</span>${esc(it.q)}</div>
+          <input class="gap" id="in-${n}" autocomplete="off" spellcheck="false"><div class="fb" id="fb-${n}"></div></div>`;
+      }
+    });
+  } else if (task.type === 'match' && !task.inline && !task.headings) {
+    const lab = n => task.itemHead ? `${task.itemHead} ${n === 0 ? '0' : 'Q' + n}` : '';
+    if (task.stem) h += `<div class="q-head" style="margin:4px 0 10px">${esc(task.stem)}</div>`;
+    if (ex) h += `<div class="q ex"><div class="row"><span class="q-num">0</span><span style="flex:1">${esc(ex.q || lab(0))}</span>${sel(0, [], ex.a)}</div></div>`;
+    task.items.forEach((it, i) => {
+      const n = i + 1;
+      keys.push({ n, kind: 'select', v: it.a, max: L.length });
+      h += `<div class="q" id="w-${n}"><div class="row"><span class="q-num">Q${n}</span><span style="flex:1">${esc(it.q || lab(n))}</span>${sel(n, L)}</div><div class="fb" id="fb-${n}"></div></div>`;
+    });
+  }
+  return h;
+}
+function optList(task, head) {
+  if (!task.options || !task.options.some(o => o.t)) return '';
+  return `<div class="optlist">${head ? `<div style="color:#aaa;font-weight:900;margin-bottom:6px">${esc(head)}</div>` : ''}${task.options.map(o => `<div><b>${o.l}</b>${esc(o.t)}</div>`).join('')}</div>`;
+}
+function textHTML(task) {
+  const L = (task.options || []).map(o => o.l);
+  if (task.html) return `<div class="textbox"><h3>${esc(task.title)}</h3>${task.html}</div>`;
+  if (task.inline) {
+    const body = task.paras.map(p => '<p>' + esc(p).replace(/\{\{(\d+)\}\}/g, (m, k) => {
+      k = +k; return k === 0 ? exampleInline(task.example.a) : inlineSel(k, L, task.items[k - 1].a);
+    }) + '</p>').join('');
+    return `<div class="textbox"><h3>${esc(task.title)}</h3>${body}</div>`;
+  }
+  if (task.headings) {
+    const body = task.sections.map(s => {
+      const k = +s.gap;
+      const head = k === 0 ? exampleInline(task.example.a) : inlineSel(k, L, task.items[k - 1].a);
+      return `<div class="sect"><div class="sect-h">${head}</div>${s.paras.map(p => `<p>${esc(p)}</p>`).join('')}</div>`;
+    }).join('');
+    return `<div class="textbox"><h3>${esc(task.title)}</h3>${body}</div>`;
+  }
+  if (task.texts) return `<div class="textbox" style="padding:12px"><h3 style="margin:4px 8px 10px">${esc(task.title)}</h3>${task.texts.map(x => `<div class="mtext"><b>${x.l}</b>${esc(x.t)}</div>`).join('')}</div>`;
+  if (task.paras) return `<div class="textbox"><h3>${esc(task.title)}</h3>${task.paras.map(p => `<p>${esc(p)}</p>`).join('')}</div>`;
+  return '';
+}
+
+function showTask(t, sec, ti) {
+  stopAudio(); window.scrollTo(0, 0);
+  const task = t[sec][ti];
+  cur = { t, sec, task }; keys = []; checked = false; round = 0; audioState = null;
+  let h = `<div class="topbar"><a class="btn btn-ghost" href="#">← ${esc(t.title)} · ${sec === 'reading' ? 'Reading' : 'Listening'}</a></div>
+    <div class="sec-${sec}"><div class="block-title bt-${sec}">Task ${task.n} · ${esc(task.level)} · ${esc(task.method)}</div>
+    <div class="rubric"><div class="en">${esc(task.rubric)}</div><div class="it">${IT[task.type] || ''}</div></div>`;
+  if (sec === 'listening') {
+    audioState = { src: task.audio, plays: 0, heard: false };
+    h += `<div class="audiobox"><button class="btn btn-green" id="abtn" onclick="playAudio()">▶ Ascolta</button>
+      <div class="abar"><div id="abar"></div></div><span class="atime" id="atime"></span><span class="plays" id="aplays"></span></div>
+      <h3 class="test-title" style="font-size:1.5rem">${esc(task.title)}</h3>`;
+    h += optList(task, task.optHead ? task.optHead + 's' : '') + renderItems(task);
+    h += `<button class="btn btn-ghost" id="tbtn" style="display:none;margin-top:6px" onclick="document.getElementById('tr').classList.toggle('show')">📄 Trascrizione</button>
+      <div class="transcript" id="tr">${esc(task.transcript || '')}</div>`;
+  } else {
+    const side = (task.inline || task.headings) ? optList(task, task.headings ? 'Headings' : '') : optList(task) + renderItems(task);
+    h += `<div class="longwrap"><div class="textcol">${textHTML(task)}</div><div>${side}</div></div>`;
+  }
+  const next = ti < t[sec].length - 1 ? `#${sec}/${t[sec][ti + 1].n}` : '';
+  h += `</div><div class="resultbar">
+    <button class="btn btn-yellow" id="checkBtn" onclick="checkTask()">✔ Correggi</button>
+    <button class="btn btn-ghost" id="retryBtn" style="display:none" onclick="showTask(cur.t, cur.sec, ${ti})">↺ Rifai il task</button>
+    <span id="nextWrap" style="display:none">${next ? `<a class="btn btn-cyan" href="${next}">Task successivo →</a>` : `<a class="btn btn-cyan" href="#">Fine: vedi il riepilogo</a>`}</span>
+    <span class="score" id="scoreOut"></span></div>`;
+  app.innerHTML = h;
+  refreshAudio();
+  app.querySelectorAll('input, select').forEach(el => el.addEventListener('change', savePending));
+  app.querySelectorAll('input.gap').forEach(el => el.addEventListener('input', savePending));
+  restorePending();
+}
+
+/* ---------- risposte in corso (si ritrovano se la pagina si ricarica) ---------- */
+function pendKey() { return SAVE_KEY + '-pend|' + taskKey(cur.t, cur.sec, cur.task); }
+function givenOf(k) {
+  if (k.kind === 'radio') { const r = document.querySelector(`input[name="r-${k.n}"]:checked`); return r ? r.value : ''; }
+  if (k.kind === 'pair') return [document.getElementById(`in-${k.n}a`).value, document.getElementById(`in-${k.n}b`).value];
+  const el = document.getElementById('in-' + k.n); return el ? el.value : '';
+}
+function savePending() { if (checked) return; try { const a = { round }; keys.forEach(k => a[k.n] = givenOf(k)); localStorage.setItem(pendKey(), JSON.stringify(a)); } catch (e) {} }
+function clearPending() { try { localStorage.removeItem(pendKey()); } catch (e) {} }
+function restorePending() {
+  let a = null; try { a = JSON.parse(localStorage.getItem(pendKey()) || 'null'); } catch (e) {}
+  if (!a) return;
+  keys.forEach(k => {
+    const v = a[k.n]; if (v === undefined) return;
+    if (k.kind === 'radio') document.querySelectorAll(`input[name="r-${k.n}"]`).forEach(r => { if (r.value === v) r.checked = true; });
+    else if (k.kind === 'pair') { document.getElementById(`in-${k.n}a`).value = v[0] || ''; document.getElementById(`in-${k.n}b`).value = v[1] || ''; }
+    else { const el = document.getElementById('in-' + k.n); if (el) el.value = v; }
+  });
+  if (a.round === 1) { r1 = a.r1 || {}; round = 1; checkTask(true); }
+}
+
+/* ---------- correzione ---------- */
+function matchList(given, list) { const g = norm(given); return g !== '' && list.some(x => norm(x) === g); }
+function isRight(k, given) {
+  if (k.kind === 'text') return matchList(given, k.v);
+  if (k.kind === 'pair') {
+    const [a, b] = given, [l1, l2] = k.v;
+    return (matchList(a, l1) && matchList(b, l2)) || (matchList(a, l2) && matchList(b, l1));
+  }
+  return given === k.v;
+}
+function solOf(k) {
+  if (k.kind === 'text') return k.v.slice(0, 3).join(' / ');
+  if (k.kind === 'pair') return k.v.map(l => l[0]).join(' + ');
+  return k.v;
+}
+function mark(k, cls, txt) {
+  const w = document.getElementById('w-' + k.n), fb = document.getElementById('fb-' + k.n);
+  if (w) { w.classList.remove('ok', 'ko', 'half'); if (cls) w.classList.add(cls); }
+  if (fb) { fb.textContent = txt; fb.className = (fb.classList.contains('gapfix') ? 'gapfix' : 'fb') + (cls === 'ok' ? ' good' : ''); fb.style.color = cls === 'ok' ? '#00a83a' : cls === 'half' ? '#d08000' : '#e00000'; }
+}
+function lock(k, on) {
+  if (k.kind === 'radio') document.querySelectorAll(`input[name="r-${k.n}"]`).forEach(el => el.disabled = on);
+  else if (k.kind === 'pair') ['a', 'b'].forEach(s => document.getElementById(`in-${k.n}${s}`).disabled = on);
+  else { const el = document.getElementById('in-' + k.n); if (el) el.disabled = on; }
+}
+let r1 = {}, armed = false;
+function checkTask(fromRestore) {
+  const out = document.getElementById('scoreOut'); out.style.color = '';
+  if (round === 0 && !fromRestore) {
+    if (cur.sec === 'listening' && !(audioState && audioState.heard)) {
+      out.textContent = 'Prima ascolta la registrazione fino alla fine: il secondo ascolto serve per controllare.';
+      out.style.color = '#ff5555'; return;
+    }
+    const empty = keys.filter(k => { const g = givenOf(k); return Array.isArray(g) ? !g[0].trim() || !g[1].trim() : !String(g).trim(); }).length;
+    if (!armed) {
+      armed = true;
+      out.textContent = empty ? `Hai ${empty} risposte vuote. Tocca di nuovo “Correggi” per confermare.` : 'Tocca di nuovo “Correggi” per confermare.';
+      document.getElementById('checkBtn').textContent = '✔ Sì, correggi';
+      setTimeout(() => { if (armed && round === 0) { armed = false; document.getElementById('checkBtn').textContent = '✔ Correggi'; out.textContent = ''; } }, 6000);
+      return;
+    }
+    armed = false;
+  }
+  if (round === 0) {
+    r1 = {};
+    let retry = 0, s1 = 0;
+    keys.forEach(k => {
+      const ok = isRight(k, givenOf(k)); r1[k.n] = ok ? 1 : 0; s1 += r1[k.n];
+      k._retry = false;
+      if (ok) { mark(k, 'ok', '✓'); lock(k, true); }
+      else if (cur.sec === 'listening' || k.max <= 2) { mark(k, 'ko', '✗'); lock(k, true); }   /* listening: una sola correzione, come alla prova */
+      else { k._retry = true; retry++; mark(k, 'ko', '✗ Riprova: se la correggi vale mezzo punto'); }
+    });
+    if (retry) {
+      round = 1;
+      try { const a = { round: 1, r1 }; keys.forEach(k => a[k.n] = givenOf(k)); localStorage.setItem(pendKey(), JSON.stringify(a)); } catch (e) {}
+      document.getElementById('checkBtn').textContent = '✔ Correggi di nuovo';
+      out.textContent = `Prima correzione: ${s1}/${keys.length} · da riprovare: ${retry}`;
+      return;
+    }
+  } else if (fromRestore) {
+    /* ricarica durante il secondo tentativo: ripristina i segni della prima correzione */
+    keys.forEach(k => {
+      k._retry = false;
+      if (r1[k.n]) { mark(k, 'ok', '✓'); lock(k, true); }
+      else if (k.max <= 2) { mark(k, 'ko', '✗'); lock(k, true); }
+      else { k._retry = true; mark(k, 'ko', '✗ Riprova: se la correggi vale mezzo punto'); }
+    });
+    document.getElementById('checkBtn').textContent = '✔ Correggi di nuovo';
+    out.textContent = 'Secondo tentativo in corso';
+    return;
+  }
+  finishTask();
+}
+function finishTask() {
+  let score = 0, n1 = 0, n2 = 0;
+  keys.forEach(k => {
+    if (r1[k.n]) { score += 1; n1++; mark(k, 'ok', '✓ Corretto'); return; }
+    if (k._retry && isRight(k, givenOf(k))) { score += 0.5; n2++; mark(k, 'half', '½ Corretto al secondo tentativo'); return; }
+    mark(k, 'ko', '✗ Risposta corretta: ' + solOf(k));
+    if (k.kind === 'radio') document.querySelectorAll(`input[name="r-${k.n}"]`).forEach(r => { if (r.value === k.v) r.closest('.opt').classList.add('right'); });
+  });
+  app.querySelectorAll('input, select').forEach(el => el.disabled = true);
+  checked = true; round = 2; clearPending();
+  const out = document.getElementById('scoreOut');
+  out.textContent = `${fmtPts(score)}/${keys.length}` + (n2 ? ` (subito: ${n1} · al 2° tentativo: ${n2})` : '');
+  document.getElementById('checkBtn').style.display = 'none';
+  document.getElementById('retryBtn').style.display = 'inline-block';
+  document.getElementById('nextWrap').style.display = 'inline';
+  const tb = document.getElementById('tbtn'); if (tb) tb.style.display = 'inline-block';
+  refreshAudio();
+  storeBest(taskKey(cur.t, cur.sec, cur.task), score, keys.length);
+}
+
+/* ---------- navigazione ----------
+   invalsi.html?test=inv1&sec=listening       = elenco dei task di quella parte (link dalla pagina I)
+   invalsi.html?test=inv1&sec=listening#listening/3 = un task */
+function route() {
+  const t = TESTS.find(x => x.id === params.get('test'));
+  if (!t) { location.replace('final-inspection.html'); return; }
+  if (!t.loaded) { app.innerHTML = '<div class="empty-note">Caricamento…</div>'; return loadTest(t, route); }
+  const [sec, n] = decodeURIComponent(location.hash.replace(/^#/, '')).split('/');
+  if (sec && t[sec]) {
+    const ti = t[sec].findIndex(x => String(x.n) === n);
+    if (ti >= 0) return showTask(t, sec, ti);
+  }
+  const only = params.get('sec');
+  showTest(t, t[only] ? only : null);
+}
+window.addEventListener('hashchange', route);
+route();
+</script>
+</body>
+</html>
