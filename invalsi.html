@@ -50,6 +50,7 @@
   .textbox { background: #f4f1e8; color: #111; border-radius: 10px; padding: 18px 22px; margin-bottom: 18px; line-height: 1.65; font-size: 1.02rem; }
   .textbox h3 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px; font-size: 1.5rem; margin-bottom: 8px; }
   .textbox p { margin-bottom: 10px; }
+  .textbox .subt { font-weight: 800; font-style: italic; margin: -4px 0 12px; }
   .textbox h4 { margin: 10px 0 2px; font-size: 0.95rem; text-transform: uppercase; letter-spacing: .04em; }
   .textbox .sect { margin-bottom: 14px; }
   .textbox .sect-h { margin-bottom: 4px; }
@@ -132,6 +133,7 @@
    ===================================================================== */
 const TESTS = [
   { id: 'inv1', src: 'tests/inv1.js' },
+  { id: 'inv2', src: 'tests/inv2.js' },
 ];
 const SECTIONS = [['listening', '🎧 Listening'], ['reading', '📖 Reading']];
 const SAVE_KEY = 'invalsi-final';
@@ -299,13 +301,14 @@ function optList(task, head) {
   return `<div class="optlist">${head ? `<div style="color:#aaa;font-weight:900;margin-bottom:6px">${esc(head)}</div>` : ''}${task.options.map(o => `<div><b>${o.l}</b>${esc(o.t)}</div>`).join('')}</div>`;
 }
 function textHTML(task) {
+  const H = `<h3>${esc(task.title)}</h3>` + (task.subtitle ? `<div class="subt">${esc(task.subtitle)}</div>` : '');
   const L = (task.options || []).map(o => o.l);
   if (task.html) return `<div class="textbox"><h3>${esc(task.title)}</h3>${task.html}</div>`;
   if (task.inline) {
     const body = task.paras.map(p => '<p>' + esc(p).replace(/\{\{(\d+)\}\}/g, (m, k) => {
       k = +k; return k === 0 ? exampleInline(task.example.a) : inlineSel(k, L, task.items[k - 1].a);
     }) + '</p>').join('');
-    return `<div class="textbox"><h3>${esc(task.title)}</h3>${body}</div>`;
+    return `<div class="textbox">${H}${body}</div>`;
   }
   if (task.headings) {
     const body = task.sections.map(s => {
@@ -313,10 +316,10 @@ function textHTML(task) {
       const head = k === 0 ? exampleInline(task.example.a) : inlineSel(k, L, task.items[k - 1].a);
       return `<div class="sect"><div class="sect-h">${head}</div>${s.paras.map(p => `<p>${esc(p)}</p>`).join('')}</div>`;
     }).join('');
-    return `<div class="textbox"><h3>${esc(task.title)}</h3>${body}</div>`;
+    return `<div class="textbox">${H}${body}</div>`;
   }
   if (task.texts) return `<div class="textbox" style="padding:12px"><h3 style="margin:4px 8px 10px">${esc(task.title)}</h3>${task.texts.map(x => `<div class="mtext"><b>${x.l}</b>${esc(x.t)}</div>`).join('')}</div>`;
-  if (task.paras) return `<div class="textbox"><h3>${esc(task.title)}</h3>${task.paras.map(p => `<p>${esc(p)}</p>`).join('')}</div>`;
+  if (task.paras) return `<div class="textbox">${H}${task.paras.map(p => `<p>${esc(p)}</p>`).join('')}</div>`;
   return '';
 }
 
@@ -336,7 +339,7 @@ function showTask(t, sec, ti) {
     h += `<button class="btn btn-ghost" id="tbtn" style="display:none;margin-top:6px" onclick="document.getElementById('tr').classList.toggle('show')">📄 Trascrizione</button>
       <div class="transcript" id="tr">${esc(task.transcript || '')}</div>`;
   } else {
-    const side = (task.inline || task.headings) ? optList(task, task.headings ? 'Headings' : '') : optList(task) + renderItems(task);
+    const side = (task.inline || task.headings) ? optList(task, task.headings ? (task.headHead || 'Headings') : '') : optList(task) + renderItems(task);
     h += `<div class="longwrap"><div class="textcol">${textHTML(task)}</div><div>${side}</div></div>`;
   }
   const next = ti < t[sec].length - 1 ? `#${sec}/${t[sec][ti + 1].n}` : '';
@@ -378,14 +381,15 @@ function matchList(given, list) { const g = norm(given); return g !== '' && list
 function isRight(k, given) {
   if (k.kind === 'text') return matchList(given, k.v);
   if (k.kind === 'pair') {
-    const [a, b] = given, [l1, l2] = k.v;
-    return (matchList(a, l1) && matchList(b, l2)) || (matchList(a, l2) && matchList(b, l1));
+    /* due risposte diverse, ognuna tra quelle accettate (gruppi di sinonimi) */
+    const ga = k.v.findIndex(l => matchList(given[0], l)), gb = k.v.findIndex(l => matchList(given[1], l));
+    return ga >= 0 && gb >= 0 && ga !== gb;
   }
   return given === k.v;
 }
 function solOf(k) {
   if (k.kind === 'text') return k.v.slice(0, 3).join(' / ');
-  if (k.kind === 'pair') return k.v.map(l => l[0]).join(' + ');
+  if (k.kind === 'pair') return k.v.length > 2 ? 'due tra ' + k.v.map(l => l[0]).join(', ') : k.v.map(l => l[0]).join(' + ');
   return k.v;
 }
 function mark(k, cls, txt) {
