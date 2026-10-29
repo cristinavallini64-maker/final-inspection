@@ -143,6 +143,7 @@ const TESTS = [
   { id: 'inv3', src: 'tests/inv3.js' },
   { id: 'inv4', src: 'tests/inv4.js' },
   { id: 'inv5', src: 'tests/inv5.js' },
+  { id: 'inv6', src: 'tests/inv6.js' },
 ];
 const SECTIONS = [['listening', '🎧 Listening'], ['reading', '📖 Reading']];
 const SAVE_KEY = 'invalsi-final';
@@ -150,6 +151,7 @@ const IT = {
   mc: 'Scegli la risposta corretta (A, B, C o D). Una sola risposta è giusta.',
   short: 'Rispondi con al massimo 4 parole.',
   match: 'Abbina ogni domanda alla lettera giusta. Alcune lettere non servono.',
+  tf: 'Scegli vero (T) o falso (F) e scrivi le prime 4 parole della frase del testo che lo dimostra.',
 };
 
 /* ---------- salvataggio ---------- */
@@ -278,6 +280,15 @@ function renderItems(task) {
       keys.push({ n, kind: 'radio', v: it.a, max: it.opts.length });
       h += `<div class="q" id="w-${n}"><div class="q-head"><span class="q-num">Q${n}</span>${esc(it.q)}</div>${it.opts.map((o, j) => opt(n, o, j)).join('')}<div class="fb" id="fb-${n}"></div></div>`;
     });
+  } else if (task.type === 'tf') {
+    const tfRow = (n, ex) => ['T', 'F'].map(v => `<label class="opt${ex && ex.tf === v ? ' right' : ''}" style="display:inline-flex"><input type="radio" name="r-${n}" value="${v}" ${ex ? (ex.tf === v ? 'checked disabled' : 'disabled') : ''}><b>${v}</b></label>`).join('');
+    if (ex) h += `<div class="q ex"><div class="q-head"><span class="q-num">0</span>${esc(ex.q)}</div><div class="row">${tfRow(0, ex)}<input class="gap" value="${esc(ex.a)}" disabled></div></div>`;
+    task.items.forEach((it, i) => {
+      const n = i + 1;
+      keys.push({ n, kind: 'tf', v: [it.tf, it.a], max: 99 });
+      h += `<div class="q" id="w-${n}"><div class="q-head"><span class="q-num">Q${n}</span>${esc(it.q)}</div>
+        <div class="row">${tfRow(n)}<input class="gap" id="in-${n}" autocomplete="off" spellcheck="false" placeholder="prime 4 parole"></div><div class="fb" id="fb-${n}"></div></div>`;
+    });
   } else if (task.type === 'short') {
     if (ex) h += `<div class="q ex"><div class="q-head"><span class="q-num">0</span>${esc(ex.q)}</div><input class="gap" value="${esc(ex.a)}" disabled></div>`;
     task.items.forEach((it, i) => {
@@ -334,8 +345,8 @@ function textHTML(task) {
     }).join('');
     return `<div class="textbox">${H}${body}${SRC}</div>`;
   }
-  if (task.texts) return `<div class="textbox" style="padding:12px"><h3 style="margin:4px 8px 10px">${esc(task.title)}</h3>${task.texts.map(x => `<div class="mtext"><b>${x.l}</b>${esc(x.t)}</div>`).join('')}</div>`;
-  if (task.paras) return `<div class="textbox">${H}${task.paras.map(p => `<p>${esc(p)}</p>`).join('')}${SRC}</div>`;
+  if (task.texts) return `<div class="textbox" style="padding:12px"><h3 style="margin:4px 8px 10px">${esc(task.title)}</h3>${(task.intro || []).map(p => `<p style="margin:0 8px 10px">${esc(p)}</p>`).join('')}${task.texts.map(x => `<div class="mtext"><b>${x.l}</b>${x.h ? `<strong>${esc(x.h)}</strong><br>` : ''}${esc(x.t)}</div>`).join('')}${SRC}</div>`;
+  if (task.paras) return `<div class="textbox">${H}${task.paras.map(p => (task.subheads || []).includes(p) ? `<h4 class="nocase">${esc(p)}</h4>` : `<p>${esc(p)}</p>`).join('')}${SRC}</div>`;
   return '';
 }
 
@@ -376,6 +387,7 @@ function pendKey() { return SAVE_KEY + '-pend|' + taskKey(cur.t, cur.sec, cur.ta
 function givenOf(k) {
   if (k.kind === 'radio') { const r = document.querySelector(`input[name="r-${k.n}"]:checked`); return r ? r.value : ''; }
   if (k.kind === 'pair') return [document.getElementById(`in-${k.n}a`).value, document.getElementById(`in-${k.n}b`).value];
+  if (k.kind === 'tf') { const r = document.querySelector(`input[name="r-${k.n}"]:checked`); return [r ? r.value : '', document.getElementById('in-' + k.n).value]; }
   const el = document.getElementById('in-' + k.n); return el ? el.value : '';
 }
 function savePending() { if (checked) return; try { const a = { round }; keys.forEach(k => a[k.n] = givenOf(k)); localStorage.setItem(pendKey(), JSON.stringify(a)); } catch (e) {} }
@@ -387,6 +399,7 @@ function restorePending() {
     const v = a[k.n]; if (v === undefined) return;
     if (k.kind === 'radio') document.querySelectorAll(`input[name="r-${k.n}"]`).forEach(r => { if (r.value === v) r.checked = true; });
     else if (k.kind === 'pair') { document.getElementById(`in-${k.n}a`).value = v[0] || ''; document.getElementById(`in-${k.n}b`).value = v[1] || ''; }
+    else if (k.kind === 'tf') { document.querySelectorAll(`input[name="r-${k.n}"]`).forEach(r => { if (r.value === v[0]) r.checked = true; }); document.getElementById('in-' + k.n).value = v[1] || ''; }
     else { const el = document.getElementById('in-' + k.n); if (el) el.value = v; }
   });
   if (a.round === 1) { r1 = a.r1 || {}; round = 1; checkTask(true); }
@@ -396,6 +409,10 @@ function restorePending() {
 function matchList(given, list) { const g = norm(given); return g !== '' && list.some(x => norm(x) === g); }
 function isRight(k, given) {
   if (k.kind === 'text') return matchList(given, k.v);
+  if (k.kind === 'tf') {   /* vero/falso giusto e frase giusta: le prime parole scritte devono essere quelle indicate (anche se lo studente ne scrive di più) */
+    const g = norm(given[1]);
+    return given[0] === k.v[0] && g !== '' && k.v[1].some(a => (g + ' ').startsWith(norm(a) + ' '));
+  }
   if (k.kind === 'pair') {
     /* due risposte diverse, ognuna tra quelle accettate (gruppi di sinonimi) */
     const ga = k.v.findIndex(l => matchList(given[0], l)), gb = k.v.findIndex(l => matchList(given[1], l));
@@ -405,6 +422,7 @@ function isRight(k, given) {
 }
 function solOf(k) {
   if (k.kind === 'text') return k.v.slice(0, 3).join(' / ');
+  if (k.kind === 'tf') return k.v[0] + ' · ' + k.v[1][0];
   if (k.kind === 'pair') return k.v.length > 2 ? 'due tra ' + k.v.map(l => l[0]).join(', ') : k.v.map(l => l[0]).join(' + ');
   return k.v;
 }
@@ -416,6 +434,7 @@ function mark(k, cls, txt) {
 function lock(k, on) {
   if (k.kind === 'radio') document.querySelectorAll(`input[name="r-${k.n}"]`).forEach(el => el.disabled = on);
   else if (k.kind === 'pair') ['a', 'b'].forEach(s => document.getElementById(`in-${k.n}${s}`).disabled = on);
+  else if (k.kind === 'tf') { document.querySelectorAll(`input[name="r-${k.n}"]`).forEach(el => el.disabled = on); document.getElementById('in-' + k.n).disabled = on; }
   else { const el = document.getElementById('in-' + k.n); if (el) el.disabled = on; }
 }
 let r1 = {}, armed = false;
@@ -482,7 +501,7 @@ function finishTask() {
   document.getElementById('checkBtn').style.display = 'none';
   document.getElementById('retryBtn').style.display = 'inline-block';
   document.getElementById('nextWrap').style.display = 'inline';
-  const tb = document.getElementById('tbtn'); if (tb) tb.style.display = 'inline-block';
+  const tb = document.getElementById('tbtn'); if (tb && cur.task.transcript) tb.style.display = 'inline-block';
   refreshAudio();
   storeBest(taskKey(cur.t, cur.sec, cur.task), score, keys.length);
 }
