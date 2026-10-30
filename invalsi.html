@@ -32,6 +32,8 @@
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; margin-bottom: 18px; }
   .card { border-radius: 14px; padding: 18px 20px; color: #000; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.5); transition: transform 0.2s; display: flex; flex-direction: column; gap: 8px; text-decoration: none; }
   .card:hover { transform: translateY(-4px); }
+  .card.off { opacity: 0.45; cursor: not-allowed; }
+  .card.off:hover { transform: none; }
   .c-reading { background: #00CFCF; } .c-listening { background: #00CC44; }
   .card-name { font-weight: 900; font-size: 1.1rem; }
   .card-sub { font-size: 0.85rem; font-weight: 700; }
@@ -53,6 +55,8 @@
   .textbox .subt { font-weight: 800; font-style: italic; margin: -4px 0 12px; }
   .textbox h4.nocase { text-transform: none; letter-spacing: 0; font-size: 1.05rem; margin-top: 16px; }
   .textbox .srcline { font-size: 0.82rem; color: #666; font-style: italic; margin-top: 8px; }
+  .textbox ul { margin: 0 0 10px 20px; }
+  .textbox li { margin-bottom: 4px; }
   .textbox h4 { margin: 10px 0 2px; font-size: 0.95rem; text-transform: uppercase; letter-spacing: .04em; }
   .textbox .sect { margin-bottom: 14px; }
   .textbox .sect-h { margin-bottom: 4px; }
@@ -144,6 +148,7 @@ const TESTS = [
   { id: 'inv4', src: 'tests/inv4.js' },
   { id: 'inv5', src: 'tests/inv5.js' },
   { id: 'inv6', src: 'tests/inv6.js' },
+  { id: 'inv7', src: 'tests/inv7.js' },
 ];
 const SECTIONS = [['listening', '🎧 Listening'], ['reading', '📖 Reading']];
 const SAVE_KEY = 'invalsi-final';
@@ -232,6 +237,11 @@ function showTest(t, onlySec) {
     const lv = { B1: [0, 0, 0], B2: [0, 0, 0] };   /* fatti, punti, totale */
     t[sec].forEach(task => {
       const b = save[taskKey(t, sec, task)];
+      if (task.soon) {
+        h += `<div class="card c-${sec} off"><div class="card-name">Task ${task.n}<span class="lvl">${esc(task.level)}</span></div>
+          <div class="card-sub">${esc(task.title)}</div><span class="badge">⏳ In preparazione</span></div>`;
+        return;
+      }
       const L = lv[task.level] || (lv[task.level] = [0, 0, 0]);
       L[2] += nItems(task); if (b) { L[0]++; L[1] += b.score; }
       h += `<a class="card c-${sec}" href="#${sec}/${task.n}">
@@ -242,7 +252,7 @@ function showTest(t, onlySec) {
     });
     h += '</div>';
     const parts = Object.entries(lv).filter(([, L]) => L[2]).map(([k, L]) => {
-      const n = t[sec].filter(x => x.level === k).length;
+      const n = t[sec].filter(x => x.level === k && !x.soon).length;
       return `${k}: <b>${L[0] === n ? fmtPts(L[1]) + '/' + L[2] : '—'}</b>${L[0] < n ? ` <span style="color:#888">(${L[0]}/${n} task svolti)</span>` : ''}`;
     });
     h += `<div class="summary">Punteggio migliore · ${parts.join(' &nbsp;·&nbsp; ')}</div>`;
@@ -343,7 +353,7 @@ function textHTML(task) {
       const head = k === 0 ? exampleInline(task.example.a) : inlineSel(k, L, task.items[k - 1].a);
       return `<div class="sect"><div class="sect-h">${head}</div>${s.paras.map(p => `<p>${esc(p)}</p>`).join('')}</div>`;
     }).join('');
-    return `<div class="textbox">${H}${body}${SRC}</div>`;
+    return `<div class="textbox">${H}${(task.intro || []).map(p => `<p>${esc(p)}</p>`).join('')}${body}${SRC}</div>`;
   }
   if (task.texts) return `<div class="textbox" style="padding:12px"><h3 style="margin:4px 8px 10px">${esc(task.title)}</h3>${(task.intro || []).map(p => `<p style="margin:0 8px 10px">${esc(p)}</p>`).join('')}${task.texts.map(x => `<div class="mtext"><b>${x.l}</b>${x.h ? `<strong>${esc(x.h)}</strong><br>` : ''}${esc(x.t)}</div>`).join('')}${SRC}</div>`;
   if (task.paras) return `<div class="textbox">${H}${task.paras.map(p => (task.subheads || []).includes(p) ? `<h4 class="nocase">${esc(p)}</h4>` : `<p>${esc(p)}</p>`).join('')}${SRC}</div>`;
@@ -516,7 +526,7 @@ function route() {
   const [sec, n] = decodeURIComponent(location.hash.replace(/^#/, '')).split('/');
   if (sec && t[sec]) {
     const ti = t[sec].findIndex(x => String(x.n) === n);
-    if (ti >= 0) return showTask(t, sec, ti);
+    if (ti >= 0 && !t[sec][ti].soon) return showTask(t, sec, ti);
   }
   const only = params.get('sec');
   showTest(t, t[only] ? only : null);
