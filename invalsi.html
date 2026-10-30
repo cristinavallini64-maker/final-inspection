@@ -150,6 +150,7 @@ const TESTS = [
   { id: 'inv6', src: 'tests/inv6.js' },
   { id: 'inv7', src: 'tests/inv7.js' },
   { id: 'inv8', src: 'tests/inv8.js' },
+  { id: 'inv9', src: 'tests/inv9.js' },
 ];
 const SECTIONS = [['listening', '🎧 Listening'], ['reading', '📖 Reading']];
 const SAVE_KEY = 'invalsi-final';
@@ -198,21 +199,25 @@ player.addEventListener('timeupdate', () => {
   if (b && player.duration) b.style.width = (player.currentTime / player.duration * 100) + '%';
   if (tm) tm.textContent = fmtTime(player.currentTime) + ' / ' + fmtTime(player.duration);
 });
-player.addEventListener('ended', () => { if (audioState) { audioState.heard = true; refreshAudio(); } });
+player.addEventListener('ended', () => { if (audioState) { if (audioState.plays >= audioState.max) audioState.heard = true; refreshAudio(); } });
 function refreshAudio() {
   const b = document.getElementById('abtn'), p = document.getElementById('aplays');
   if (!b || !audioState) return;
   const playing = !player.paused && !player.ended;
   if (checked) { b.disabled = false; b.textContent = playing ? '⏸ Pausa' : '▶ Ascolta'; p.textContent = 'Ascolto libero'; return; }
-  b.disabled = playing || audioState.plays >= 1;
-  b.textContent = '▶ Ascolta';
-  p.textContent = audioState.heard ? 'Registrazione finita: puoi correggere' : playing ? 'In ascolto… (non si può mettere in pausa, come alla prova)' : 'Un solo avvio: la traccia contiene istruzioni, due ascolti e pause';
+  b.disabled = playing || audioState.plays >= audioState.max;
+  b.textContent = audioState.max > 1 && audioState.plays === 1 ? '▶ Secondo ascolto' : '▶ Ascolta';
+  p.textContent = audioState.heard ? 'Registrazione finita: puoi correggere'
+    : playing ? `In ascolto${audioState.max > 1 ? ` (${audioState.plays}° di ${audioState.max})` : ''}… non si può mettere in pausa, come alla prova`
+    : audioState.max > 1 ? (audioState.plays ? 'Primo ascolto finito: fai partire il secondo' : 'Due ascolti, come alla prova') : 'Un solo avvio: la traccia contiene istruzioni, due ascolti e pause';
 }
 function playAudio() {
   if (!audioState) return;
   if (checked) { if (!player.paused) player.pause(); else player.play(); return refreshAudio(); }
-  if (audioState.plays >= 1) return;
-  if (!confirm('La registrazione parte e non si può fermare né riavviare (dura circa ' + (cur.task.mins || 10) + ' minuti). Pronto?')) return;
+  if (audioState.plays >= audioState.max) return;
+  if (audioState.plays === 0 && !confirm(audioState.max > 1
+      ? 'La registrazione parte e non si può mettere in pausa. Potrai ascoltarla due volte. Pronto?'
+      : 'La registrazione parte e non si può fermare né riavviare (dura circa ' + (cur.task.mins || 10) + ' minuti). Pronto?')) return;
   audioState.plays++;
   player.src = audioState.src;
   player.play().then(refreshAudio).catch(() => { audioState.plays--; alert('File audio non trovato: ' + audioState.src); refreshAudio(); });
@@ -239,21 +244,21 @@ function showTest(t, onlySec) {
     t[sec].forEach(task => {
       const b = save[taskKey(t, sec, task)];
       if (task.soon) {
-        h += `<div class="card c-${sec} off"><div class="card-name">Task ${task.n}<span class="lvl">${esc(task.level)}</span></div>
+        h += `<div class="card c-${sec} off"><div class="card-name">Task ${task.n}${task.level ? `<span class="lvl">${esc(task.level)}</span>` : ''}</div>
           <div class="card-sub">${esc(task.title)}</div><span class="badge">⏳ In preparazione</span></div>`;
         return;
       }
-      const L = lv[task.level] || (lv[task.level] = [0, 0, 0]);
+      const L = lv[task.level || 'Totale'] || (lv[task.level || 'Totale'] = [0, 0, 0]);
       L[2] += nItems(task); if (b) { L[0]++; L[1] += b.score; }
       h += `<a class="card c-${sec}" href="#${sec}/${task.n}">
-        <div class="card-name">Task ${task.n}<span class="lvl">${esc(task.level)}</span></div>
+        <div class="card-name">Task ${task.n}${task.level ? `<span class="lvl">${esc(task.level)}</span>` : ''}</div>
         <div class="card-sub">${esc(task.title)}</div>
         <div class="card-sub">${esc(task.method)} · ${nItems(task)} domande</div>
         <span class="badge">${b ? `Migliore: ${fmtPts(b.score)}/${b.total}` : 'Da fare'}</span></a>`;
     });
     h += '</div>';
     const parts = Object.entries(lv).filter(([, L]) => L[2]).map(([k, L]) => {
-      const n = t[sec].filter(x => x.level === k && !x.soon).length;
+      const n = t[sec].filter(x => (x.level || 'Totale') === k && !x.soon).length;
       return `${k}: <b>${L[0] === n ? fmtPts(L[1]) + '/' + L[2] : '—'}</b>${L[0] < n ? ` <span style="color:#888">(${L[0]}/${n} task svolti)</span>` : ''}`;
     });
     h += `<div class="summary">Punteggio migliore · ${parts.join(' &nbsp;·&nbsp; ')}</div>`;
@@ -366,10 +371,10 @@ function showTask(t, sec, ti) {
   const task = t[sec][ti];
   cur = { t, sec, task }; keys = []; checked = false; round = 0; audioState = null;
   let h = `<div class="topbar"><a class="btn btn-ghost" href="#">← ${esc(t.title)} · ${sec === 'reading' ? 'Reading' : 'Listening'}</a></div>
-    <div class="sec-${sec}"><div class="block-title bt-${sec}">Task ${task.n} · ${esc(task.level)} · ${esc(task.method)}</div>
+    <div class="sec-${sec}"><div class="block-title bt-${sec}">Task ${task.n}${task.level ? ' · ' + esc(task.level) : ''} · ${esc(task.method)}</div>
     <div class="rubric"><div class="en">${esc(task.rubric)}</div><div class="it">${IT[task.type] || ''}</div></div>`;
   if (sec === 'listening') {
-    audioState = { src: task.audio, plays: 0, heard: false };
+    audioState = { src: task.audio, plays: 0, max: task.plays || t.plays || 1, heard: false };
     h += `<div class="audiobox"><button class="btn btn-green" id="abtn" onclick="playAudio()">▶ Ascolta</button>
       <div class="abar"><div id="abar"></div></div><span class="atime" id="atime"></span><span class="plays" id="aplays"></span></div>
       <h3 class="test-title" style="font-size:1.5rem">${esc(task.title)}</h3>`;
@@ -453,7 +458,7 @@ function checkTask(fromRestore) {
   const out = document.getElementById('scoreOut'); out.style.color = '';
   if (round === 0 && !fromRestore) {
     if (cur.sec === 'listening' && !(audioState && audioState.heard)) {
-      out.textContent = 'Prima ascolta la registrazione fino alla fine: il secondo ascolto serve per controllare.';
+      out.textContent = audioState && audioState.max > 1 ? 'Prima ascolta la registrazione due volte fino alla fine: il secondo ascolto serve per controllare.' : 'Prima ascolta la registrazione fino alla fine: il secondo ascolto serve per controllare.';
       out.style.color = '#ff5555'; return;
     }
     const empty = keys.filter(k => { const g = givenOf(k); return Array.isArray(g) ? !g[0].trim() || !g[1].trim() : !String(g).trim(); }).length;
