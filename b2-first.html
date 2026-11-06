@@ -49,6 +49,11 @@
   .textbox { background: #f4f1e8; color: #111; border-radius: 10px; padding: 18px 22px; margin-bottom: 18px; line-height: 1.65; font-size: 1.02rem; }
   .textbox h3 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px; font-size: 1.5rem; margin-bottom: 8px; }
   .textbox p { margin-bottom: 10px; }
+  .textbox .lead { font-style: italic; font-weight: 600; margin-bottom: 12px; }
+  .textbox p.numl { margin-bottom: 10px; }
+  .textbox .ln { display: block; position: relative; padding-left: 2.6em; text-indent: 0; }
+  .textbox .ln i { position: absolute; left: 0; width: 2em; text-align: right; font-style: normal; font-size: .72em; line-height: 2.3; color: #999; user-select: none; }
+  .textbox .ln i.l5 { color: #111; font-weight: 700; }
   .notice { background: #fffbe0; color: #111; border: 2px solid #333; border-radius: 8px; padding: 12px 16px; margin: 8px 0 12px; line-height: 1.5; white-space: pre-line; }
 
   .q { background: #181818; border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; border: 2px solid transparent; }
@@ -317,7 +322,12 @@ function paras(text, gapFn) {
     return '<p>' + h + '</p>';
   }).join('');
 }
-function titleBox(p, inner) { return `<div class="textbox">${p.title ? `<h3>${esc(p.title)}</h3>` : ''}${inner}</div>`; }
+/* testo con righe numerate (le domande citano "line 12"): ogni \n è una riga, \n\n un paragrafo */
+function numbered(text) {
+  let n = 0;
+  return String(text || '').trim().split(/\n\s*\n/).map(par => '<p class="numl">' + par.split('\n').map(l => { n++; return `<span class="ln"><i class="${n % 5 ? '' : 'l5'}">${n}</i>${esc(l)}</span>`; }).join('') + '</p>').join('');
+}
+function titleBox(p, inner) { return `<div class="textbox">${p.title ? `<h3>${esc(p.title)}</h3>` : ''}${p.lead ? `<div class="lead">${esc(p.lead)}</div>` : ''}${inner}</div>`; }
 function optLabel(o) { return (o && typeof o === 'object' && o.img) ? `<img src="${esc(o.img)}" alt="">` : esc(o); }
 /* una parte è "pronta" quando contiene almeno un testo */
 function filled(p) {
@@ -564,7 +574,7 @@ function renderPart(t, sec, p) {
   }
   if (type === 'mclong') {
     let qs = ''; p.items.forEach(it => { qs += mcQuestion(it.n, it.q, it.options, it.answer); });
-    h += p.text ? `<div class="longwrap"><div class="textcol">${titleBox(p, paras(p.text))}</div><div>${qs}</div></div>` : qs;
+    h += p.text ? `<div class="longwrap"><div class="textcol">${titleBox(p, p.numbered ? numbered(p.text) : paras(p.text))}</div><div>${qs}</div></div>` : qs;
   } else if (type === 'gapped') {
     const letters = p.options.map(o => o.letter);
     h += `<div class="longwrap"><div class="textcol">${titleBox(p, paras(p.text, n => selectGap(n, letters, p.answers[n])))}</div>
