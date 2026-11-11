@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Common Mistakes B2</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0d0d0d; font-family: 'Nunito', sans-serif; color: #eee; }
+  .hero { background: #00E5FF; padding: 40px 40px 32px; display: flex; align-items: center; gap: 26px; }
+  .hero-letter { font-family: 'Bebas Neue', sans-serif; font-size: 7rem; color: #000; line-height: 1; flex-shrink: 0; }
+  .hero-text h1 { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; letter-spacing: 3px; color: #000; }
+  .hero-text p { font-size: 1rem; color: #111; margin-top: 4px; font-weight: 900; text-transform: uppercase; }
+  .main { max-width: 1000px; margin: 0 auto; padding: 32px 16px 60px; font-size: 1.08rem; }
+  .btn { display: inline-block; border: none; cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 900; border-radius: 20px; padding: 8px 20px; font-size: 0.95rem; text-decoration: none; text-transform: uppercase; }
+  .btn-cyan { background: #00E5FF; color: #000; } .btn-green { background: #00CC44; color: #000; } .btn-ghost { background: #222; color: #eee; }
+  .btn:hover { filter: brightness(1.15); }
+  .topbar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
+  .block-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 2px; margin-bottom: 4px; }
+  .block-sub { color: #999; font-weight: 700; font-size: 0.9rem; margin-bottom: 18px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; margin-bottom: 18px; }
+  .card { border-radius: 14px; padding: 18px 20px; color: #000; cursor: pointer; background: #00E5FF; box-shadow: 0 4px 20px rgba(0,0,0,0.5); transition: transform 0.2s; display: flex; flex-direction: column; gap: 8px; text-decoration: none; }
+  .card:hover { transform: translateY(-4px); }
+  .card.test { background: #FFFF00; }
+  .card-name { font-weight: 900; font-size: 1.1rem; }
+  .card-sub { font-size: 0.85rem; font-weight: 700; }
+  .badge { align-self: flex-start; background: rgba(0,0,0,0.25); border-radius: 10px; padding: 3px 10px; font-size: 0.78rem; font-weight: 900; }
+  .rule { background: #f4f1e8; color: #111; border-radius: 10px; padding: 16px 22px; margin-bottom: 26px; line-height: 1.6; }
+  .rule summary { cursor: pointer; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
+  .rule p { margin: 10px 0 4px; } .rule ul { margin: 6px 0 6px 22px; } .rule em { color: #0057a8; font-style: italic; }
+  .ex { margin-bottom: 34px; }
+  .rubric { background: #1a1a1a; border-left: 6px solid #00E5FF; border-radius: 8px; padding: 14px 18px; margin-bottom: 14px; }
+  .test-page .rubric { border-left-color: #FFFF00; }
+  .rubric .en { font-weight: 800; } .rubric .it { font-size: 0.9rem; color: #bbb; margin-top: 6px; }
+  .items { background: #f4f1e8; color: #111; border-radius: 10px; padding: 14px 20px; }
+  .item { padding: 10px 0; border-bottom: 1px solid #ddd6c4; line-height: 2.1; }
+  .item:last-child { border-bottom: none; }
+  .num { display: inline-block; min-width: 26px; font-weight: 900; color: #555; }
+  .dialog .item { line-height: 2.2; }
+  .wrong { text-decoration: underline; text-decoration-color: #e00000; text-decoration-thickness: 2px; text-underline-offset: 4px; font-weight: 800; }
+  .s1 { display: block; } .kw { display: inline-block; background: #111; color: #FFFF00; font-weight: 900; border-radius: 6px; padding: 0 9px; letter-spacing: 1px; margin: 2px 0; }
+  input.in { font-family: 'Nunito', sans-serif; font-size: 1rem; padding: 3px 8px; border: 2px solid #999; border-radius: 6px; background: #fff; min-width: 120px; }
+  input.in.long { min-width: 240px; }
+  input.in:disabled { background: #eee; color: #333; }
+  .w.ok input { border-color: #00a83a; background: #e6ffed; }
+  .w.ko input { border-color: #e00000; background: #ffecec; }
+  .w.half input { border-color: #d08000; background: #fff4e0; }
+  .fb { font-weight: 900; font-size: 0.85rem; margin-left: 6px; }
+  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 14px; }
+  .score { font-weight: 900; font-size: 1.05rem; }
+  .best { color: #00E5FF; font-weight: 900; font-size: 0.85rem; }
+  .divider { height: 4px; border-radius: 4px; margin: 8px 0 30px; background: linear-gradient(90deg, #00E5FF, #FFFF00, #00CC44); }
+  .note { color: #999; font-weight: 700; font-size: 0.85rem; margin-top: 30px; }
+  @media (max-width: 650px) { .hero { padding: 26px 16px; gap: 16px; } .hero-letter { font-size: 4.5rem; } .hero-text h1 { font-size: 2.1rem; } input.in.long { min-width: 180px; } }
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-letter">I</div>
+  <div class="hero-text"><h1>Common Mistakes B2</h1><p>Gli errori più frequenti all'esame B2 First</p></div>
+</div>
+<div class="main" id="app"></div>
+
+<script>
+/* =====================================================================
+   COMMON MISTAKES B2 — 10 blocchi, ognuno con 3 unità + 1 test di ripasso.
+   Dati in tests/cmN.js (TESTDATA["cmN"]). Link dalla pagina I:
+   common-mistakes-b2.html?b=cm1          = elenco del blocco
+   common-mistakes-b2.html?b=cm1#u1       = unità 1 · #test = test di ripasso
+   Tipi di esercizio:
+   gap  {t:"testo con ___", a:[["risposta","variante"], ...]}   (un gruppo per ogni ___)
+   fix  {t:"frase con [parte sbagliata]", a:["correzione", ...]}
+   kwt  {s1:"frase", w:"PAROLA", s2:"frase con ___", a:[...]}     (da 2 a 5 parole)
+   strict:true sull'esercizio = maiuscole, apostrofi e punteggiatura contano
+   ===================================================================== */
+const BLOCKS = ['cm1','cm2','cm3','cm4','cm5','cm6','cm7','cm8','cm9','cm10'];
+const SAVE_KEY = 'cm-b2';
+const params = new URLSearchParams(location.search);
+const app = document.getElementById('app');
+
+function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function norm(s) {
+  return ' ' + String(s).toLowerCase().replace(/[’‘`´]/g, "'").replace(/[–—]/g, '-') + ' ';
+}
+function loose(s) {
+  let x = norm(s)
+    .replace(/\bwon't\b/g, 'will not').replace(/\bshan't\b/g, 'shall not').replace(/\bcan't\b/g, 'can not').replace(/\bcannot\b/g, 'can not')
+    .replace(/n't\b/g, ' not').replace(/'ll\b/g, ' will').replace(/'re\b/g, ' are').replace(/'ve\b/g, ' have').replace(/\bi'm\b/g, 'i am');
+  return x.replace(/[^a-z0-9' ]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+function strict(s) { return String(s).replace(/[’‘`´]/g, "'").replace(/\s+/g, ' ').trim().replace(/[.!?]+$/, ''); }
+function same(a, b, st) { return st ? strict(a) === strict(b) : loose(a) === loose(b) && loose(a) !== ''; }
+function fmtPts(x) { return String(Math.round(x * 2) / 2).replace('.', ','); }
+function loadSave() { try { return JSON.parse(localStorage.getItem(SAVE_KEY)) || {}; } catch (e) { return {}; } }
+function storeBest(key, score, total) { try { const s = loadSave(); if (!s[key] || score > s[key].score) s[key] = { score, total }; localStorage.setItem(SAVE_KEY, JSON.stringify(s)); } catch (e) {} }
+
+function loadBlock(id, done) {
+  if ((window.TESTDATA || {})[id]) return done();
+  const s = document.createElement('script');
+  s.src = 'tests/' + id + '.js?v=' + Date.now();
+  s.onload = done; s.onerror = done;
+  document.head.appendChild(s);
+}
+
+/* ---------- elenco del blocco ---------- */
+function showBlock(id, B) {
+  const sv = loadSave();
+  const best = (key, ex) => { let sc = 0, tot = 0, any = false; ex.forEach((e, i) => { const r = sv[key + '|' + i]; tot += e.items.length; if (r) { any = true; sc += r.score; } }); return any ? `Migliore: ${fmtPts(sc)}/${tot}` : `${ex.length} esercizi`; };
+  app.innerHTML = `
+    <div class="topbar"><a class="btn btn-green" href="final-inspection.html">← The Final Inspection</a></div>
+    <div class="block-title">${esc(B.title)}</div>
+    <div class="block-sub">Prima le tre unità, poi il test di ripasso che le mescola.</div>
+    <div class="grid">
+      ${B.units.map(u => `<a class="card" href="#u${u.n}"><span class="badge">Unit ${u.n}</span><span class="card-name">${esc(u.title)}</span><span class="card-sub">${best(id + '|u' + u.n, u.ex)}</span></a>`).join('')}
+      <a class="card test" href="#test"><span class="badge">Ripasso</span><span class="card-name">${esc(B.test.title)}</span><span class="card-sub">${best(id + '|test', B.test.ex)}</span></a>
+    </div>`;
+}
+
+/* ---------- pagina di esercizi ---------- */
+let state = [];
+function renderItem(ex, ei, it, ii) {
+  const key = (gi) => `${ei}-${ii}-${gi}`;
+  const box = (gi, long) => `<span class="w" id="w-${key(gi)}"><input class="in${long ? ' long' : ''}" id="in-${key(gi)}" autocomplete="off" autocapitalize="off" spellcheck="false"><span class="fb" id="fb-${key(gi)}"></span></span>`;
+  const n = `<span class="num">${ii + 1}</span>`;
+  if (ex.type === 'gap') {
+    const parts = it.t.split('___'); let h = '';
+    parts.forEach((p, gi) => { h += esc(p).replace(/\n/g, '<br>'); if (gi < parts.length - 1) h += box(gi, ex.long); });
+    return `<div class="item">${n}${h}</div>`;
+  }
+  if (ex.type === 'fix') {
+    const h = esc(it.t).replace(/\[(.+?)\]/, '<span class="wrong">$1</span>');
+    return `<div class="item">${n}${h}<br><span class="num"></span>→ ${box(0, true)}</div>`;
+  }
+  if (ex.type === 'kwt') {
+    const [a, b] = it.s2.split('___');
+    return `<div class="item">${n}${esc(it.s1)}<br><span class="num"></span><span class="kw">${esc(it.w)}</span><br><span class="num"></span>${esc(a)}${box(0, true)}${esc(b || '')}</div>`;
+  }
+}
+function groups(ex, it) { if (ex.type !== 'gap') return [it.a]; return typeof it.a[0] === 'string' ? [it.a] : it.a; }
+
+function showPage(id, B, pageKey, page, isTest) {
+  const title = isTest ? page.title : `Unit ${page.n} · ${page.title}`;
+  state = page.ex.map(() => ({ round: 0, r1: {}, armed: false }));
+  app.innerHTML = `
+    <div class="${isTest ? 'test-page' : ''}">
+    <div class="topbar"><a class="btn btn-ghost" href="#">← ${esc(B.title)}</a><a class="btn btn-green" href="final-inspection.html">The Final Inspection</a></div>
+    <div class="block-title">${esc(title)}</div>
+    <div class="block-sub">${isTest ? 'Test di ripasso delle unità ' + B.units.map(u => u.n).join(', ') : esc(B.title)}</div>
+    ${page.rule ? `<details class="rule"><summary>📖 Rule · la regola</summary>${page.rule}</details>` : ''}
+    ${page.ex.map((ex, ei) => `
+      <div class="ex" id="ex-${ei}">
+        <div class="rubric"><div class="en">${ei + 1}. ${esc(ex.rubric)}</div>${ex.it ? `<div class="it">${esc(ex.it)}</div>` : ''}</div>
+        <div class="items${ex.dialog ? ' dialog' : ''}">${ex.items.map((it, ii) => renderItem(ex, ei, it, ii)).join('')}</div>
+        <div class="actions"><button class="btn btn-cyan" id="chk-${ei}" onclick="check(${ei})">✔ Correggi</button><button class="btn btn-ghost" id="rst-${ei}" style="display:none" onclick="resetEx(${ei})">↺ Rifai</button><span class="score" id="sc-${ei}"></span><span class="best" id="bs-${ei}"></span></div>
+      </div>`).join('')}
+    <div class="note">Si può correggere due volte: la risposta giusta al primo tentativo vale 1 punto, al secondo ½ punto.</div>
+    </div>`;
+  window._cur = { id, pageKey, page };
+  page.ex.forEach((ex, ei) => showBest(ei));
+  window.scrollTo(0, 0);
+}
+function showBest(ei) {
+  const { id, pageKey, page } = window._cur; const r = loadSave()[id + '|' + pageKey + '|' + ei];
+  const el = document.getElementById('bs-' + ei); if (el) el.textContent = r ? `Migliore: ${fmtPts(r.score)}/${r.total}` : '';
+}
+function keysOf(ei) {
+  const ex = window._cur.page.ex[ei], ks = [];
+  ex.items.forEach((it, ii) => groups(ex, it).forEach((ans, gi) => ks.push({ k: `${ei}-${ii}-${gi}`, ans, st: !!ex.strict })));
+  return ks;
+}
+const val = k => document.getElementById('in-' + k).value;
+function isRight(o) { return o.ans.some(a => same(val(o.k), a, o.st)); }
+function mark(k, cls, txt) {
+  const w = document.getElementById('w-' + k), fb = document.getElementById('fb-' + k);
+  w.classList.remove('ok', 'ko', 'half'); if (cls) w.classList.add(cls);
+  fb.textContent = txt; fb.style.color = cls === 'ok' ? '#00a83a' : cls === 'half' ? '#d08000' : '#e00000';
+}
+function check(ei) {
+  const S = state[ei], ks = keysOf(ei), out = document.getElementById('sc-' + ei), btn = document.getElementById('chk-' + ei);
+  out.style.color = '';
+  if (S.round === 0) {
+    if (!S.armed) {
+      const empty = ks.filter(o => !val(o.k).trim()).length;
+      S.armed = true; btn.textContent = '✔ Sì, correggi';
+      out.textContent = empty ? `Hai ${empty} risposte vuote. Tocca di nuovo “Correggi” per confermare.` : 'Tocca di nuovo “Correggi” per confermare.';
+      setTimeout(() => { if (S.armed && S.round === 0) { S.armed = false; btn.textContent = '✔ Correggi'; out.textContent = ''; } }, 6000);
+      return;
+    }
+    S.armed = false; S.r1 = {}; let retry = 0, s1 = 0;
+    ks.forEach(o => {
+      if (isRight(o)) { S.r1[o.k] = 1; s1++; mark(o.k, 'ok', '✓'); document.getElementById('in-' + o.k).disabled = true; }
+      else { retry++; mark(o.k, 'ko', '✗ Riprova'); }
+    });
+    if (retry) { S.round = 1; btn.textContent = '✔ Correggi di nuovo'; out.textContent = `Prima correzione: ${s1}/${ks.length} · da riprovare: ${retry}`; return; }
+  }
+  let score = 0;
+  ks.forEach(o => {
+    if (S.r1[o.k]) { score += 1; mark(o.k, 'ok', '✓'); return; }
+    if (isRight(o)) { score += 0.5; mark(o.k, 'half', '½'); return; }
+    mark(o.k, 'ko', '✗ ' + o.ans[0]);
+  });
+  ks.forEach(o => document.getElementById('in-' + o.k).disabled = true);
+  S.round = 2; btn.style.display = 'none'; document.getElementById('rst-' + ei).style.display = 'inline-block';
+  out.textContent = `Punteggio: ${fmtPts(score)}/${ks.length}`;
+  const { id, pageKey } = window._cur; storeBest(id + '|' + pageKey + '|' + ei, score, ks.length); showBest(ei);
+}
+function resetEx(ei) {
+  keysOf(ei).forEach(o => { const el = document.getElementById('in-' + o.k); el.disabled = false; el.value = ''; mark(o.k, '', ''); });
+  state[ei] = { round: 0, r1: {}, armed: false };
+  const btn = document.getElementById('chk-' + ei); btn.style.display = ''; btn.textContent = '✔ Correggi';
+  document.getElementById('rst-' + ei).style.display = 'none'; document.getElementById('sc-' + ei).textContent = '';
+}
+
+/* ---------- navigazione ---------- */
+function route() {
+  const id = params.get('b');
+  if (!BLOCKS.includes(id)) { location.replace('final-inspection.html'); return; }
+  const B = (window.TESTDATA || {})[id];
+  if (!B) { app.innerHTML = '<p>Caricamento…</p>'; return loadBlock(id, () => (window.TESTDATA || {})[id] ? route() : (app.innerHTML = '<p>Questo blocco non è ancora disponibile.</p>')); }
+  const h = location.hash.replace(/^#/, '');
+  if (h === 'test') return showPage(id, B, 'test', B.test, true);
+  const m = h.match(/^u(\d+)$/); const u = m && B.units.find(x => String(x.n) === m[1]);
+  if (u) return showPage(id, B, 'u' + u.n, u, false);
+  showBlock(id, B);
+}
+window.addEventListener('hashchange', route);
+route();
+</script>
+</body>
+</html>
