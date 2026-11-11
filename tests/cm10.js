@@ -20,12 +20,12 @@ TESTDATA["cm10"] = {
         { type: "gap", rubric: "Complete the sentences with one suitable verb in the correct form.", it: "Un verbo per spazio, nella forma corretta.", items: [
           { t: "Can you ___ a photo of us in front of the fountain?", a: ["take"] },
           { t: "Next time you come to my house, ___ your guitar with you.", a: ["bring"] },
-          { t: "I'm going to ___ these books back to the library.", a: ["take"] },
+          { t: "Could you ___ me the newspaper from the living room?", a: ["bring"] },
           { t: "She has to ___ care of her little brother after school.", a: ["take"] },
           { t: "Please ___ attention to the instructions.", a: ["pay"] },
-          { t: "Let's ___ a break and have a coffee.", a: ["take", "have"] },
+          { t: "The hotels on the coast have ___ from the tourist boom.", a: ["profited", "benefited", "benefitted"] },
           { t: "You should ___ advantage of the cheap flights.", a: ["take"] },
-          { t: "When are you ___ your driving test?", a: ["taking", "doing"] }
+          { t: "The students weren't ___ attention, so they didn't understand the task.", a: ["paying"] }
         ]},
         { type: "fix", rubric: FIX, it: FIX_IT, items: [
           { t: "Can you [make] a photo of me?", a: ["take"] },
