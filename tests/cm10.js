@@ -17,15 +17,15 @@ TESTDATA["cm10"] = {
 <li><b>take care of</b> = look after: <em>Who <b>takes care of</b> your plants?</em></li>
 <li><b>pay attention to</b> = concentrate on: <em>Nobody <b>paid attention to</b> the warning.</em></li></ul>`,
       ex: [
-        { type: "gap", rubric: "Complete the sentences with one suitable verb in the correct form.", it: "Un verbo per spazio, nella forma corretta.", items: [
-          { t: "Can you ___ a photo of us in front of the fountain?", a: ["take"] },
+        { type: "gap", long: true, rubric: "Complete the sentences with a suitable expression. Write the verb in the correct form and any other words needed.", it: "Scrivi tutta l'espressione: il verbo nella forma corretta e, se servono, il nome e la preposizione.", items: [
+          { t: "My grandmother is ill, so my mum ___ her at the moment.", a: ["is taking care of", "'s taking care of", "is looking after", "'s looking after"] },
+          { t: "Excuse me, could you ___ of us in front of the fountain?", a: ["take a photo", "take a picture", "take a photograph"] },
           { t: "Next time you come to my house, ___ your guitar with you.", a: ["bring"] },
-          { t: "Could you ___ me the newspaper from the living room?", a: ["bring"] },
-          { t: "She has to ___ care of her little brother after school.", a: ["take"] },
-          { t: "Please ___ attention to the instructions.", a: ["pay"] },
-          { t: "The hotels on the coast have ___ from the tourist boom.", a: ["profited", "benefited", "benefitted"] },
-          { t: "You should ___ advantage of the cheap flights.", a: ["take"] },
-          { t: "The students weren't ___ attention, so they didn't understand the task.", a: ["paying"] }
+          { t: "The teacher got angry because nobody ___ her explanation.", a: ["was paying attention to", "paid attention to", "paid any attention to", "was paying any attention to"] },
+          { t: "Lots of people ___ the cheap flights last summer and went abroad.", a: ["took advantage of"] },
+          { t: "Some companies ___ the energy crisis by selling solar panels.", a: ["profited from", "have profited from", "benefited from", "made a profit from"] },
+          { t: "You look exhausted. Why don't you ___ and have a coffee?", a: ["take a break", "have a break"] },
+          { t: "She's very nervous because she ___ her driving test tomorrow.", a: ["is taking", "'s taking", "is doing", "'s doing"] }
         ]},
         { type: "fix", rubric: FIX, it: FIX_IT, items: [
           { t: "Can you [make] a photo of me?", a: ["take"] },
