@@ -137,7 +137,7 @@ TESTDATA["cm7"] = {
         { t: "Don't forget to ___ your passport with you.", a: ["take", "bring"] },
         { t: "It was really ___ (embarrass) when I fell off the stage.", a: ["embarrassing"] }
       ]},
-      { type: "fix", rubric: FIX, it: FIX_IT, items: [
+      { type: "fix", find: true, rubric: FIX, it: FIX_IT, items: [
         { t: "I'm [boring]: there's nothing to do.", a: ["bored"] },
         { t: "Did you have a nice [travel] to London?", a: ["journey", "trip"] },
         { t: "We [arrived to] Milan at noon.", a: ["arrived in", "got to"] },

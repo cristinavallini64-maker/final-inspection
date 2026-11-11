@@ -42,6 +42,8 @@
   .s1 { display: block; } .kw { display: inline-block; background: #111; color: #FFFF00; font-weight: 900; border-radius: 6px; padding: 0 9px; letter-spacing: 1px; margin: 2px 0; }
   input.in { font-family: 'Nunito', sans-serif; font-size: 1rem; padding: 3px 8px; border: 2px solid #999; border-radius: 6px; background: #fff; min-width: 120px; }
   input.in.long { min-width: 240px; }
+  .w.full { display: block; margin-top: 4px; } input.in.full { width: 100%; }
+  .ctx { color: #555; font-style: italic; }
   input.in:disabled { background: #eee; color: #333; }
   .w.ok input { border-color: #00a83a; background: #e6ffed; }
   .w.ko input { border-color: #e00000; background: #ffecec; }
@@ -128,6 +130,13 @@ function renderItem(ex, ei, it, ii) {
     parts.forEach((p, gi) => { h += esc(p).replace(/\n/g, '<br>'); if (gi < parts.length - 1) h += box(gi, ex.long); });
     return `<div class="item">${n}${h}</div>`;
   }
+  if (ex.type === 'fix' && ex.find) {
+    const h = esc(findText(ex, it, ii));
+    return `<div class="item">${n}${h}${fullBox(key(0))}</div>`;
+  }
+  if (ex.type === 'rw') {
+    return `<div class="item">${n}${it.ctx ? `<span class="ctx">${esc(it.ctx)}</span> ` : ''}<b>${esc(it.t)}</b>${fullBox(key(0))}</div>`;
+  }
   if (ex.type === 'fix') {
     const h = esc(it.t).replace(/\[(.+?)\]/, '<span class="wrong">$1</span>');
     return `<div class="item">${n}${h}<br><span class="num"></span>→ ${box(0, true)}</div>`;
@@ -137,7 +146,18 @@ function renderItem(ex, ei, it, ii) {
     return `<div class="item">${n}${esc(it.s1)}<br><span class="num"></span><span class="kw">${esc(it.w)}</span><br><span class="num"></span>${esc(a)}${box(0, true)}${esc(b || '')}</div>`;
   }
 }
-function groups(ex, it) { if (ex.type !== 'gap') return [it.a]; return typeof it.a[0] === 'string' ? [it.a] : it.a; }
+function fullBox(k) { return `<span class="w full" id="w-${k}"><input class="in full" id="in-${k}" autocomplete="off" autocapitalize="off" spellcheck="false"><span class="fb" id="fb-${k}"></span></span>`; }
+/* fix + find:true = come nel libro "right or wrong?": errore non segnato, alcune frasi giuste (indici in ex.ok, default 3ª e 6ª) */
+function isOkItem(ex, ii) { return (ex.ok || [2, 5]).includes(ii); }
+function subst(t, x) { return t.replace(/(\s?)\[(.+?)\]/, (m, sp) => (x.startsWith("'") ? '' : sp) + x); }
+function findText(ex, it, ii) { return isOkItem(ex, ii) ? subst(it.t, it.a[0]) : it.t.replace(/\[(.+?)\]/, '$1'); }
+function groups(ex, it, ii) {
+  if (ex.type === 'fix' && ex.find) return [isOkItem(ex, ii) ? ['CORRECT', subst(it.t, it.a[0])] : it.a.map(x => subst(it.t, x))];
+  if (ex.type !== 'gap') return [it.a];
+  return typeof it.a[0] === 'string' ? [it.a] : it.a;
+}
+const FIND_RUBRIC = 'Are these sentences right or wrong? If a sentence is right, write CORRECT. If it is wrong, rewrite the whole sentence correctly.';
+const FIND_IT = 'Se la frase è giusta scrivi CORRECT; se è sbagliata riscrivila tutta corretta.';
 
 function showPage(id, B, pageKey, page, isTest) {
   const title = isTest ? page.title : `Unit ${page.n} · ${page.title}`;
@@ -150,7 +170,7 @@ function showPage(id, B, pageKey, page, isTest) {
     ${page.rule ? `<details class="rule"><summary>📖 Rule · la regola</summary>${page.rule}</details>` : ''}
     ${page.ex.map((ex, ei) => `
       <div class="ex" id="ex-${ei}">
-        <div class="rubric"><div class="en">${ei + 1}. ${esc(ex.rubric)}</div>${ex.it ? `<div class="it">${esc(ex.it)}</div>` : ''}</div>
+        <div class="rubric"><div class="en">${ei + 1}. ${esc(ex.find ? FIND_RUBRIC : ex.rubric)}</div>${(ex.find || ex.it) ? `<div class="it">${esc(ex.find ? FIND_IT + (ex.strict ? ' Attenzione: maiuscole, apostrofi e virgole contano.' : '') : ex.it)}</div>` : ''}</div>
         <div class="items${ex.dialog ? ' dialog' : ''}">${ex.items.map((it, ii) => renderItem(ex, ei, it, ii)).join('')}</div>
         <div class="actions"><button class="btn btn-cyan" id="chk-${ei}" onclick="check(${ei})">✔ Correggi</button><button class="btn btn-ghost" id="rst-${ei}" style="display:none" onclick="resetEx(${ei})">↺ Rifai</button><span class="score" id="sc-${ei}"></span><span class="best" id="bs-${ei}"></span></div>
       </div>`).join('')}
@@ -166,11 +186,11 @@ function showBest(ei) {
 }
 function keysOf(ei) {
   const ex = window._cur.page.ex[ei], ks = [];
-  ex.items.forEach((it, ii) => groups(ex, it).forEach((ans, gi) => ks.push({ k: `${ei}-${ii}-${gi}`, ans, st: !!ex.strict })));
+  ex.items.forEach((it, ii) => groups(ex, it, ii).forEach((ans, gi) => ks.push({ k: `${ei}-${ii}-${gi}`, ans, st: !!ex.strict })));
   return ks;
 }
 const val = k => document.getElementById('in-' + k).value;
-function isRight(o) { return o.ans.some(a => same(val(o.k), a, o.st)); }
+function isRight(o) { const v = val(o.k).trim().toLowerCase(); if (v === 'correct' && o.ans.some(a => a === 'CORRECT')) return true; return o.ans.some(a => a !== 'CORRECT' && same(val(o.k), a, o.st)); }
 function mark(k, cls, txt) {
   const w = document.getElementById('w-' + k), fb = document.getElementById('fb-' + k);
   w.classList.remove('ok', 'ko', 'half'); if (cls) w.classList.add(cls);

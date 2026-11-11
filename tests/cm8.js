@@ -56,7 +56,7 @@ TESTDATA["cm8"] = {
 <li><b>Firstly / First of all</b> = to introduce the first point.</li>
 <li><b>At first</b> = at the beginning of a situation that later changes: <em><b>At first</b> I hated jazz, but now I love it.</em></li></ul>`,
       ex: [
-        { type: "fix", rubric: FIX, it: FIX_IT, items: [
+        { type: "fix", find: true, rubric: FIX, it: FIX_IT, items: [
           { t: "[According to me], the film is too long.", a: ["In my opinion"] },
           { t: "He isn't lazy. [On the other hand], he works very hard.", a: ["On the contrary"] },
           { t: "[Firstly] I didn't like my new school, but now I love it.", a: ["At first"] },
@@ -136,7 +136,7 @@ TESTDATA["cm8"] = {
         { t: "She's very interested ___ marine biology.", a: ["in"] },
         { t: "I'm looking forward ___ (meet) your family.", a: ["to meeting"] }
       ]},
-      { type: "fix", rubric: FIX, it: FIX_IT, items: [
+      { type: "fix", find: true, rubric: FIX, it: FIX_IT, items: [
         { t: "I [hope] I knew the answer.", a: ["wish"] },
         { t: "[According to me], the city is too crowded.", a: ["In my opinion"] },
         { t: "I look forward [to see] you soon.", a: ["to seeing"] },

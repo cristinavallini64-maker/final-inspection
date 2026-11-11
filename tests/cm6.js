@@ -17,23 +17,23 @@ TESTDATA["cm6"] = {
 <ul><li>in possessive pronouns and adjectives: <em>its, hers, ours, yours, theirs, whose</em> → <em>The bird hurt <b>its</b> wing.</em></li>
 <li>to make a normal plural: <em>two coffees</em> (not <s>coffee's</s>)</li></ul>`,
       ex: [
-        { type: "fix", strict: true, rubric: FIX, it: STRICT_IT, items: [
+        { type: "fix", find: true, ok: [3, 7], strict: true, rubric: FIX, it: STRICT_IT, items: [
           { t: "Excuse me, where are the [mens] toilets?", a: ["men's"] },
           { t: "The dog is wagging [it's] tail.", a: ["its"] },
           { t: "[Whos] coming to the cinema tonight?", a: ["Who's"] },
           { t: "My [parents] car is red. They bought it together.", a: ["parents'"] },
           { t: "[Theyre] going to be late again.", a: ["They're"] },
-          { t: "This is [Lucas] bike, not mine. (the bike belongs to Luca)", a: ["Luca's"] },
+          { t: "This is [Giulias] bike, not mine.", a: ["Giulia's"] },
           { t: "The [childrens] playground is closed today.", a: ["children's"] },
           { t: "I [cant] find my keys anywhere.", a: ["can't"] }
         ]},
-        { type: "fix", strict: true, rubric: FIX, it: STRICT_IT, items: [
+        { type: "fix", find: true, ok: [0, 6], strict: true, rubric: FIX, it: STRICT_IT, items: [
           { t: "I bought three [apple's] and a melon.", a: ["apples"] },
           { t: "[Its] raining again!", a: ["It's"] },
           { t: "All the [students] names are on the list.", a: ["students'"] },
           { t: "[Whose] that man over there?", a: ["Who's"] },
           { t: "That scarf isn't mine. It's [her's].", a: ["hers"] },
-          { t: "My [sisters] best friend is called Lea. (I have one sister)", a: ["sister's"] },
+          { t: "My only [sisters] best friend is called Lea.", a: ["sister's"] },
           { t: "We [dont] have any milk left.", a: ["don't"] },
           { t: "The company has changed [it's] logo.", a: ["its"] }
         ]},
@@ -58,7 +58,7 @@ TESTDATA["cm6"] = {
 <li>before <em>but, yet, while</em> joining two long clauses</li>
 <li>after expressions at the beginning of a sentence: <em>Of course, … · In my opinion, … · First of all, … · However, …</em></li></ul>`,
       ex: [
-        { type: "fix", strict: true, rubric: "Correct the underlined words: add capital letters where necessary, or remove them.", it: STRICT_IT, items: [
+        { type: "fix", find: true, strict: true, rubric: "Correct the underlined words: add capital letters where necessary, or remove them.", it: STRICT_IT, items: [
           { t: "We're going to [paris] for the weekend.", a: ["Paris"] },
           { t: "My birthday is in [april].", a: ["April"] },
           { t: "She speaks fluent [german].", a: ["German"] },
@@ -68,7 +68,7 @@ TESTDATA["cm6"] = {
           { t: "He studies at the [university of bologna].", a: ["University of Bologna"] },
           { t: "We spent a week in the [united states].", a: ["United States"] }
         ]},
-        { type: "fix", strict: true, rubric: "Rewrite the underlined words adding commas where necessary.", it: STRICT_IT, items: [
+        { type: "fix", find: true, ok: [2, 7], strict: true, rubric: "Rewrite the underlined words adding commas where necessary.", it: STRICT_IT, items: [
           { t: "For the cake we need [eggs flour sugar and] butter.", a: ["eggs, flour, sugar and", "eggs, flour, sugar, and"] },
           { t: "[In my opinion this] film is far too long.", a: ["In my opinion, this"] },
           { t: "I wanted to go to the [beach but it] was raining all day.", a: ["beach, but it"] },
@@ -78,7 +78,7 @@ TESTDATA["cm6"] = {
           { t: "We had planned everything. [However the] weather was terrible.", a: ["However, the"] },
           { t: "He was exhausted after the [trip yet he] kept on working.", a: ["trip, yet he"] }
         ]},
-        { type: "fix", strict: true, rubric: "Rewrite the underlined words with the correct capital letters and commas.", it: STRICT_IT, items: [
+        { type: "fix", find: true, ok: [0, 3], strict: true, rubric: "Rewrite the underlined words with the correct capital letters and commas.", it: STRICT_IT, items: [
           { t: "[on monday] I'm going to the dentist.", a: ["On Monday"] },
           { t: "My favourite subjects are [english maths and] physics.", a: ["English, maths and", "English, maths, and"] },
           { t: "[in my opinion christmas] is the best time of the year.", a: ["In my opinion, Christmas"] },
@@ -132,7 +132,7 @@ TESTDATA["cm6"] = {
   test: {
     title: "Test 6",
     ex: [
-      { type: "fix", strict: true, rubric: "Read Lisa's email. Each sentence contains a mistake (underlined). Write the correct words.", it: STRICT_IT, items: [
+      { type: "fix", find: true, strict: true, rubric: "Read Lisa's email. Each sentence contains a mistake (underlined). Write the correct words.", it: STRICT_IT, items: [
         { t: "Dear Anna, thank you for the [wonderfull] party on Saturday.", a: ["wonderful"] },
         { t: "[Its] the best party I've been to this year.", a: ["It's"] },
         { t: "My two [friends] names are Leo and Sam, by the way.", a: ["friends'"] },
@@ -140,7 +140,7 @@ TESTDATA["cm6"] = {
         { t: "The [accomodation] was perfect and very cheap.", a: ["accommodation"] },
         { t: "We had a great time. [however the] traffic was awful.", a: ["However, the"] },
         { t: "The [childrens] room was a bit small, though.", a: ["children's"] },
-        { t: "I'll [definitly] come and visit you again soon. Love, Lisa", a: ["definitely"] }
+        { t: "I'll [definitly] come and visit you again soon.", a: ["definitely"] }
       ]},
       { type: "gap", strict: true, rubric: "Complete the sentences with the correct form of the words in brackets.", it: STRICT_IT, items: [
         { t: "the bags of the tourists → the ___ bags", a: ["tourists'"] },
@@ -150,7 +150,7 @@ TESTDATA["cm6"] = {
         { t: "It was the ___ (sad) film I've ever seen.", a: ["saddest"] },
         { t: "We ___ (travel) round Ireland last year.", a: ["travelled"] }
       ]},
-      { type: "fix", strict: true, rubric: FIX, it: STRICT_IT, items: [
+      { type: "fix", find: true, strict: true, rubric: FIX, it: STRICT_IT, items: [
         { t: "At school I study [french and spanish].", a: ["French and Spanish"] },
         { t: "We need [bread milk cheese and] eggs.", a: ["bread, milk, cheese and", "bread, milk, cheese, and"] },
         { t: "The cat hasn't touched [it's] dinner.", a: ["its"] },

@@ -16,15 +16,15 @@ TESTDATA["cm9"] = {
 <p>Position: <b>still</b> and <b>already</b> go before the main verb, but after <b>be</b> and after the first auxiliary: <em>He <b>still</b> works there. · I'm <b>already</b> late. · We've <b>already</b> eaten.</em></p>
 <p>With a negative verb, <b>still</b> goes before the auxiliary: <em>I <b>still</b> haven't replied.</em></p>`,
       ex: [
-        { type: "gap", rubric: "Complete the sentences with still, yet or already.", it: "Still, yet o already?", items: [
-          { t: "Have you finished your homework ___?", a: ["yet"] },
-          { t: "I've ___ seen this film twice.", a: ["already"] },
-          { t: "Is it ___ raining?", a: ["still"] },
-          { t: "They haven't arrived ___.", a: ["yet"] },
-          { t: "She's only five, but she can ___ read.", a: ["already"] },
-          { t: "I ___ haven't found a job.", a: ["still"] },
-          { t: "'Shall we buy the tickets?' 'Don't worry, I've ___ bought them.'", a: ["already"] },
-          { t: "It's midnight and he's ___ working.", a: ["still"] }
+        { type: "rw", rubric: "Add still, yet or already to the sentences in bold. Write the whole sentence.", it: "Riscrivi la frase in grassetto aggiungendo still, yet o already al posto giusto.", items: [
+          { ctx: "You don't need to buy any milk.", t: "I've bought some.", a: ["I've already bought some.", "I have already bought some."] },
+          { ctx: "Luca has been looking for a flat for months.", t: "He hasn't found one.", a: ["He still hasn't found one.", "He hasn't found one yet.", "He still has not found one.", "He has not found one yet."] },
+          { ctx: "Don't tell Marta how the film ends!", t: "She hasn't seen it.", a: ["She hasn't seen it yet.", "She still hasn't seen it.", "She has not seen it yet.", "She still has not seen it."] },
+          { ctx: "My son is only four.", t: "He can swim.", a: ["He can already swim.", "He can swim already."] },
+          { ctx: "I sent the form two weeks ago.", t: "Nobody has replied.", a: ["Nobody has replied yet.", "Nobody has replied to me yet."] },
+          { ctx: "We're leaving in ten minutes.", t: "Have you packed your suitcase?", a: ["Have you packed your suitcase yet?", "Have you already packed your suitcase?"] },
+          { ctx: "It's past midnight!", t: "Are you studying?", a: ["Are you still studying?"] },
+          { ctx: "We got there at nine, but it was too late.", t: "The shop had closed.", a: ["The shop had already closed."] }
         ]},
         { type: "fix", rubric: FIX, it: FIX_IT, items: [
           { t: "I can [yet] remember my first day at school.", a: ["still"] },
@@ -100,13 +100,15 @@ TESTDATA["cm9"] = {
           { t: "[Most of restaurants] in this street are expensive.", a: ["Most restaurants", "Most of the restaurants"] },
           { t: "I saw her [on last] Friday.", a: ["last"] }
         ]},
-        { type: "gap", rubric: "Complete each sentence with of or on.", it: "Of o on?", items: [
-          { t: "Most ___ my friends live nearby.", a: ["of"] },
-          { t: "Whether we go or not depends ___ you.", a: ["on"] },
-          { t: "I'm not very keen ___ spicy food.", a: ["on"] },
-          { t: "She's very fond ___ her grandmother.", a: ["of"] },
-          { t: "We went out in spite ___ the storm.", a: ["of"] },
-          { t: "Do you have any experience ___ working with children?", a: ["of"] }
+        { type: "rw", rubric: "Insert of or on where necessary. Write the whole sentence. If no word is needed, write CORRECT.", it: "Riscrivi la frase con of o on al posto giusto. Se non manca niente, scrivi CORRECT.", items: [
+          { t: "I'm not very keen spicy food.", a: ["I'm not very keen on spicy food."] },
+          { t: "Most my classmates live in town.", a: ["Most of my classmates live in town."] },
+          { t: "We'll meet again next Thursday.", a: ["CORRECT", "We'll meet again next Thursday."] },
+          { t: "Our plans depend the weather.", a: ["Our plans depend on the weather."] },
+          { t: "In spite the traffic, we arrived on time.", a: ["In spite of the traffic, we arrived on time."] },
+          { t: "Most hotels in the town were full.", a: ["CORRECT", "Most hotels in the town were full."] },
+          { t: "My grandfather is very fond his garden.", a: ["My grandfather is very fond of his garden."] },
+          { t: "Whether I get the job depends my interview.", a: ["Whether I get the job depends on my interview."] }
         ]},
         { type: "kwt", rubric: KWT, it: KWT_IT, items: [
           { s1: "Although it rained, the match went on.", w: "DESPITE", s2: "The match went on ___.", a: ["despite the rain"] },
@@ -132,7 +134,7 @@ TESTDATA["cm9"] = {
         { t: "We've ___ booked the hotel, so don't worry.", a: ["already"] },
         { t: "My little brother is very fond ___ animals.", a: ["of"] }
       ]},
-      { type: "fix", rubric: FIX, it: FIX_IT, items: [
+      { type: "fix", find: true, rubric: FIX, it: FIX_IT, items: [
         { t: "I'm [very] tired to go out tonight.", a: ["too"] },
         { t: "[Despite of] the cold, we went swimming.", a: ["Despite", "In spite of"] },
         { t: "I [haven't still received] your email.", a: ["still haven't received", "haven't received"] },

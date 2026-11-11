@@ -132,7 +132,7 @@ TESTDATA["cm2"] = {
         { t: "Luckily my brother ___ (have) a car at the time, so he brought it to me.", a: ["had"] },
         { t: "Since then I ___ (be) back to Scotland twice.", a: ["have been", "'ve been"] }
       ]},
-      { type: "fix", rubric: FIX, it: FIX_IT, items: [
+      { type: "fix", find: true, rubric: FIX, it: FIX_IT, items: [
         { t: "I [have finished] primary school in 2014.", a: ["finished"] },
         { t: "[Have you got] a good time at the party last night?", a: ["Did you have"] },
         { t: "By the time I got up, everyone [has gone] out.", a: ["had gone", "'d gone"] },

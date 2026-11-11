@@ -66,7 +66,7 @@ TESTDATA["cm5"] = {
           { t: "The weather ___ (be) terrible last weekend.", a: ["was"] },
           { t: "My luggage ___ (weigh) more than 25 kilos.", a: ["weighs"] }
         ]},
-        { type: "fix", rubric: FIX, it: FIX_IT, items: [
+        { type: "fix", find: true, rubric: FIX, it: FIX_IT, items: [
           { t: "Can you give me [an advice]?", a: ["some advice", "a piece of advice", "advice", "a bit of advice"] },
           { t: "I need [some informations] about the course.", a: ["some information"] },
           { t: "We bought [new furnitures] for the living room.", a: ["new furniture", "some new furniture"] },
@@ -135,7 +135,7 @@ TESTDATA["cm5"] = {
         { t: "She did very ___ in her driving test.", a: ["well"] },
         { t: "We need ___ information about train times.", a: ["some", "more"] }
       ]},
-      { type: "fix", rubric: FIX, it: FIX_IT, items: [
+      { type: "fix", find: true, rubric: FIX, it: FIX_IT, items: [
         { t: "I'd like [an information] about the timetable.", a: ["some information", "information"] },
         { t: "He looks [as] a film star in that suit.", a: ["like"] },
         { t: "You speak Italian very [good]!", a: ["well"] },

@@ -130,7 +130,7 @@ TESTDATA["cm1"] = {
         { t: "LEO: Great. If the weather ___ (be) good, we could go to the lake.", a: ["is"] },
         { t: "NINA: Lovely idea. I ___ (bring) a picnic, I promise!", a: ["'ll bring", "will bring"] }
       ]},
-      { type: "fix", rubric: "Each sentence contains a mistake (underlined). Write the correct words.", it: "La parte sottolineata è sbagliata: riscrivila corretta.", items: [
+      { type: "fix", find: true, rubric: "Each sentence contains a mistake (underlined). Write the correct words.", it: "La parte sottolineata è sbagliata: riscrivila corretta.", items: [
         { t: "I'll give you the book back when I [will finish] it.", a: ["finish", "have finished", "'ve finished"] },
         { t: "Do you know where [does Marco work]?", a: ["Marco works"] },
         { t: "'Can someone help me with this?' 'Sure, I [do] it.'", a: ["'ll do", "will do"] },

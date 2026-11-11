@@ -74,13 +74,15 @@ TESTDATA["cm10"] = {
           { t: "___ moon was very bright last night.", a: ["The"] },
           { t: "She works as ___ engineer for a big company.", a: ["an"] }
         ]},
-        { type: "fix", rubric: "Correct the underlined words: add or remove the.", it: "Aggiungi o togli the.", items: [
-          { t: "[The dogs] are better pets than cats.", a: ["Dogs"] },
-          { t: "He's watching [the TV] in his room.", a: ["TV"] },
-          { t: "We visited [Netherlands] last year.", a: ["the Netherlands"] },
-          { t: "My dad goes to [the work] by car.", a: ["work"] },
-          { t: "[The music] helps me relax.", a: ["Music"] },
-          { t: "I left my umbrella on [bus] this morning. I hope the driver found it.", a: ["the bus"] }
+        { type: "rw", rubric: "Insert the where necessary. Write the whole sentence. If no word is needed, write CORRECT.", it: "Riscrivi la frase aggiungendo the dove serve (anche più di una volta). Se non manca niente, scrivi CORRECT.", items: [
+          { t: "Sun rises in east.", a: ["The sun rises in the east."] },
+          { t: "I usually have breakfast in kitchen.", a: ["I usually have breakfast in the kitchen."] },
+          { t: "We spent a week in Maldives.", a: ["We spent a week in the Maldives."] },
+          { t: "Keys you gave me don't work.", a: ["The keys you gave me don't work."] },
+          { t: "Children need a lot of sleep.", a: ["CORRECT", "Children need a lot of sleep."] },
+          { t: "Can you close window, please? It's cold.", a: ["Can you close the window, please? It's cold."] },
+          { t: "Lake Garda is the largest lake in Italy.", a: ["CORRECT", "Lake Garda is the largest lake in Italy."] },
+          { t: "Who invented radio?", a: ["Who invented the radio?"] }
         ]}
       ]
     },
@@ -104,13 +106,15 @@ TESTDATA["cm10"] = {
           { t: "Did you [enjoy] at the party?", a: ["enjoy yourself", "enjoy yourselves"] },
           { t: "Here are the dictionaries. Do you still [need]?", a: ["need them"] }
         ]},
-        { type: "gap", rubric: "Complete each sentence with one suitable word.", it: "Una sola parola per spazio.", items: [
-          { t: "The film was great. We all enjoyed ___.", a: ["it"] },
-          { t: "I find ___ easy to make friends.", a: ["it"] },
-          { t: "'Can I borrow your scissors?' 'Sorry, I need ___.'", a: ["them"] },
-          { t: "I hope you enjoy ___ at the wedding!", a: ["yourself", "yourselves"] },
-          { t: "I'd appreciate ___ if you didn't smoke here.", a: ["it"] },
-          { t: "Leo said something rude, and now he regrets ___.", a: ["it"] }
+        { type: "rw", rubric: "Insert it where necessary. Write the whole sentence. If no word is needed, write CORRECT.", it: "Riscrivi la frase aggiungendo it al posto giusto. Se non manca niente, scrivi CORRECT.", items: [
+          { t: "I find hard to remember new words.", a: ["I find it hard to remember new words."] },
+          { t: "We tried the new pizzeria and we loved.", a: ["We tried the new pizzeria and we loved it."] },
+          { t: "She enjoys reading in bed.", a: ["CORRECT", "She enjoys reading in bed."] },
+          { t: "He can't stand when his phone rings in class.", a: ["He can't stand it when his phone rings in class."] },
+          { t: "I'd appreciate if you turned the music down.", a: ["I'd appreciate it if you turned the music down."] },
+          { t: "I don't regret leaving my old job.", a: ["CORRECT", "I don't regret leaving my old job."] },
+          { t: "This jacket was expensive, but I don't regret.", a: ["This jacket was expensive, but I don't regret it."] },
+          { t: "I think you'll find useful to have a dictionary.", a: ["I think you'll find it useful to have a dictionary."] }
         ]},
         { type: "kwt", rubric: KWT, it: KWT_IT, items: [
           { s1: "I had a great time at the beach.", w: "ENJOYED", s2: "I really ___ at the beach.", a: ["enjoyed myself"] },
@@ -135,7 +139,7 @@ TESTDATA["cm10"] = {
         { t: "My brother lives in ___ UK.", a: ["the"] },
         { t: "If you leave now, I'm sure you'll regret ___.", a: ["it"] }
       ]},
-      { type: "fix", rubric: FIX, it: FIX_IT, items: [
+      { type: "fix", find: true, rubric: FIX, it: FIX_IT, items: [
         { t: "[The unemployment] is a serious problem in many countries.", a: ["Unemployment"] },
         { t: "I'd [appreciate if] you helped me.", a: ["appreciate it if"] },
         { t: "Could you [make] a photo of the group?", a: ["take"] },

@@ -99,10 +99,10 @@ TESTDATA["cm4"] = {
           { t: "Our plane ___ (take) two hours late because of the fog.", a: ["took off"] },
           { t: "I need to ___ (find) what time the shop opens.", a: ["find out"] }
         ]},
-        { type: "fix", rubric: FIX, it: FIX_IT, items: [
+        { type: "fix", find: true, rubric: FIX, it: FIX_IT, items: [
           { t: "I [grew] in a small village near the sea.", a: ["grew up"] },
           { t: "Can you [find] who sent this email?", a: ["find out"] },
-          { t: "My grandparents [grew up] me because my parents worked abroad.", a: ["brought up", "brought"] },
+          { t: "My grandparents [grew me up] because my parents worked abroad.", a: ["brought me up"] },
           { t: "That's not true! You're [doing it up]!", a: ["making it up"] },
           { t: "It's hot in here. I'm going to [take out] my jacket.", a: ["take off"] },
           { t: "She [brought up] in Milan, but now she lives in London.", a: ["grew up", "was brought up"] },
@@ -132,7 +132,7 @@ TESTDATA["cm4"] = {
         { t: "Stop ___ excuses and start studying!", a: ["making"] },
         { t: "I ___ in a big city, so I'm not used to the countryside.", a: ["grew up", "was brought up"] }
       ]},
-      { type: "fix", rubric: FIX, it: FIX_IT, items: [
+      { type: "fix", find: true, rubric: FIX, it: FIX_IT, items: [
         { t: "He [said] us about his new job.", a: ["told"] },
         { t: "I [made] a course in first aid last year.", a: ["did"] },
         { t: "My parents [grew me up] to respect others.", a: ["brought me up"] },

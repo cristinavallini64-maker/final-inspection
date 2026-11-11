@@ -101,7 +101,7 @@ TESTDATA["cm3"] = {
           { t: "If you practise every day, you ___ speak Spanish fluently in a year.", a: ["will be able to", "'ll be able to"] },
           { t: "We looked everywhere, but we ___ find the keys.", a: ["couldn't", "could not", "weren't able to", "were not able to"] }
         ]},
-        { type: "fix", rubric: FIX, it: FIX_IT, items: [
+        { type: "fix", find: true, rubric: FIX, it: FIX_IT, items: [
           { t: "After hours of trying, I [could] fix the printer.", a: ["was able to", "managed to"] },
           { t: "[Am I able to] use your bathroom, please?", a: ["Can I", "Could I", "May I"] },
           { t: "One day robots [can] do all the housework.", a: ["will be able to", "'ll be able to"] },
@@ -135,7 +135,7 @@ TESTDATA["cm3"] = {
         { t: "___ I call you on Sunday? (asking for permission)", a: ["Can", "Could", "May"] },
         { t: "I ___ call you last Sunday because my phone was broken. (it wasn't possible)", a: ["couldn't", "could not", "wasn't able to", "was not able to"] }
       ]},
-      { type: "fix", rubric: FIX, it: FIX_IT, items: [
+      { type: "fix", find: true, rubric: FIX, it: FIX_IT, items: [
         { t: "You [don't have to] drive faster than 50 here. It's the law.", a: ["mustn't", "must not", "can't", "cannot"] },
         { t: "We [must] leave early yesterday because of the storm.", a: ["had to"] },
         { t: "In two years' time my little sister [can] drive.", a: ["will be able to", "'ll be able to"] },
