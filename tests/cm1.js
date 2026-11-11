@@ -63,7 +63,7 @@ TESTDATA["cm1"] = {
         { type: "fix", rubric: "Each sentence contains a mistake (underlined). Write the correct form.", it: "La parte sottolineata è sbagliata: scrivi la forma corretta.", items: [
           { t: "I [will see] the dentist at four tomorrow, so I can't come to training.", a: ["'m seeing", "am seeing"] },
           { t: "'The phone's ringing!' 'OK, I [answer] it.'", a: ["'ll answer", "will answer"] },
-          { t: "My cousins [will come] to stay with us next week. We've already bought their train tickets.", a: ["are coming"] },
+          { t: "My cousins [will come] to stay with us next week. We've already bought their train tickets.", a: ["are coming", "'re coming"] },
           { t: "'I'm freezing.' 'I [close] the window for you.'", a: ["'ll close", "will close"] },
           { t: "Don't worry, I [lend] you the money. I promise.", a: ["'ll lend", "will lend"] },
           { t: "We [will fly] to Lisbon on Monday. The flight is booked.", a: ["are flying", "'re flying"] },

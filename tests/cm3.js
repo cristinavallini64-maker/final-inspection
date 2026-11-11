@@ -70,7 +70,7 @@ TESTDATA["cm3"] = {
           { t: "She [mustn't] cook tonight: we're eating out.", a: ["doesn't have to", "does not have to"] },
           { t: "You [don't have to] park here. It's for ambulances only.", a: ["mustn't", "must not", "can't", "cannot"] },
           { t: "I [mustn't] pay for the course last year; it was free.", a: ["didn't have to", "did not have to"] },
-          { t: "Students [don't have to] copy in exams.", a: ["mustn't", "must not"] },
+          { t: "Students [don't have to] cheat in exams.", a: ["mustn't", "must not"] },
           { t: "You [mustn't] come with us if you don't want to.", a: ["don't have to", "do not have to"] }
         ]},
         { type: "kwt", rubric: KWT, it: KWT_IT, items: [
@@ -101,7 +101,7 @@ TESTDATA["cm3"] = {
           { t: "If you practise every day, you ___ speak Spanish fluently in a year.", a: ["will be able to", "'ll be able to"] },
           { t: "We looked everywhere, but we ___ find the keys.", a: ["couldn't", "could not", "weren't able to", "were not able to"] }
         ]},
-        { type: "fix", find: true, rubric: FIX, it: FIX_IT, items: [
+        { type: "fix", find: true, ok: [1, 5], rubric: FIX, it: FIX_IT, items: [
           { t: "After hours of trying, I [could] fix the printer.", a: ["was able to", "managed to"] },
           { t: "[Am I able to] use your bathroom, please?", a: ["Can I", "Could I", "May I"] },
           { t: "One day robots [can] do all the housework.", a: ["will be able to", "'ll be able to"] },
@@ -140,7 +140,7 @@ TESTDATA["cm3"] = {
         { t: "We [must] leave early yesterday because of the storm.", a: ["had to"] },
         { t: "In two years' time my little sister [can] drive.", a: ["will be able to", "'ll be able to"] },
         { t: "Tomorrow is a holiday, so I [mustn't] go to work.", a: ["don't have to", "do not have to"] },
-        { t: "I'm sorry I [couldn't to] answer your call.", a: ["couldn't", "could not", "wasn't able to"] },
+        { t: "I'm sorry I [couldn't to] answer your call.", a: ["couldn't", "could not", "wasn't able to", "was not able to"] },
         { t: "Have you ever [must] work at night?", a: ["had to"] },
         { t: "Luckily, the firefighters [could] save the old building.", a: ["were able to", "managed to"] },
         { t: "[Do you must] wear a helmet on a scooter?", a: ["Do you have to", "Must you"] }

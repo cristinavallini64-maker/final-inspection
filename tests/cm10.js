@@ -130,7 +130,7 @@ TESTDATA["cm10"] = {
     title: "Test 10",
     ex: [
       { type: "gap", rubric: "Complete each sentence with one suitable word.", it: "Una sola parola per spazio.", items: [
-        { t: "Don't forget to ___ some photos on your trip!", a: ["take"] },
+        { t: "Don't forget to ___ your sunglasses with you to the beach!", a: ["take", "bring"] },
         { t: "I find ___ hard to sleep when it's hot.", a: ["it"] },
         { t: "___ sun is very strong today. Wear a hat.", a: ["The"] },
         { t: "Can you ___ care of my plants while I'm away?", a: ["take"] },
@@ -139,7 +139,7 @@ TESTDATA["cm10"] = {
         { t: "My brother lives in ___ UK.", a: ["the"] },
         { t: "If you leave now, I'm sure you'll regret ___.", a: ["it"] }
       ]},
-      { type: "fix", find: true, rubric: FIX, it: FIX_IT, items: [
+      { type: "fix", find: true, ok: [3, 6], rubric: FIX, it: FIX_IT, items: [
         { t: "[The unemployment] is a serious problem in many countries.", a: ["Unemployment"] },
         { t: "I'd [appreciate if] you helped me.", a: ["appreciate it if"] },
         { t: "Could you [make] a photo of the group?", a: ["take"] },
@@ -151,7 +151,7 @@ TESTDATA["cm10"] = {
       ]},
       { type: "kwt", rubric: KWT, it: KWT_IT, items: [
         { s1: "Who will look after the cat?", w: "CARE", s2: "Who ___ the cat?", a: ["will take care of", "'ll take care of"] },
-        { s1: "Learning grammar is difficult for me.", w: "FIND", s2: "I ___ grammar.", a: ["find it difficult to learn", "find it hard to learn", "find learning"] },
+        { s1: "Learning grammar is difficult for me.", w: "FIND", s2: "I ___ grammar.", a: ["find it difficult to learn", "find it hard to learn"] },
         { s1: "Please listen carefully to the teacher.", w: "ATTENTION", s2: "Please ___ the teacher.", a: ["pay attention to", "pay careful attention to"] },
         { s1: "I had fun at the party.", w: "ENJOYED", s2: "I ___ at the party.", a: ["enjoyed myself"] },
         { s1: "Shall we stop for ten minutes?", w: "BREAK", s2: "Shall we ___ ten minutes?", a: ["take a break for", "have a break for"] },

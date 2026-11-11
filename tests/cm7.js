@@ -97,11 +97,11 @@ TESTDATA["cm7"] = {
 <li><b>go</b> to talk about the means of transport: <em>I <b>go</b> to work by tram.</em></li></ul>`,
       ex: [
         { type: "fix", rubric: FIX, it: FIX_IT, items: [
-          { t: "Don't forget to [get] your umbrella with you.", a: ["take"] },
+          { t: "Don't forget to [get] your umbrella with you.", a: ["take", "bring"] },
           { t: "It took me two hours to [arrive to] the airport.", a: ["get to"] },
           { t: "I [get] to school by bike every day.", a: ["go"] },
           { t: "I [knew] my best friend at a summer camp: before that we were strangers.", a: ["got to know", "met"] },
-          { t: "Can you [take] some bread from the shop on your way home?", a: ["get", "buy"] },
+          { t: "Can you [take] some bread from the shop on your way home?", a: ["get", "buy", "pick up"] },
           { t: "When did you [arrive to] London?", a: ["arrive in", "get to"] },
           { t: "I'd like to [know better] my new classmates.", a: ["get to know"] },
           { t: "I need to [take] some cash from the cashpoint.", a: ["get", "withdraw"] }

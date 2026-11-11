@@ -21,14 +21,14 @@ TESTDATA["cm9"] = {
           { ctx: "Luca has been looking for a flat for months.", t: "He hasn't found one.", a: ["He still hasn't found one.", "He hasn't found one yet.", "He still has not found one.", "He has not found one yet."] },
           { ctx: "Don't tell Marta how the film ends!", t: "She hasn't seen it.", a: ["She hasn't seen it yet.", "She still hasn't seen it.", "She has not seen it yet.", "She still has not seen it."] },
           { ctx: "My son is only four.", t: "He can swim.", a: ["He can already swim.", "He can swim already."] },
-          { ctx: "I sent the form two weeks ago.", t: "Nobody has replied.", a: ["Nobody has replied yet.", "Nobody has replied to me yet."] },
+          { ctx: "I sent the form two weeks ago.", t: "Nobody has replied.", a: ["Nobody has replied yet.", "Nobody has replied to me yet.", "Still nobody has replied."] },
           { ctx: "We're leaving in ten minutes.", t: "Have you packed your suitcase?", a: ["Have you packed your suitcase yet?", "Have you already packed your suitcase?"] },
           { ctx: "It's past midnight!", t: "Are you studying?", a: ["Are you still studying?"] },
           { ctx: "We got there at nine, but it was too late.", t: "The shop had closed.", a: ["The shop had already closed."] }
         ]},
         { type: "fix", rubric: FIX, it: FIX_IT, items: [
           { t: "I can [yet] remember my first day at school.", a: ["still"] },
-          { t: "Have you decided [still]?", a: ["yet"] },
+          { t: "Have you decided [still]?", a: ["yet", "already"] },
           { t: "Hurry up! The film has [yet] started.", a: ["already"] },
           { t: "I'm hungry: I [haven't already eaten].", a: ["haven't eaten yet", "have not eaten yet", "still haven't eaten"] },
           { t: "Don't worry about Anna. She [already is] here.", a: ["is already", "'s already"] },

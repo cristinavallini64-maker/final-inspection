@@ -132,7 +132,7 @@ TESTDATA["cm4"] = {
         { t: "Stop ___ excuses and start studying!", a: ["making"] },
         { t: "I ___ in a big city, so I'm not used to the countryside.", a: ["grew up", "was brought up"] }
       ]},
-      { type: "fix", find: true, rubric: FIX, it: FIX_IT, items: [
+      { type: "fix", find: true, ok: [4, 5], rubric: FIX, it: FIX_IT, items: [
         { t: "He [said] us about his new job.", a: ["told"] },
         { t: "I [made] a course in first aid last year.", a: ["did"] },
         { t: "My parents [grew me up] to respect others.", a: ["brought me up"] },

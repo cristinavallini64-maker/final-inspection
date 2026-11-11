@@ -108,13 +108,13 @@ TESTDATA["cm2"] = {
           { t: "She missed the party because she [has caught] the flu.", a: ["had caught", "'d caught"] },
           { t: "[I've finished] my exams last week.", a: ["I finished"] },
           { t: "It was the best concert I [ever saw].", a: ["had ever seen", "'d ever seen"] },
-          { t: "They told us that the museum [closes] two years earlier.", a: ["had closed", "'d closed"] },
+          { t: "They told us that the museum [closes] two years earlier.", a: ["had closed", "'d closed", "closed"] },
           { t: "I [had lost] my keys. Have you seen them?", a: ["have lost", "'ve lost"] }
         ]},
         { type: "kwt", rubric: KWT, it: KWT_IT, items: [
           { s1: "I finished my homework, and then my friends arrived.", w: "HAD", s2: "When my friends arrived, I ___ my homework.", a: ["had already finished", "had finished"] },
           { s1: "She saw snow for the first time that winter.", w: "TIME", s2: "That winter was the ___ seen snow.", a: ["first time she had", "first time she'd", "first time she had ever", "first time she'd ever"] },
-          { s1: "The guests left, and then we arrived.", w: "ALREADY", s2: "When we arrived, ___ left.", a: ["the guests had already", "they had already", "the guests'd already"] },
+          { s1: "The guests left, and then we arrived.", w: "ALREADY", s2: "When we arrived, ___ left.", a: ["the guests had already", "they had already"] },
           { s1: "I lost my passport, so I couldn't travel.", w: "BECAUSE", s2: "I couldn't travel ___ my passport.", a: ["because I had lost", "because I'd lost"] },
           { s1: "He broke the machine first and read the instructions after that.", w: "UNTIL", s2: "He didn't read the instructions ___ the machine.", a: ["until he had broken", "until he'd broken", "until he broke"] },
           { s1: "We hadn't been to that restaurant before.", w: "FIRST", s2: "It was the ___ been to that restaurant.", a: ["first time we had", "first time we'd", "first time we had ever", "first time we'd ever"] }
@@ -145,7 +145,7 @@ TESTDATA["cm2"] = {
       { type: "kwt", rubric: KWT, it: KWT_IT, items: [
         { s1: "The last time I went to the dentist was in May.", w: "BEEN", s2: "I ___ the dentist since May.", a: ["haven't been to", "have not been to"] },
         { s1: "I've never had such a good meal.", w: "EVER", s2: "It's the best meal ___ had.", a: ["I have ever", "I've ever"] },
-        { s1: "The guests left and then we had dinner.", w: "AFTER", s2: "We had dinner ___ left.", a: ["after the guests had", "after the guests'd", "after they had", "after they'd"] },
+        { s1: "The guests left and then we had dinner.", w: "AFTER", s2: "We had dinner ___ left.", a: ["after the guests had", "after they had", "after they'd"] },
         { s1: "Do you have a driving licence?", w: "GOT", s2: "___ a driving licence?", a: ["Have you got"] },
         { s1: "The shop closed ten minutes before I arrived.", w: "ALREADY", s2: "When I arrived, the shop ___.", a: ["had already closed", "'d already closed"] },
         { s1: "When did you start studying Spanish?", w: "HOW", s2: "___ been studying Spanish?", a: ["How long have you"] }
