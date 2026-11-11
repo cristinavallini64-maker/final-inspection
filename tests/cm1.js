@@ -32,7 +32,7 @@ TESTDATA["cm1"] = {
           { t: "Before you [will leave], make sure all the windows are closed.", a: ["leave"] }
         ]},
         { type: "kwt", rubric: "Complete the second sentence so that it means the same as the first, using the word given. Use between two and five words.", it: "Usa la parola data senza cambiarla, da 2 a 5 parole.", items: [
-          { s1: "I'll finish this report and then I'll go home.", w: "SOON", s2: "I'll go home ___ this report.", a: ["as soon as I finish", "as soon as I have finished", "as soon as I've finished"] },
+          { s1: "I'll finish this report and then I'll go home.", w: "SOON", s2: "I'll go home ___ this report.", a: ["as soon as I finish"] },
           { s1: "You'll miss the train if you don't leave now.", w: "UNLESS", s2: "You'll miss the train ___ now.", a: ["unless you leave", "unless you go"] },
           { s1: "We'll wait for Lucy to arrive, then we'll order.", w: "UNTIL", s2: "We won't order ___.", a: ["until Lucy arrives", "until Lucy gets here", "until Lucy has arrived", "until Lucy comes", "until she arrives", "until she gets here", "until she has arrived"] },
           { s1: "The guests will arrive at eight. The cake will be ready before that.", w: "TIME", s2: "The cake will be ready ___ arrive.", a: ["by the time the guests"] },
