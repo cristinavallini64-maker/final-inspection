@@ -91,7 +91,14 @@ function loose(s) {
     .replace(/n't\b/g, ' not').replace(/'ll\b/g, ' will').replace(/'re\b/g, ' are').replace(/'ve\b/g, ' have').replace(/\bi'm\b/g, 'i am');
   return x.replace(/[^a-z0-9' ]/g, ' ').replace(/\s+/g, ' ').trim();
 }
-function strict(s) { return String(s).replace(/[’‘`´]/g, "'").replace(/\s+/g, ' ').trim().replace(/[.!?]+$/, ''); }
+function strict(s) {
+  /* maiuscole, apostrofi e virgole contano, ma le forme contratte e quelle intere valgono uguale (I've = I have) */
+  return String(s).replace(/[’‘`´]/g, "'").replace(/\s+/g, ' ').trim().replace(/[.!?]+$/, '')
+    .replace(/\b(won)'t\b/gi, (m, w) => (w[0] === 'W' ? 'W' : 'w') + 'ill not').replace(/\b(shan)'t\b/gi, (m, w) => (w[0] === 'S' ? 'S' : 's') + 'hall not')
+    .replace(/\b(can)'t\b/gi, '$1 not').replace(/\b(can)not\b/gi, '$1 not')
+    .replace(/n't\b/g, ' not').replace(/'ll\b/g, ' will').replace(/'re\b/g, ' are').replace(/'ve\b/g, ' have').replace(/\bI'm\b/g, 'I am')
+    .replace(/\b(it|that|there|who|what|he|she|here|where)'s\b/gi, '$1 is');
+}
 function same(a, b, st) { return st ? strict(a) === strict(b) : loose(a) === loose(b) && loose(a) !== ''; }
 function fmtPts(x) { return String(Math.round(x * 2) / 2).replace('.', ','); }
 function loadSave() { try { return JSON.parse(localStorage.getItem(SAVE_KEY)) || {}; } catch (e) { return {}; } }
